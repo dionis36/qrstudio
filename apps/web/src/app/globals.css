@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-slate-50 text-slate-900 antialiased;
+    }
+}
+
+@layer utilities {
+    .glass {
+        @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;
+    }
+
+    .glass-dark {
+        @apply bg-slate-900/80 backdrop-blur-md border border-white/10 shadow-2xl;
+    }
+
+    .gradient-text {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600;
+    }
+}
+
+.pattern-grid-lg {
+    background-image: linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg, currentColor 1px, transparent 1px);
+    background-size: 40px 40px;
+}

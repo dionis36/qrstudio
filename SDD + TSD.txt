@@ -1,0 +1,719 @@
+System & Technical Design Document (SDD + TSD combined)
+
+Project: Modular QR Generator & Management Microservice — inspired and mapped to myqrcode.com generator. 
+myqrcode.com
+
+This single document mixes high-level architecture (SDD) and low-detail developer specs (TSD). It’s written so the dev team can implement the system module-by-module (incrementally), starting with the most complex template: Restaurant Menu, plus a second template vCard for comparison and to show template modularity. Later templates are add-ons with minimal friction.
+
+1. Goals & Scope
+
+Primary goal: Build a modular QR creation & management microservice that supports static + dynamic QR codes, rich templates (Menu, vCard, URL, PDF, Media, Wi-Fi, Social, Business Page, etc.), design customizations, dashboard, and scan analytics. It will initially run under an existing authentication (no login/billing required now). The product must be extensible: add templates, storage backends (local → S3), and enterprise features later.
+
+Assumptions (from you):
+
+Dev environment: Local PostgreSQL + local storage (no S3 for dev).
+
+The peer system uses Next.js 14 + React 18 + TypeScript 5 + Tailwind CSS (we’ll align with this).
+
+Feature parity/UX similar to MyQRCode generator (types, customization, download, analytics). 
+myqrcode.com
+
+2. High-level Architecture (modular monolith → microservices-ready)
+           ┌──────────────┐
+           │   FRONTEND   │  (Next.js 14, React 18, TypeScript)
+           │ Creator UI   │
+           └──────┬───────┘
+                  │ REST / GraphQL / JSON-RPC
+           ┌──────┴──────────────────────────────────────────┐
+           │                   API Layer                     │
+           │  /api/qrcodes, /api/templates, /api/analytics    │
+           └──────┬──────────────────────────────────────────┘
+         ┌────────┴────────┐         ┌──────────────┐
+         │    Service      │         │  Storage     │
+         │   Modules       │         │  Adapter     │
+         │ (qr/, dynamic/,  │         │ (local / S3) │
+         │  templates/,     │         └──────────────┘
+         │  designer/,      │
+         │  analytics/)     │
+         └───┬───────┬──────┘
+             │       │
+     ┌───────┘       └────────┐
+     │  PostgreSQL (local)    │
+     │  Redis (cache/queue)   │
+     │  File storage (/storage)│
+     └────────────────────────┘
+
+
+Modular boundaries:
+
+modules/qr — QR generation core (PNG/SVG).
+
+modules/templates — each template separate (menu, vcard, url, pdf...). Each exports validate(), renderPreview(), toPayload().
+
+modules/designer — styling, eye shapes, logos, frames, error-correction.
+
+modules/dynamic — short-code generation, redirect.
+
+modules/analytics — scan logging, aggregation, export/webhook.
+
+adapters/storage — local adapter (dev) + S3 adapter (prod).
+
+api — thin layer exposing endpoints and input validation.
+
+3. Technology Stack (recommended, aligned with peer system)
+
+Frontend
+
+Next.js 14 (React 18) + TypeScript 5
+
+Tailwind CSS v3, clsx, tailwind-merge
+
+react-qrcode-logo (for local preview) and/or custom SVG rendering for advanced design
+
+lucide-react + Iconify for icons
+
+Backend
+
+Node.js 20 (LTS) + TypeScript
+
+Framework: Fastify (or Express if team prefers) — Fastify recommended for performance
+
+ORM / Query: Prisma (Type-safe, works well with Postgres). Option: Knex/TypeORM.
+
+QR generation: qrcode (to SVG) + qr-code-styling (for advanced stylings) on server side; react-qrcode-logo on frontend for live preview.
+
+PDF generation: jsPDF (if needed for menu → PDF export)
+
+Queue/Cache: Redis (for caching short-code lookups, optional event queue for analytics)
+
+DB: PostgreSQL (local dev, cloud RDS later)
+
+Storage: local file system for dev (/storage), S3-compatible (AWS S3 / DigitalOcean Spaces) production adapter
+
+GeoIP: MaxMind GeoIP2 (or IP geolocation API) for country breakdown (optional, privacy considerations apply)
+
+CI/CD: GitHub Actions → (build, tests, lint, deploy)
+
+Containerization: Docker (dev & prod), Kubernetes for scale or managed platforms (Vercel for frontend, DigitalOcean/AWS/GCP for backend)
+
+Observability: Prometheus + Grafana, or use Datadog / Sentry for errors
+
+4. Module & Package Layout (repository)
+/repo-root
+  /apps
+    /frontend (Next.js + TS)
+    /api (Fastify + TS)
+  /packages
+    /qr-core (generate, render SVG/PNG)
+    /templates (menu, vcard, url, pdf, wifi...)
+    /designer (styles, exporters)
+    /storage-adapters (local, s3)
+    /analytics (logger, aggregator)
+    /common (types, utils)
+  /infra
+    docker-compose.yml
+    k8s/ (optional)
+  README.md
+
+
+Rationale: Packages let backend & potential other services reuse core logic (QR generation, templates, validation).
+
+5. Data Model (PostgreSQL) — core tables and JSON payloads
+
+Use UUIDs (v4) for primary keys. Timestamps timestamptz.
+
+users (only store user_id if auth external)
+CREATE TABLE users (
+  id uuid PRIMARY KEY,
+  email text,
+  name text,
+  created_at timestamptz DEFAULT now()
+);
+
+projects
+CREATE TABLE projects (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES users(id),
+  name text,
+  created_at timestamptz DEFAULT now()
+);
+
+qrcodes
+CREATE TABLE qrcodes (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid,
+  project_id uuid,
+  short_code text UNIQUE, -- for dynamic
+  type text NOT NULL,     -- 'menu','vcard','url','pdf','wifi',...
+  is_dynamic boolean DEFAULT false,
+  payload jsonb NOT NULL, -- structured per template
+  design jsonb,           -- colors, frame, logo ref, size, ecc level
+  storage_path text,      -- local path or S3 key for generated image
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+
+Example payload for Menu template (complex):
+
+{
+  "restaurant": {
+    "name": "La Piazza",
+    "description": "Modern italian",
+    "logo_id": "asset-uuid",
+    "primary_color": "#c0392b"
+  },
+  "menu": [
+    {
+      "category": "Starters",
+      "items": [
+        {"id":"m1","name":"Bruschetta","description":"tomato, basil","price":"6.50","image_id":"asset-uuid"},
+        ...
+      ]
+    },
+    ...
+  ],
+  "display_options": {
+    "language": "en",
+    "show_prices": true,
+    "currency": "USD",
+    "layout": "two-column",
+    "images": true
+  },
+  "seo": {
+    "slug": "la-piazza-menu"
+  }
+}
+
+
+Example payload for vCard template:
+
+{
+  "fn": "Dio Mc.Lee",
+  "org": "Company Ltd",
+  "title": "CTO",
+  "email": "dio@example.com",
+  "tel": "+255123456789",
+  "url": "https://example.com",
+  "adr": {
+    "street": "123 Example St",
+    "city": "Dar es Salaam",
+    "country": "Tanzania"
+  },
+  "social": [
+    {"platform":"linkedin","url":"..."},
+    ...
+  ]
+}
+
+scans (analytics)
+CREATE TABLE scans (
+  id bigserial PRIMARY KEY,
+  qrcode_id uuid REFERENCES qrcodes(id),
+  short_code text,          -- redundant for faster queries
+  scanned_at timestamptz DEFAULT now(),
+  ip inet,
+  ua text,
+  referrer text,
+  country text,
+  device_type text,
+  extra jsonb
+);
+
+assets
+CREATE TABLE assets (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid,
+  filename text,
+  storage_path text,
+  mime text,
+  created_at timestamptz DEFAULT now()
+);
+
+6. API Specification (OpenAPI-style summary) — key endpoints
+
+Use JSON request/response. All endpoints return standard envelope { success: boolean, data: {...}, error?: {...} }.
+
+Auth / Context
+
+Authentication handled by the parent system. Each request carries Authorization: Bearer <token>, which the microservice verifies (JWT or introspection) and extracts user_id. For now, if token absent, operate in a limited mode (or require a user_id header in dev).
+
+QR Create
+
+POST /api/qrcodes
+
+Description: Create new QR. Body contains type, is_dynamic, payload, design, project_id, storage (optional).
+
+Request example (menu):
+
+{
+  "type":"menu",
+  "is_dynamic": true,
+  "payload": { ...menu payload... },
+  "design": {
+    "size": 1024,
+    "bg_color": "#ffffff",
+    "qr_color":"#000000",
+    "logo_asset_id":"asset-uuid",
+    "error_correction":"H",
+    "frame":"rounded"
+  }
+}
+
+
+Response:
+
+201 Created
+
+data: {"id":"uuid","short_code":"abc123","download": {"svg":"...","png":"..."}, "preview_url":"https://.../preview/uuid"}
+
+Server actions:
+
+Validate payload against template schema (template module responsibility).
+
+Create DB qrcodes row with is_dynamic flag and payload.
+
+If is_dynamic → generate short_code (base62 or hash + collision check).
+
+Generate QR image (for dynamic: encode redirect URL to /d/:short_code; for static: encode full payload or appropriate string per spec).
+
+Store generated SVG/PNG via storage adapter.
+
+Return metadata + download links.
+
+QR Get
+
+GET /api/qrcodes/:id — returns metadata, design, payload, analytics summary (if allowed)
+
+QR Update
+
+PUT /api/qrcodes/:id — update payload, design (allowed only for dynamic qrcodes or for file re-generation). If is_dynamic and payload changed, regenerate nothing required for QR image (unless you want to re-render embeded design).
+
+Redirect endpoint (must be tiny & high-performance)
+
+GET /d/:short_code
+
+Behavior:
+
+Lookup mapping short_code → qrcode (cache in Redis; fall back to Postgres).
+
+Log scan event asynchronously (non-blocking).
+
+If target is:
+
+template: menu -> resolve publicMenuURL (generated SEO slug) or serve an interstitial page for analytics then JS redirect.
+
+static url -> redirect 302 to the URL.
+
+For mobile deep links include meta tags / app links.
+
+If tracked: append UTM params if configured.
+
+Response examples:
+
+302 Found with Location header → target.
+
+404 if not found.
+
+Performance notes:
+
+Use Redis with TTL for mapping; pre-warm cache for popular codes.
+
+Optionally implement as edge function (Cloudflare Workers / Vercel Edge) for high scale.
+
+Analytics endpoints
+
+GET /api/qrcodes/:id/analytics/summary?from=...&to=... — total scans, unique, top countries, devices, referrers.
+
+GET /api/qrcodes/:id/analytics/series?interval=hour|day&from=...&to=... — time series.
+
+GET /api/qrcodes/:id/analytics/scans?limit=... — raw scan events (admin).
+
+Backend strategy: scans logged to scans table or pumped to Redis queue and consumed by worker to insert into DB in batches.
+
+Assets
+
+POST /api/assets — upload logo/image (store via storage adapter; return asset.id).
+
+GET /api/assets/:id — signed URL or direct path.
+
+7. Template Module Design (critical — each template is isolated)
+
+Each template lives under packages/templates/<templateName> and exposes:
+
+export interface TemplateModule {
+  type: string; // 'menu','vcard',...
+  schema: JSONSchema; // for payload validation
+  defaultDesign: DesignDefaults;
+  validate(payload): ValidationResult;
+  renderPreview(payload, design): Promise<SVG | HTML>; // used in frontend + backend for previews
+  exportPayloadAsString(payload): string; // to embed in static QR if desired (eg vCard formatted string)
+  publicRender(payload, options): HTML // for public menu page (menu-specific)
+}
+
+
+Two initial templates (deliverables):
+
+Menu (most complex — implement first)
+
+Features: categories, items with images, prices, descriptions, dietary tags (vegan/gluten-free), currency, language variants, SEO slug, gallery, ordering CTA (optional).
+
+Public page generation: server-side render a responsive HTML page (Next.js route) at /m/:slug which the QR redirects to.
+
+Preview/export: generate both QR and direct menu preview (SVG+PNG and HTML).
+
+Schema validation: require at least one category & one item. Validate image asset ids exist.
+
+vCard
+
+Features: all vCard fields, social links, phone, email, multi-line address, export as vCard text (text encoded into QR for static) and as downloadable .vcf.
+
+Why Menu is “most complex”:
+
+It requires structured content (nested categories & items), rich media (images), responsive public page rendering, data-driven SEO slugs, and potentially multi-language support. Once Menu is implemented, URL/vCard/PDF templates are simpler because they’re flatter.
+
+8. Designer Module (styling & QR aesthetics)
+
+Responsibilities:
+
+Validate user design selections (contrast, size).
+
+Provide presets & advanced controls (module shape, eye shape, gradient, color).
+
+Compose final SVG: place background, generate QR matrix, apply colors, overlay logo (with safe zone), add frame and watermark if required.
+
+Ensure QR remains scannable — enforce min size & error correction if logo occludes content.
+
+Algorithm details:
+
+Use QR library to produce binary matrix for desired ECC (L, M, Q, H).
+
+Render modules as SVG <rect> or <circle> based on selected shape. For rounded dots, replace squares with rounded <rect rx=...> or <circle>.
+
+Eyes: replace corner squares with custom SVG paths.
+
+Logo placement: compute center overlay bounding box = matrix_size * logo_ratio. Enforce ecc >= Q if logo_ratio > 0.2.
+
+Color contrast check: compute luminance contrast between module color and background; if < threshold, require user to change.
+
+Exports:
+
+Export to SVG (canonical), PNG (rasterize server-side with sharp), and JPG.
+
+9. Analytics & Privacy
+
+Data to capture (per scan):
+
+timestamp, qrcode_id, short_code, ip (optionally anonymized), user-agent, referrer, country, device type (mobile/desktop/tablet), raw headers.
+
+Aggregation jobs:
+
+Batch job to pre-aggregate daily/hourly counts for dashboard (reduce query load).
+
+Privacy & compliance:
+
+Provide anonymization option (truncate IP after 24h).
+
+Data retention policy: default 12 months (configurable).
+
+GDPR: allow deletion of user data (if user requests).
+
+Threats / Anti-fraud:
+
+Detect bot scans (based on UA patterns).
+
+Rate-limit same IP for scans to avoid inflated counts.
+
+Spam protection on QR creation (CAPTCHA) and URL safety checks (blocklist / URL scanners).
+
+10. Redirect Flow & Scan Logging (sequence)
+
+Flow (dynamic QR):
+
+Client scans QR → requests GET /d/:short_code.
+
+Edge/Load Balancer → API server.
+
+Server checks Redis cache for mapping {short_code: target}.
+
+If not in cache, fetch from DB, set in Redis with TTL.
+
+Non-blocking: push scan event to Redis queue or log directly (if low traffic).
+
+Server issues 302 redirect to target (public menu page or external URL).
+
+Improvements for scale:
+
+Use edge functions for redirect with a small KV store (Cloudflare Workers + Workers KV).
+
+Use CDN for public menu pages.
+
+11. Dashboard & UX
+
+Pages / Components
+
+Creator Wizard (left: templates list; center: form; right: live preview)
+
+Step 1: Choose template
+
+Step 2: Fill content (per template)
+
+Step 3: Design & customize
+
+Step 4: Generate + Download
+
+QR List: thumbnails, type, short_code, created_at, quick actions (edit, regenerate, stats)
+
+QR Editor: edit payload (only dynamic QR) + design
+
+Analytics: summary cards (total scans, unique), charts (time series), map (country), devices, referrers
+
+Assets Manager: logos/images with upload
+
+Settings: project management, storage settings (local / s3), retention policy
+
+UX Considerations
+
+Live preview uses client-side renderer (react-qrcode-logo) and server preview for exact production render.
+
+Editor uses modular forms: dynamic import of template-specific forms to keep bundle small.
+
+Provide presets for design (e.g., “Professional”, “Classic”, “Playful”).
+
+Warn users when their design choices reduce scannability.
+
+12. Implementation Plan / Roadmap (incremental)
+
+Sprint 0 — Bootstrapping
+
+Set up mono-repo, CI, linting, Docker compose for dev (Postgres + Redis).
+
+Implement auth middleware to accept parent JWT.
+
+Sprint 1 — Core MVP
+
+qr-core module: basic QR SVG generation + PNG export.
+
+/api/qrcodes create & get.
+
+Storage adapter (local).
+
+Frontend basic create for URL and plain text (minimal design).
+
+Redirect endpoint with DB lookup and simple logging.
+
+Sprint 2 — Templates
+
+Implement vCard template fully (static & dynamic behaviors) — validate & export .vcf.
+
+Implement menu template schema & server-side public rendering (Next.js SSR route).
+
+Live preview for both templates.
+
+Sprint 3 — Designer
+
+Implement designer presets, logo overlay, frames, export SVG/PNG.
+
+Add contrast and scannability checks.
+
+Sprint 4 — Analytics & Dashboard
+
+Implement scans logging (queue+worker), analytics endpoints, dashboard pages (charts).
+
+Batch aggregator.
+
+Sprint 5 — Hardening
+
+Add Redis caching, rate limiting, URL safety checks, test suite, CI pipelines, Sentry integration.
+
+Sprint 6 — Production Prep
+
+Replace local storage with S3 adapter, migrate assets.
+
+Add signed URLs, CDN configuration.
+
+Add backup & disaster recovery.
+
+13. Security & Operational Concerns
+
+Security
+
+Validate uploaded assets (size, mime).
+
+URL safety: check redirect targets against blocklists.
+
+Sanitize payloads to prevent XSS when rendering public pages.
+
+Rate-limit public redirect endpoint.
+
+Use HTTPS everywhere, HSTS.
+
+RBAC for admin endpoints.
+
+Operational
+
+Backups: nightly DB + asset snapshot.
+
+Monitoring: errors (Sentry), metrics (Prometheus), uptime checks.
+
+Logging: structured logs (JSON) with request IDs for traceability.
+
+Alerts for worker failures, queue backlogs, high latencies.
+
+14. Testing Strategy
+
+Unit tests for each template module (validation, rendering).
+
+Integration tests for API endpoints (create → generate → redirect).
+
+E2E tests for creator wizard (Cypress).
+
+Load test for redirect endpoint (k6) to confirm acceptable latencies.
+
+Visual regression tests for generated SVGs (pixel diff or DOM diff on known inputs).
+
+15. CI/CD
+
+GitHub Actions:
+
+lint (ESLint + Prettier)
+
+test (unit + integration)
+
+build (TypeScript compile)
+
+docker build on main branch
+
+Deploy to staging env (Docker Compose or Kubernetes)
+
+On merge to main, run full pipeline and deploy to production.
+
+16. Migration from Local to S3 / Cloud
+
+Storage adapter pattern:
+
+Implement IStorageAdapter interface with methods put(path, stream), get(path), signedUrl(path), delete(path).
+
+Local adapter implements filesystem; S3 adapter implements AWS SDK.
+
+Configuration via environment variables STORAGE_DRIVER=local|s3.
+
+DB migration:
+
+Use migrations (Prisma/Migrations or Flyway) to manage schema changes.
+
+Asset migration script: batch upload local assets to S3, update assets.storage_path.
+
+17. Sample Code Snippets (essential bits)
+
+Short-code generation (Node) — base62 incremental approach:
+
+// simple counter-based short code
+async function generateShortCode(db) {
+  // Use a sequences table or Postgres sequence to avoid collisions
+  const res = await db.query('INSERT INTO short_code_seq DEFAULT VALUES RETURNING id');
+  const id = res.rows[0].id; // numeric
+  return base62Encode(id); // deterministic unique
+}
+
+
+Redirect handler (Fastify style):
+
+fastify.get('/d/:code', async (req, reply) => {
+  const code = req.params.code;
+  // 1. Redis cache
+  let target = await redis.get(`sc:${code}`);
+  if (!target) {
+    const row = await db.qrcodes.findUnique({ where:{ short_code: code } });
+    if (!row) return reply.code(404).send({error:'Not found'});
+    target = row.payload.redirect_url || buildPublicUrl(row);
+    await redis.set(`sc:${code}`, target, 'EX', 3600);
+  }
+  // 2. non-blocking log
+  queue.push({ type:'scan', qrcode_id: row.id, ua:req.headers['user-agent'], ip:req.ip });
+  // 3. redirect
+  reply.redirect(302, target);
+});
+
+
+SVG generation (server) — high level:
+
+Generate matrix with qrcode lib
+
+Map matrix to SVG groups <g> with shapes per module settings
+
+Stitch background, qr <g>, logo <image>, frame <rect> into final SVG
+
+18. Monitoring & KPIs
+
+KPIs
+
+Average redirect latency (ms)
+
+Scans per day / unique scanners
+
+QR create rate
+
+Errors per minute
+
+Storage usage
+
+SLOs
+
+Redirect latency < 50ms p95 (if served from edge, much better)
+
+99.9% uptime for redirect endpoint
+
+19. Deliverables & Next Steps I will produce if you confirm
+
+Full OpenAPI (or Fastify JSON) spec for all endpoints above.
+
+SQL migration files for DB schema.
+
+Starter backend skeleton (Fastify + Prisma) with:
+
+/api/qrcodes create/get
+
+/d/:short_code redirect
+
+templates/menu and templates/vcard modules implemented
+
+Local storage adapter
+
+Basic analytics logging (to scans)
+
+Starter Next.js frontend skeleton with:
+
+Creator Wizard skeleton for Menu + vCard forms
+
+Live preview using react-qrcode-logo
+
+QR List page
+
+Basic Analytics page (summary + time series)
+
+README with dev/run instructions (Docker Compose).
+
+Tests (unit tests for templates + integration test for redirect).
+
+20. Clarifying Questions (please confirm / answer so I tailor the deliverables)
+
+Template priority: I propose we implement Menu (most complex) and vCard (second) first. Confirm?
+
+Public menu page hosting: Do you want the menu public page to be hosted on the same Next.js frontend under /m/:slug (recommended), or should it be a static S3-hosted page?
+
+Short-code format: Do you prefer a short human-friendly code (base62 short string like aB3xY) or a UUID-based short path (longer)? Preference affects generation strategy.
+
+Scan privacy: Should IP addresses be stored in full (default) or anonymized/truncated for privacy by default?
+
+Analytics retention: Default 12 months ok? Any regulatory requirement to keep longer/shorter?
+
+Expected scale (estimate): Roughly how many scans / month do you expect in the first 6–12 months? (This helps size infra & caching strategy.)
+
+Custom domain support now or later? (e.g., menu.company.com) — implement later as premium feature.
+
+Design constraints: Shall we include advanced designer features immediately (gradients, advanced eyes, module-shapes) or ship simple presets first and add advanced design in a later sprint?
+
+Integration with parent auth: Will the parent system provide JWTs with user_id claim, or should this service handle authentication token introspection? If JWTs, please confirm the claim name for user id (e.g., sub or user_id).
+
+CI/CD & hosting preference: Do you have a preferred hosting/provider (Vercel for frontend + DigitalOcean/AWS for API)? Should I prepare infra as Docker Compose only or Kubernetes manifests
