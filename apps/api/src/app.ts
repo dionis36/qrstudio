@@ -1,15 +1,19 @@
+import 'dotenv/config';
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
-import { routes } from './routes';
+import { routes } from './routes/index';
 
 const app = Fastify({ logger: true });
 
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
-app.register(cors);
+app.register(cors, {
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+    credentials: true,
+});
 app.register(multipart);
 app.register(routes, { prefix: '/api' });
 

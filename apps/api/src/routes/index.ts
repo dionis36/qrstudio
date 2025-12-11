@@ -1,0 +1,16 @@
+import { FastifyInstance } from 'fastify';
+import { qrRoutes } from './qr.routes';
+import { analyticsRoutes } from './analytics.routes';
+
+export async function routes(fastify: FastifyInstance) {
+    // Register QR code routes
+    fastify.register(qrRoutes);
+
+    // Register analytics routes
+    fastify.register(analyticsRoutes);
+
+    // Health check
+    fastify.get('/health', async () => {
+        return { status: 'ok', timestamp: new Date().toISOString() };
+    });
+}

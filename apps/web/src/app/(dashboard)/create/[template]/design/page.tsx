@@ -1,12 +1,12 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useWizardStore } from '@/components/wizard/store';
 import { LiveQrPreview } from '@/components/wizard/preview/LiveQrPreview';
-import { createQrCode, downloadQrCode, ApiError } from '@/lib/api';
-import { useState } from 'react';
 import { ArrowLeft, Palette, Grid3x3, Frame, Image as ImageIcon, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { PhoneMockup } from '@/components/common/PhoneMockup';
+
 
 // Accordion Section Component (matching MenuForm style)
 function AccordionSection({
@@ -63,10 +63,14 @@ function AccordionSection({
 
 export default function DesignPage({ params }: { params: { template: string } }) {
     const router = useRouter();
+    const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+    const editId = searchParams.get('edit');
+
     const [isGenerating, setIsGenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
-    const { payload, design, updateDesign } = useWizardStore();
+    const [qrName, setQrName] = useState('');
+    const { type, payload, design, updateDesign, editMode, loadQrData } = useWizardStore();
 
     const [openSections, setOpenSections] = useState({
         pattern: true,  // Pattern section auto-opened (now first)
@@ -74,32 +78,78 @@ export default function DesignPage({ params }: { params: { template: string } })
         logo: false
     });
 
+    // Load existing QR data if in edit mode
+    useEffect(() => {
+        if (editId) {
+            loadExistingQr();
+        }
+    }, [editId]);
+
+    async function loadExistingQr() {
+        try {
+            const { qrApi } = await import('@/lib/api-client');
+            const response = await qrApi.getById(editId!);
+            if (response.success && response.data) {
+                loadQrData(response.data);
+                setQrName(response.data.name);
+            }
+        } catch (error) {
+            console.error('Failed to load QR code:', error);
+            setError('Failed to load QR code for editing');
+        }
+    }
+
     const toggleSection = (section: keyof typeof openSections) => {
         setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
     };
 
     const handleGenerate = async () => {
+        // Validate QR name
+        if (!qrName.trim()) {
+            setError('Please enter a name for your QR code');
+            return;
+        }
+
         setError(null);
         setSuccess(false);
         setIsGenerating(true);
 
         try {
-            const response = await createQrCode({
-                type: params.template as any,
-                payload: payload,
-                design: design,
-                is_dynamic: false
-            });
+            // Import API client
+            const { qrApi } = await import('@/lib/api-client');
 
-            downloadQrCode(response.raw_svg, `${params.template}-qrcode.svg`);
-            setSuccess(true);
-            setTimeout(() => setSuccess(false), 3000);
-        } catch (err) {
-            if (err instanceof ApiError) {
-                setError(err.message);
+            if (editMode && editId) {
+                // Update existing QR code
+                const response = await qrApi.update(editId, {
+                    name: qrName,
+                    payload: payload,
+                    design: design,
+                });
+
+                if (response.success && response.data) {
+                    // Redirect back to QR detail page
+                    router.push(`/qrcodes/${editId}`);
+                } else {
+                    throw new Error(response.error || 'Failed to update QR code');
+                }
             } else {
-                setError('Failed to generate QR code. Please try again.');
+                // Create new QR code
+                const response = await qrApi.create({
+                    type: params.template,
+                    name: qrName,
+                    payload: payload,
+                    design: design,
+                });
+
+                if (response.success && response.data) {
+                    // Redirect to QR detail page
+                    router.push(`/qrcodes/${response.data.id}`);
+                } else {
+                    throw new Error(response.error || 'Failed to create QR code');
+                }
             }
+        } catch (err: any) {
+            setError(err.message || 'Failed to save QR code. Please try again.');
         } finally {
             setIsGenerating(false);
         }
@@ -121,6 +171,21 @@ export default function DesignPage({ params }: { params: { template: string } })
                         </button>
                         <h3 className="text-2xl font-bold text-slate-900">Customize QR Code Design</h3>
                         <p className="text-slate-500 mt-1">Personalize your QR code appearance</p>
+                    </div>
+
+                    {/* QR Name Input */}
+                    <div className="mb-6 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">
+                            QR Code Name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            value={qrName}
+                            onChange={(e) => setQrName(e.target.value)}
+                            placeholder="e.g., Restaurant Menu, Business Card, Website Link"
+                            className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <p className="text-xs text-slate-500 mt-2">Give your QR code a memorable name for easy identification</p>
                     </div>
 
                     {/* Accordion Sections */}
@@ -409,14 +474,14 @@ export default function DesignPage({ params }: { params: { template: string } })
                         </div>
                     )}
 
-                    {/* Download Button */}
+                    {/* Create/Update Button */}
                     <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
                         <button
                             onClick={handleGenerate}
                             disabled={isGenerating}
                             className="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                         >
-                            {isGenerating ? 'Generating...' : 'Download QR Code'}
+                            {isGenerating ? (editMode ? 'Updating...' : 'Creating...') : (editMode ? 'Update QR Code' : 'Create QR Code')}
                         </button>
                     </div>
                 </div>

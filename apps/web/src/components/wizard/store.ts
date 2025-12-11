@@ -5,17 +5,23 @@ interface WizardState {
     type: string | null;
     payload: Record<string, any>;
     design: Record<string, any>;
+    editMode: boolean;
+    editId: string | null;
 
     setStep: (step: number) => void;
     setType: (type: string) => void;
     updatePayload: (data: Record<string, any>) => void;
     updateDesign: (data: Record<string, any>) => void;
+    setEditMode: (editId: string | null) => void;
+    loadQrData: (qrCode: any) => void;
     reset: () => void;
 }
 
 export const useWizardStore = create<WizardState>((set) => ({
     step: 1,
     type: null,
+    editMode: false,
+    editId: null,
     payload: {
         // Default structure for Menu to prevent preview crushes
         restaurant_info: { name: '', description: '' },
@@ -53,10 +59,22 @@ export const useWizardStore = create<WizardState>((set) => ({
         // Simple merge:
         return { payload: { ...state.payload, ...data } };
     }),
-    updateDesign: (data) => set((state) => ({ design: { ...state.design, ...data } })),
+    updateDesign: (data) => set((state) => ({
+        design: { ...state.design, ...data }
+    })),
+    setEditMode: (editId) => set({ editMode: !!editId, editId }),
+    loadQrData: (qrCode) => set({
+        type: qrCode.type,
+        payload: qrCode.payload,
+        design: qrCode.design,
+        editMode: true,
+        editId: qrCode.id,
+    }),
     reset: () => set({
         step: 1,
         type: null,
+        editMode: false,
+        editId: null,
         payload: {
             restaurant_info: { name: '', description: '' },
             content: {
@@ -74,8 +92,12 @@ export const useWizardStore = create<WizardState>((set) => ({
             styles: { primary_color: '#f97316' }
         },
         design: {
-            dots: { color: '#000000', style: 'dots' },
+            dots: { color: '#000000', style: 'square' },
             background: { color: '#ffffff' },
+            cornersSquare: { color: '#000000', style: 'square' },
+            cornersDot: { color: '#000000', style: 'square' },
+            image: null,
+            imageOptions: { hideBackgroundDots: true, imageSize: 0.4, margin: 10 },
             margin: 1
         }
     }),
