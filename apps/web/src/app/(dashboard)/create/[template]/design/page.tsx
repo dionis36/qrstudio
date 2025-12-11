@@ -239,28 +239,159 @@ export default function DesignPage({ params }: { params: { template: string } })
                         {/* Corners Section */}
                         <AccordionSection
                             title="QR code corners"
-                            subtitle="Choose your QR code corner style"
+                            subtitle="Customize the corner squares of your QR code"
                             icon={Frame}
                             color="bg-orange-100 text-orange-600"
                             isOpen={openSections.corners}
                             onToggle={() => toggleSection('corners')}
                         >
-                            <div className="mt-4 text-center py-8">
-                                <p className="text-sm text-slate-500">Corner customization coming soon...</p>
+                            <div className="mt-4 space-y-4">
+                                {/* Corner Square Style */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-3">Corner square style</label>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        {[
+                                            { style: 'square', label: 'Square' },
+                                            { style: 'dot', label: 'Dot' },
+                                            { style: 'extra-rounded', label: 'Rounded' }
+                                        ].map(({ style, label }) => (
+                                            <button
+                                                key={style}
+                                                onClick={() => updateDesign({ cornersSquare: { ...design.cornersSquare, style } })}
+                                                className={`p-3 border-2 rounded-xl transition-all flex flex-col items-center gap-2 ${design.cornersSquare?.style === style
+                                                    ? 'border-orange-600 bg-orange-50'
+                                                    : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'
+                                                    }`}
+                                            >
+                                                <div className="w-12 h-12 flex items-center justify-center">
+                                                    <div className={`w-8 h-8 border-4 border-slate-800 ${style === 'dot' ? 'rounded-full' :
+                                                        style === 'extra-rounded' ? 'rounded-xl' :
+                                                            'rounded-sm'
+                                                        }`} />
+                                                </div>
+                                                <span className="text-xs font-medium text-slate-700">{label}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Corner Dot Style */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-3">Corner dot style</label>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        {[
+                                            { style: 'square', label: 'Square' },
+                                            { style: 'dot', label: 'Dot' }
+                                        ].map(({ style, label }) => (
+                                            <button
+                                                key={style}
+                                                onClick={() => updateDesign({ cornersDot: { ...design.cornersDot, style } })}
+                                                className={`p-3 border-2 rounded-xl transition-all flex flex-col items-center gap-2 ${design.cornersDot?.style === style
+                                                    ? 'border-orange-600 bg-orange-50'
+                                                    : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'
+                                                    }`}
+                                            >
+                                                <div className="w-12 h-12 flex items-center justify-center">
+                                                    <div className={`w-6 h-6 bg-slate-800 ${style === 'dot' ? 'rounded-full' : 'rounded-sm'
+                                                        }`} />
+                                                </div>
+                                                <span className="text-xs font-medium text-slate-700">{label}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         </AccordionSection>
 
                         {/* Logo Section */}
                         <AccordionSection
                             title="Add logo"
-                            subtitle="Personalize your QR code by adding a logo or image"
+                            subtitle="Personalize your QR code with a logo (max 2MB)"
                             icon={ImageIcon}
                             color="bg-emerald-100 text-emerald-600"
                             isOpen={openSections.logo}
                             onToggle={() => toggleSection('logo')}
                         >
-                            <div className="mt-4 text-center py-8">
-                                <p className="text-sm text-slate-500">Logo upload coming soon...</p>
+                            <div className="mt-4 space-y-4">
+                                {/* Logo Upload */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-3">Upload logo</label>
+                                    {design.image ? (
+                                        <div className="relative">
+                                            <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                                <img
+                                                    src={design.image}
+                                                    alt="Logo preview"
+                                                    className="w-16 h-16 object-contain rounded border border-slate-300 bg-white"
+                                                />
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-medium text-slate-700">Logo uploaded</p>
+                                                    <p className="text-xs text-slate-500">Optimized for scanability (40% size)</p>
+                                                </div>
+                                                <button
+                                                    onClick={() => updateDesign({ image: null })}
+                                                    className="px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <label className="block cursor-pointer">
+                                            <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-emerald-400 hover:bg-emerald-50/50 transition-colors">
+                                                <ImageIcon className="w-12 h-12 mx-auto text-slate-400 mb-3" />
+                                                <p className="text-sm font-medium text-slate-700 mb-1">Click to upload logo</p>
+                                                <p className="text-xs text-slate-500">PNG, JPG, SVG (max 2MB)</p>
+                                            </div>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) {
+                                                        // Validate file size (2MB max)
+                                                        if (file.size > 2 * 1024 * 1024) {
+                                                            alert('File size must be less than 2MB');
+                                                            return;
+                                                        }
+
+                                                        const reader = new FileReader();
+                                                        reader.onload = (event) => {
+                                                            updateDesign({ image: event.target?.result as string });
+                                                        };
+                                                        reader.readAsDataURL(file);
+                                                    }
+                                                }}
+                                            />
+                                        </label>
+                                    )}
+                                </div>
+
+                                {/* Logo Size Slider */}
+                                {design.image && (
+                                    <div>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-3">
+                                            Logo size: {Math.round((design.imageOptions?.imageSize ?? 0.4) * 100)}%
+                                        </label>
+                                        <input
+                                            type="range"
+                                            min="20"
+                                            max="50"
+                                            value={(design.imageOptions?.imageSize ?? 0.4) * 100}
+                                            onChange={(e) => updateDesign({
+                                                imageOptions: {
+                                                    ...design.imageOptions,
+                                                    imageSize: parseInt(e.target.value) / 100
+                                                }
+                                            })}
+                                            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+                                        />
+                                        <p className="text-xs text-slate-500 mt-2">
+                                            ⚠️ Larger logos may reduce scanability. Keep between 30-40% for best results.
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </AccordionSection>
                     </div>

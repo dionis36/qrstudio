@@ -39,12 +39,23 @@ export function LiveQrPreview() {
                         color: design.dots?.color ?? '#000000',
                         type: design.dots?.style ?? 'square'
                     },
+                    cornersSquareOptions: {
+                        color: design.cornersSquare?.color ?? design.dots?.color ?? '#000000',
+                        type: design.cornersSquare?.style ?? 'square'
+                    },
+                    cornersDotOptions: {
+                        color: design.cornersDot?.color ?? design.dots?.color ?? '#000000',
+                        type: design.cornersDot?.style ?? 'square'
+                    },
                     backgroundOptions: {
                         color: design.background?.color === 'transparent' ? 'rgba(0,0,0,0)' : (design.background?.color ?? '#ffffff')
                     },
+                    image: design.image || undefined,
                     imageOptions: {
                         crossOrigin: 'anonymous',
-                        margin: 10
+                        hideBackgroundDots: design.imageOptions?.hideBackgroundDots ?? true,
+                        imageSize: design.imageOptions?.imageSize ?? 0.4,
+                        margin: design.imageOptions?.margin ?? 10
                     }
                 });
 
@@ -61,8 +72,23 @@ export function LiveQrPreview() {
                         color: design.dots?.color ?? '#000000',
                         type: design.dots?.style ?? 'square'
                     },
+                    cornersSquareOptions: {
+                        color: design.cornersSquare?.color ?? design.dots?.color ?? '#000000',
+                        type: design.cornersSquare?.style ?? 'square'
+                    },
+                    cornersDotOptions: {
+                        color: design.cornersDot?.color ?? design.dots?.color ?? '#000000',
+                        type: design.cornersDot?.style ?? 'square'
+                    },
                     backgroundOptions: {
                         color: design.background?.color === 'transparent' ? 'rgba(0,0,0,0)' : (design.background?.color ?? '#ffffff')
+                    },
+                    image: design.image || undefined,
+                    imageOptions: {
+                        crossOrigin: 'anonymous',
+                        hideBackgroundDots: design.imageOptions?.hideBackgroundDots ?? true,
+                        imageSize: design.imageOptions?.imageSize ?? 0.4,
+                        margin: design.imageOptions?.margin ?? 10
                     }
                 });
             }

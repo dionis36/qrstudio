@@ -34,8 +34,12 @@ export const useWizardStore = create<WizardState>((set) => ({
         styles: { primary_color: '#f97316' }
     },
     design: {
-        dots: { color: '#000000', style: 'dots' },
+        dots: { color: '#000000', style: 'square' },
         background: { color: '#ffffff' },
+        cornersSquare: { color: '#000000', style: 'square' },
+        cornersDot: { color: '#000000', style: 'square' },
+        image: null,
+        imageOptions: { hideBackgroundDots: true, imageSize: 0.4, margin: 10 },
         margin: 1
     },
 
