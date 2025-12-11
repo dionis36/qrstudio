@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useWizardStore } from './store';
 import { Step1Templates } from './steps/Step1Templates';
 import { MenuForm } from './forms/MenuForm';
@@ -9,41 +10,88 @@ import { LiveQrPreview } from './preview/LiveQrPreview';
 import { PhoneMockup } from '../common/PhoneMockup';
 import { MenuPreview } from './preview/MenuPreview';
 import { VCardPreview } from './preview/VCardPreview';
-import { ChevronRight, ArrowLeft, Smartphone, Eye } from 'lucide-react';
+import { PreviewModal } from './preview/PreviewModal';
+import { Smartphone, Eye } from 'lucide-react';
 
-export function QrStepWizard() {
-    const { step, type, payload, setStep } = useWizardStore();
+interface QrStepWizardProps {
+    initialType?: string;
+}
+
+export function QrStepWizard({ initialType }: QrStepWizardProps) {
+    const { step, type, payload, setStep, setType, reset } = useWizardStore();
+    const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+
+    useEffect(() => {
+        if (initialType) {
+            reset();
+            setType(initialType);
+            setStep(2);
+        }
+    }, [initialType, reset, setType, setStep]);
+
+    const renderPreviewContent = () => {
+        if (step === 1) {
+            return (
+                <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-gray-50/50">
+                    <div className="w-20 h-20 bg-white rounded-2xl shadow-sm mb-6 flex items-center justify-center">
+                        <Smartphone className="w-8 h-8 text-slate-300" />
+                    </div>
+                    <h4 className="text-slate-400 font-medium text-sm leading-relaxed">Select a template to generate preview</h4>
+                </div>
+            );
+        }
+
+        if (step === 2) {
+            if (type === 'menu') return <MenuPreview data={payload} />;
+            if (type === 'vcard') return <VCardPreview data={payload} />;
+        }
+
+        if (step === 3) {
+            return (
+                <div className="w-full h-full flex flex-col bg-white">
+                    <div className="h-1/3 bg-slate-900 flex items-center justify-center relative overflow-hidden">
+                        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                        <div className="text-center z-10 text-white px-6">
+                            <h3 className="font-bold text-xl mb-1">Scan to View</h3>
+                            <p className="text-xs opacity-70 uppercase tracking-widest">{type} Content</p>
+                        </div>
+                    </div>
+                    <div className="-mt-16 mx-auto bg-white p-4 rounded-3xl shadow-xl w-56 h-56 flex items-center justify-center border-4 border-white/50">
+                        <LiveQrPreview />
+                    </div>
+                    <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-4">
+                        <p className="text-sm text-gray-500">
+                            Open your camera app and point it at the code above.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        return null;
+    };
 
     return (
-        <div className="w-full max-w-[1600px] mx-auto px-6 lg:px-8 pb-20">
-            <div className="flex flex-col lg:flex-row gap-12">
-
+        <div className="w-full px-4 pb-20">
+            <div className="flex flex-col lg:flex-row gap-8">
                 {/* LEFT PANEL: 75% - Content Area */}
                 <div className="w-full lg:w-3/4 flex flex-col">
+                    {step === 1 && <Step1Templates />}
 
-                    {/* Breadcrumbs / Progress - Moved outside the card for cleaner look */}
-                    <div className="mb-8 flex items-center gap-3 text-sm font-semibold text-slate-400 pl-2">
-                        <span className={`transition-colors ${step >= 1 ? 'text-slate-900' : ''}`}>Type</span>
-                        <ChevronRight className="w-4 h-4" />
-                        <span className={`transition-colors ${step >= 2 ? 'text-slate-900' : ''}`}>Content</span>
-                        <ChevronRight className="w-4 h-4" />
-                        <span className={`transition-colors ${step >= 3 ? 'text-slate-900' : ''}`}>Design</span>
-                    </div>
-
-                    <div className="bg-white rounded-[2rem] p-8 lg:p-10 shadow-xl shadow-slate-200/50 border border-slate-100 min-h-[900px]">
-
-                        {step === 1 && <Step1Templates />}
-
-                        {step === 2 && (
+                    {step === 2 && (
+                        <div className="bg-white rounded-[2rem] p-8 lg:p-10 shadow-xl shadow-slate-200/50 border border-slate-100 min-h-[900px]">
                             <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                                 <div className="mb-8 pb-6 border-b border-slate-50 flex items-center justify-between">
-                                    <div>
-                                        <button onClick={() => setStep(1)} className="text-slate-400 hover:text-slate-600 flex items-center gap-1 text-sm font-bold mb-2 group">
-                                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back
-                                        </button>
-                                        <h3 className="text-3xl font-bold text-slate-900 capitalize tracking-tight">Enter {type} Details</h3>
-                                    </div>
-                                    {/* Optional: Add a 'Save Draft' button here later */}
+                                    <h3 className="text-3xl font-bold text-slate-900 capitalize tracking-tight">Enter {type} Details</h3>
+
+                                    {/* Preview button for small screens */}
+                                    <button
+                                        onClick={() => setIsPreviewModalOpen(true)}
+                                        className="lg:hidden flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl font-medium hover:bg-slate-800 transition-colors"
+                                    >
+                                        <Eye className="w-4 h-4" />
+                                        Preview
+                                    </button>
                                 </div>
 
                                 {type === 'menu' && <MenuForm />}
@@ -61,15 +109,23 @@ export function QrStepWizard() {
                                     </div>
                                 )}
                             </div>
-                        )}
+                        </div>
+                    )}
 
-                        {step === 3 && (
+                    {step === 3 && (
+                        <div className="bg-white rounded-[2rem] p-8 lg:p-10 shadow-xl shadow-slate-200/50 border border-slate-100 min-h-[900px]">
                             <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-                                <div className="mb-8">
-                                    <button onClick={() => setStep(2)} className="text-slate-400 hover:text-slate-600 flex items-center gap-1 text-sm font-bold mb-4 group">
-                                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to content
-                                    </button>
+                                <div className="mb-8 flex items-center justify-between">
                                     <h3 className="text-3xl font-bold text-slate-900 capitalize tracking-tight">Customize Design</h3>
+
+                                    {/* Preview button for small screens */}
+                                    <button
+                                        onClick={() => setIsPreviewModalOpen(true)}
+                                        className="lg:hidden flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl font-medium hover:bg-slate-800 transition-colors"
+                                    >
+                                        <Eye className="w-4 h-4" />
+                                        Preview
+                                    </button>
                                 </div>
 
                                 <DesignControls />
@@ -80,15 +136,14 @@ export function QrStepWizard() {
                                     </button>
                                 </div>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
 
-                {/* RIGHT PANEL: 25% - Sticky Preview */}
+                {/* RIGHT PANEL: 25% - Sticky Preview (wide screens only) */}
                 <div className="hidden lg:flex w-full lg:w-1/4 relative">
-                    <div className="sticky top-28 w-full flex flex-col items-center">
-
-                        {/* Floating Toggle Controls */}
+                    <div className="sticky top-6 w-full flex flex-col items-center h-fit">
+                        {/* Floating Toggle Controls (only for steps 2 & 3) */}
                         {step > 1 && (
                             <div className="mb-8 bg-white/80 backdrop-blur-xl p-1.5 rounded-full shadow-lg border border-white/50 ring-1 ring-slate-100">
                                 <button
@@ -106,46 +161,22 @@ export function QrStepWizard() {
                             </div>
                         )}
 
-                        {/* Phone Mockup - Scaled to fit neatly in the 25% column */}
+                        {/* Phone Mockup */}
                         <div className="transform transition-all duration-500 origin-top scale-[0.85] xl:scale-[0.9]">
                             <PhoneMockup className="shadow-2xl shadow-slate-300/50">
-                                {step === 1 && (
-                                    <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-gray-50/50">
-                                        <div className="w-20 h-20 bg-white rounded-2xl shadow-sm mb-6 flex items-center justify-center">
-                                            <Smartphone className="w-8 h-8 text-slate-300" />
-                                        </div>
-                                        <h4 className="text-slate-400 font-medium text-sm leading-relaxed">Select a template from the left to generate preview</h4>
-                                    </div>
-                                )}
-
-                                {step === 2 && type === 'menu' && <MenuPreview data={payload} />}
-                                {step === 2 && type === 'vcard' && <VCardPreview data={payload} />}
-
-                                {step === 3 && (
-                                    <div className="w-full h-full flex flex-col bg-white">
-                                        <div className="h-1/3 bg-slate-900 flex items-center justify-center relative overflow-hidden">
-                                            <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                                            <div className="text-center z-10 text-white px-6">
-                                                <h3 className="font-bold text-xl mb-1">Scan to View</h3>
-                                                <p className="text-xs opacity-70 uppercase tracking-widest">{type} Content</p>
-                                            </div>
-                                        </div>
-                                        <div className="-mt-16 mx-auto bg-white p-4 rounded-3xl shadow-xl w-56 h-56 flex items-center justify-center border-4 border-white/50">
-                                            <LiveQrPreview />
-                                        </div>
-                                        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-4">
-                                            <p className="text-sm text-gray-500">
-                                                Open your camera app and point it at the code above.
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
+                                {renderPreviewContent()}
                             </PhoneMockup>
                         </div>
                     </div>
                 </div>
-
             </div>
+
+            {/* Preview Modal for small screens (template pages only) */}
+            {step > 1 && (
+                <PreviewModal isOpen={isPreviewModalOpen} onClose={() => setIsPreviewModalOpen(false)}>
+                    {renderPreviewContent()}
+                </PreviewModal>
+            )}
         </div>
     );
 }

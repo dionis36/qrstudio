@@ -10,6 +10,7 @@ interface WizardState {
     setType: (type: string) => void;
     updatePayload: (data: Record<string, any>) => void;
     updateDesign: (data: Record<string, any>) => void;
+    reset: () => void;
 }
 
 export const useWizardStore = create<WizardState>((set) => ({
@@ -49,4 +50,29 @@ export const useWizardStore = create<WizardState>((set) => ({
         return { payload: { ...state.payload, ...data } };
     }),
     updateDesign: (data) => set((state) => ({ design: { ...state.design, ...data } })),
+    reset: () => set({
+        step: 1,
+        type: null,
+        payload: {
+            restaurant_info: { name: '', description: '' },
+            content: {
+                categories: [
+                    {
+                        id: 'cat_1',
+                        name: 'Starters',
+                        items: [
+                            { id: 'item_1', name: 'Garlic Bread', description: 'Toasted french baguette with garlic butter', price: 6 }
+                        ]
+                    }
+                ],
+                language: 'en'
+            },
+            styles: { primary_color: '#f97316' }
+        },
+        design: {
+            dots: { color: '#000000', style: 'dots' },
+            background: { color: '#ffffff' },
+            margin: 1
+        }
+    }),
 }));

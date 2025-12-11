@@ -1,5 +1,5 @@
-import { Utensils, Contact, Link, Wifi, FileText, File, ArrowRight } from 'lucide-react';
-import { useWizardStore } from '../store';
+import { Utensils, Contact, Link, Wifi, FileText, File } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
 const TEMPLATES = [
@@ -12,15 +12,14 @@ const TEMPLATES = [
 ];
 
 export function Step1Templates() {
-    const { setType, setStep } = useWizardStore();
+    const router = useRouter();
 
     const handleSelect = (id: string) => {
-        setType(id);
-        setStep(2);
+        router.push(`/create/${id}`);
     };
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
                 <h3 className="text-2xl font-bold text-slate-900">Choose your QR Code type</h3>
                 <p className="text-slate-500 mt-1">Select a template to get started with your design.</p>
@@ -34,19 +33,15 @@ export function Step1Templates() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: idx * 0.05 }}
                         onClick={() => handleSelect(t.id)}
-                        className="group relative p-5 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-xl hover:border-blue-500/30 transition-all text-left flex items-start gap-4 overflow-hidden"
+                        className="group relative p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:border-blue-500/30 transition-all text-left flex items-center gap-5 overflow-hidden"
                     >
-                        <div className={`p-3.5 rounded-xl ${t.color} group-hover:scale-110 transition-transform duration-300`}>
-                            <t.icon className="w-6 h-6" />
+                        <div className={`p-4 rounded-xl ${t.color} group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}>
+                            <t.icon className="w-7 h-7" />
                         </div>
 
-                        <div className="flex-1">
-                            <div className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{t.label}</div>
-                            <p className="text-sm text-slate-500 mt-1 mb-2">{t.desc}</p>
-
-                            <div className="flex items-center text-xs font-semibold text-blue-600 opacity-0 group-hover:opacity-100 transform translate-x-[-10px] group-hover:translate-x-0 transition-all">
-                                Select Template <ArrowRight className="w-3 h-3 ml-1" />
-                            </div>
+                        <div className="flex-1 min-w-0">
+                            <div className="font-bold text-lg text-slate-900 group-hover:text-blue-600 transition-colors">{t.label}</div>
+                            <p className="text-sm text-slate-500 mt-1">{t.desc}</p>
                         </div>
 
                         {/* Hover Gradient Effect */}
