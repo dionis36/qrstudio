@@ -31,6 +31,7 @@ type FormValues = {
     };
     styles: {
         primary_color: string;
+        secondary_color?: string;
     };
     welcome_screen?: {
         logo?: string;
@@ -163,6 +164,10 @@ export function MenuForm() {
                                 <button
                                     key={idx}
                                     type="button"
+                                    onClick={() => {
+                                        setValue('styles.primary_color', palette.primary);
+                                        setValue('styles.secondary_color', palette.secondary);
+                                    }}
                                     className="h-10 w-16 flex-shrink-0 rounded-lg border-2 border-slate-200 hover:border-blue-400 transition-all hover:scale-105 shadow-sm overflow-hidden"
                                     style={{ background: `linear-gradient(to right, ${palette.primary} 50%, ${palette.secondary} 50%)` }}
                                     title={palette.name}
@@ -192,11 +197,12 @@ export function MenuForm() {
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
                                 <div className="flex items-center gap-3">
                                     <input
+                                        {...register('styles.secondary_color')}
                                         type="color"
-                                        defaultValue="#ECEDF1"
                                         className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
                                     />
                                     <input
+                                        {...register('styles.secondary_color')}
                                         type="text"
                                         defaultValue="#ECEDF1"
                                         className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"

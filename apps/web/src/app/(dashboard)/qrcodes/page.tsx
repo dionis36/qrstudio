@@ -212,7 +212,7 @@ export default function QrCodesPage() {
                                                         <Eye className="w-4 h-4" />
                                                     </Link>
                                                     <Link
-                                                        href={`/create/${qr.type}/content?edit=${qr.id}`}
+                                                        href={`/create/${qr.type}?edit=${qr.id}`}
                                                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                                                         title="Edit"
                                                     >

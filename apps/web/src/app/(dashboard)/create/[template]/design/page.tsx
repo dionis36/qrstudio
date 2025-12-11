@@ -127,8 +127,14 @@ export default function DesignPage({ params }: { params: { template: string } })
                 });
 
                 if (response.success && response.data) {
-                    // Redirect back to QR detail page
-                    router.push(`/qrcodes/${editId}`);
+                    // Show success message
+                    setSuccess(true);
+                    setError(null);
+
+                    // Wait a moment to show success, then redirect to QR codes page
+                    setTimeout(() => {
+                        router.push('/qrcodes');
+                    }, 1000);
                 } else {
                     throw new Error(response.error || 'Failed to update QR code');
                 }

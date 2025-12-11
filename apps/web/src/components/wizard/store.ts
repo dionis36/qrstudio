@@ -7,6 +7,8 @@ interface WizardState {
     design: Record<string, any>;
     editMode: boolean;
     editId: string | null;
+    shortcode: string | null;
+    qrName: string;
 
     setStep: (step: number) => void;
     setType: (type: string) => void;
@@ -22,6 +24,8 @@ export const useWizardStore = create<WizardState>((set) => ({
     type: null,
     editMode: false,
     editId: null,
+    shortcode: null,
+    qrName: '',
     payload: {
         // Default structure for Menu to prevent preview crushes
         restaurant_info: { name: '', description: '' },
@@ -31,13 +35,13 @@ export const useWizardStore = create<WizardState>((set) => ({
                     id: 'cat_1',
                     name: 'Starters',
                     items: [
-                        { id: 'item_1', name: 'Garlic Bread', description: 'Toasted french baguette with garlic butter', price: 6, currency: 'USD', available: true }
+                        { id: 'item_1', name: 'Garlic Bread', description: 'Toasted french baguette with garlic butter', price: 6000, currency: 'TSH', available: true }
                     ]
                 }
             ],
             language: 'en'
         },
-        styles: { primary_color: '#f97316' }
+        styles: { primary_color: '#f97316', secondary_color: '#fff7ed' }
     },
     design: {
         dots: { color: '#000000', style: 'square' },
@@ -69,12 +73,16 @@ export const useWizardStore = create<WizardState>((set) => ({
         design: qrCode.design,
         editMode: true,
         editId: qrCode.id,
+        shortcode: qrCode.shortcode,
+        qrName: qrCode.name,
     }),
     reset: () => set({
         step: 1,
         type: null,
         editMode: false,
         editId: null,
+        shortcode: null,
+        qrName: '',
         payload: {
             restaurant_info: { name: '', description: '' },
             content: {
@@ -83,13 +91,13 @@ export const useWizardStore = create<WizardState>((set) => ({
                         id: 'cat_1',
                         name: 'Starters',
                         items: [
-                            { id: 'item_1', name: 'Garlic Bread', description: 'Toasted french baguette with garlic butter', price: 6, currency: 'USD', available: true }
+                            { id: 'item_1', name: 'Garlic Bread', description: 'Toasted french baguette with garlic butter', price: 6000, currency: 'TSH', available: true }
                         ]
                     }
                 ],
                 language: 'en'
             },
-            styles: { primary_color: '#f97316' }
+            styles: { primary_color: '#f97316', secondary_color: '#fff7ed' }
         },
         design: {
             dots: { color: '#000000', style: 'square' },

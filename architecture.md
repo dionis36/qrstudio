@@ -55,3 +55,12 @@ The system follows a **Modular Monolith** architecture, designed to be split int
 | **Cache/Queue** | Redis | **Selected** |
 | **QR Engine** | node-qrcode (server) + Custom SVG Logic | **Selected** |
 | **Validation** | Zod | **Selected** |
+
+
+
+http://localhost:3000           → Landing/Home
+http://localhost:3000/dashboard → Dashboard (stats & quick actions)
+http://localhost:3000/qrcodes   → QR Codes List (management)
+http://localhost:3000/create    → Create New QR Code
+http://localhost:3000/qrcodes/[id] → QR Detail Page
+http://localhost:3000/qrcodes/[id]/analytics → Analytics Page

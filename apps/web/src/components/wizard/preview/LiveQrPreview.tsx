@@ -3,7 +3,7 @@ import QRCodeStyling from 'qr-code-styling';
 import { useWizardStore } from '../store';
 
 export function LiveQrPreview() {
-    const { type, payload, design } = useWizardStore();
+    const { type, payload, design, shortcode, editMode } = useWizardStore();
     const qrRef = useRef<HTMLDivElement>(null);
     const qrCodeRef = useRef<QRCodeStyling | null>(null);
     const [isUpdating, setIsUpdating] = useState(false);
@@ -18,12 +18,16 @@ export function LiveQrPreview() {
         updateTimeoutRef.current = setTimeout(() => {
             setIsUpdating(true);
 
-            // Determine content based on type/payload
+            // IMPORTANT: QR code should ALWAYS encode the shortcode URL
+            // In edit mode, use existing shortcode; in create mode, use placeholder
             let content = '';
-            if (type === 'url' && payload.url) content = payload.url;
-            else if (type === 'menu') content = JSON.stringify(payload);
-            else if (type === 'vcard') content = 'BEGIN:VCARD\nVERSION:3.0\nN:Doe;John;;;\nFN:John Doe\nEND:VCARD';
-            else content = 'https://qrstudio.app';
+            if (editMode && shortcode) {
+                // Edit mode: Use actual shortcode
+                content = `https://qrstudio.app/q/${shortcode}`;
+            } else {
+                // Create mode: Use placeholder (will be replaced with real shortcode after creation)
+                content = 'https://qrstudio.app';
+            }
 
             // Create or update QR code
             if (!qrCodeRef.current) {
@@ -102,7 +106,7 @@ export function LiveQrPreview() {
                 clearTimeout(updateTimeoutRef.current);
             }
         };
-    }, [type, payload, design]);
+    }, [type, payload, design, shortcode, editMode]);
 
     return (
         <div className="flex items-center justify-center w-full h-full">
