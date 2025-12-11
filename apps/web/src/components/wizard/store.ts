@@ -27,7 +27,7 @@ export const useWizardStore = create<WizardState>((set) => ({
     shortcode: null,
     qrName: '',
     payload: {
-        // Default structure for Menu to prevent preview crushes
+        // Default structure for Menu
         restaurant_info: { name: '', description: '' },
         content: {
             categories: [
@@ -41,7 +41,15 @@ export const useWizardStore = create<WizardState>((set) => ({
             ],
             language: 'en'
         },
-        styles: { primary_color: '#f97316', secondary_color: '#fff7ed' }
+        // Shared Styles Default
+        styles: { primary_color: '#f97316', secondary_color: '#fff7ed' },
+
+        // Default structure for VCard
+        personal_info: { first_name: '', last_name: '' },
+        contact_details: { phone: '', email: '', website: '' },
+        company_details: { company_name: '', job_title: '' },
+        address: { street: '', city: '', country: '' },
+        social_networks: []
     },
     design: {
         dots: { color: '#000000', style: 'square' },

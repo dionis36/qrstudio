@@ -246,20 +246,18 @@ export function MenuForm() {
                         </div>
 
                         {/* Image Uploads */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-6">
                             <ImageUpload
                                 label="Restaurant Logo"
                                 value={watch('restaurant_info.logo')}
                                 onChange={(base64) => setValue('restaurant_info.logo', base64 || '')}
                                 maxSizeMB={2}
-                                aspectRatio="1/1"
                             />
                             <ImageUpload
                                 label="Cover Image"
                                 value={watch('restaurant_info.cover_image')}
                                 onChange={(base64) => setValue('restaurant_info.cover_image', base64 || '')}
                                 maxSizeMB={3}
-                                aspectRatio="16/9"
                             />
                         </div>
 
@@ -328,41 +326,42 @@ export function MenuForm() {
                     isOpen={openSections.welcome}
                     onToggle={() => toggleSection('welcome')}
                 >
-                    <div className="space-y-4 mt-4">
+                    <div className="grid grid-cols-2 gap-6 mt-4">
                         <ImageUpload
                             label="Welcome Screen Logo"
                             value={watch('welcome_screen.logo')}
                             onChange={(base64) => setValue('welcome_screen.logo', base64 || '')}
                             maxSizeMB={1}
-                            aspectRatio="1/1"
                         />
 
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">Loading Animation</label>
-                            <select
-                                {...register('welcome_screen.animation')}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
-                            >
-                                <option value="spinner">Spinner</option>
-                                <option value="fade">Fade</option>
-                                <option value="pulse">Pulse</option>
-                            </select>
-                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Loading Animation</label>
+                                <select
+                                    {...register('welcome_screen.animation')}
+                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                >
+                                    <option value="spinner">Spinner</option>
+                                    <option value="fade">Fade</option>
+                                    <option value="pulse">Pulse</option>
+                                </select>
+                            </div>
 
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">Background Color</label>
-                            <div className="flex items-center gap-3">
-                                <input
-                                    {...register('welcome_screen.background_color')}
-                                    type="color"
-                                    className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
-                                />
-                                <input
-                                    {...register('welcome_screen.background_color')}
-                                    type="text"
-                                    className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
-                                    placeholder="#ffffff"
-                                />
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Background Color</label>
+                                <div className="flex items-center gap-3">
+                                    <input
+                                        {...register('welcome_screen.background_color')}
+                                        type="color"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                    />
+                                    <input
+                                        {...register('welcome_screen.background_color')}
+                                        type="text"
+                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                                        placeholder="#ffffff"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
