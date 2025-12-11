@@ -25,7 +25,7 @@ export const useWizardStore = create<WizardState>((set) => ({
                     id: 'cat_1',
                     name: 'Starters',
                     items: [
-                        { id: 'item_1', name: 'Garlic Bread', description: 'Toasted french baguette with garlic butter', price: 6 }
+                        { id: 'item_1', name: 'Garlic Bread', description: 'Toasted french baguette with garlic butter', price: 6, currency: 'USD', available: true }
                     ]
                 }
             ],
@@ -61,7 +61,7 @@ export const useWizardStore = create<WizardState>((set) => ({
                         id: 'cat_1',
                         name: 'Starters',
                         items: [
-                            { id: 'item_1', name: 'Garlic Bread', description: 'Toasted french baguette with garlic butter', price: 6 }
+                            { id: 'item_1', name: 'Garlic Bread', description: 'Toasted french baguette with garlic butter', price: 6, currency: 'USD', available: true }
                         ]
                     }
                 ],

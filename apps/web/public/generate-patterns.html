@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR Pattern Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+</head>
+<body>
+    <h1>QR Pattern Samples</h1>
+    <div id="patterns"></div>
+
+    <script>
+        const patterns = [
+            { name: 'square', label: 'Square' },
+            { name: 'dots', label: 'Dots' },
+            { name: 'rounded', label: 'Rounded' },
+            { name: 'extra-rounded', label: 'Extra Rounded' },
+            { name: 'classy', label: 'Classy' },
+            { name: 'classy-rounded', label: 'Classy Rounded' }
+        ];
+
+        const container = document.getElementById('patterns');
+
+        patterns.forEach(({ name, label }) => {
+            const div = document.createElement('div');
+            div.style.display = 'inline-block';
+            div.style.margin = '20px';
+            div.style.textAlign = 'center';
+            
+            const title = document.createElement('h3');
+            title.textContent = label;
+            div.appendChild(title);
+
+            const qrDiv = document.createElement('div');
+            qrDiv.id = name;
+            div.appendChild(qrDiv);
+
+            const downloadBtn = document.createElement('button');
+            downloadBtn.textContent = `Download ${label}`;
+            downloadBtn.style.marginTop = '10px';
+            div.appendChild(downloadBtn);
+
+            container.appendChild(div);
+
+            const qrCode = new QRCodeStyling({
+                width: 128,
+                height: 128,
+                data: 'SAMPLE',
+                margin: 2,
+                qrOptions: {
+                    errorCorrectionLevel: 'M'
+                },
+                dotsOptions: {
+                    color: '#1e293b',
+                    type: name
+                },
+                backgroundOptions: {
+                    color: 'transparent'
+                }
+            });
+
+            qrCode.append(qrDiv);
+
+            downloadBtn.onclick = () => {
+                qrCode.download({
+                    name: `qr-pattern-${name}`,
+                    extension: 'png'
+                });
+            };
+        });
+    </script>
+</body>
+</html>

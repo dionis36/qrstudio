@@ -10,6 +10,7 @@ import { MenuPreview } from './preview/MenuPreview';
 import { VCardPreview } from './preview/VCardPreview';
 import { Smartphone } from 'lucide-react';
 import { useWizardStore } from './store';
+import { createQrCode, downloadQrCode, ApiError } from '@/lib/api';
 
 interface TemplateWizardProps {
     templateType: string;
@@ -17,7 +18,10 @@ interface TemplateWizardProps {
 
 export function TemplateWizard({ templateType }: TemplateWizardProps) {
     const [step, setStep] = useState<'content' | 'design'>('content');
-    const { payload } = useWizardStore();
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState(false);
+    const { payload, design } = useWizardStore();
 
     const renderForm = () => {
         switch (templateType) {
@@ -94,9 +98,53 @@ export function TemplateWizard({ templateType }: TemplateWizardProps) {
 
                             <DesignControls />
 
+                            {error && (
+                                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                    <p className="text-sm text-red-600">{error}</p>
+                                </div>
+                            )}
+
+                            {success && (
+                                <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                    <p className="text-sm text-green-600">QR code generated and downloaded successfully!</p>
+                                </div>
+                            )}
+
                             <div className="mt-12 pt-8 border-t border-slate-100 flex justify-end">
-                                <button className="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all">
-                                    Download QR Code
+                                <button
+                                    onClick={async () => {
+                                        setError(null);
+                                        setSuccess(false);
+                                        setIsGenerating(true);
+
+                                        try {
+                                            const response = await createQrCode({
+                                                type: templateType as any,
+                                                payload: payload,
+                                                design: design,
+                                                is_dynamic: false
+                                            });
+
+                                            // Download the QR code
+                                            downloadQrCode(response.raw_svg, `${templateType}-qrcode.svg`);
+                                            setSuccess(true);
+
+                                            // Clear success message after 3 seconds
+                                            setTimeout(() => setSuccess(false), 3000);
+                                        } catch (err) {
+                                            if (err instanceof ApiError) {
+                                                setError(err.message);
+                                            } else {
+                                                setError('Failed to generate QR code. Please try again.');
+                                            }
+                                        } finally {
+                                            setIsGenerating(false);
+                                        }
+                                    }}
+                                    disabled={isGenerating}
+                                    className="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                                >
+                                    {isGenerating ? 'Generating...' : 'Download QR Code'}
                                 </button>
                             </div>
                         </div>

@@ -5,7 +5,7 @@ export const MenuItemSchema = z.object({
     name: z.string().min(1, "Item name is required"),
     description: z.string().optional(),
     price: z.number().min(0).optional(),
-    currency: z.string().length(3).default('USD'),
+    currency: z.enum(['USD', 'TSH']).default('USD'),
     image_asset_id: z.string().uuid().optional(),
     allergens: z.array(z.string()).optional(), // e.g., 'gluten', 'dairy'
     tags: z.array(z.string()).optional(), // e.g., 'spicy', 'vegan'

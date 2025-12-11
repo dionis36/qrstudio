@@ -1,0 +1,317 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useWizardStore } from '@/components/wizard/store';
+import { LiveQrPreview } from '@/components/wizard/preview/LiveQrPreview';
+import { createQrCode, downloadQrCode, ApiError } from '@/lib/api';
+import { useState } from 'react';
+import { ArrowLeft, Palette, Grid3x3, Frame, Image as ImageIcon, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { PhoneMockup } from '@/components/common/PhoneMockup';
+
+// Accordion Section Component (matching MenuForm style)
+function AccordionSection({
+    title,
+    subtitle,
+    icon: Icon,
+    color,
+    isOpen,
+    onToggle,
+    children
+}: {
+    title: string;
+    subtitle: string;
+    icon: any;
+    color: string;
+    isOpen: boolean;
+    onToggle: () => void;
+    children: React.ReactNode;
+}) {
+    return (
+        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            {/* Header */}
+            <button
+                type="button"
+                onClick={onToggle}
+                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+            >
+                <div className="flex items-center gap-4">
+                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-7 h-7" />
+                    </div>
+                    <div className="text-left">
+                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-sm text-slate-500">{subtitle}</p>
+                    </div>
+                </div>
+                <ChevronDown
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                />
+            </button>
+
+            {/* Content */}
+            <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                    }`}
+            >
+                <div className="px-6 pb-6 pt-2 border-t border-slate-100">
+                    {children}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default function DesignPage({ params }: { params: { template: string } }) {
+    const router = useRouter();
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState(false);
+    const { payload, design, updateDesign } = useWizardStore();
+
+    const [openSections, setOpenSections] = useState({
+        pattern: true,  // Pattern section auto-opened (now first)
+        corners: false,
+        logo: false
+    });
+
+    const toggleSection = (section: keyof typeof openSections) => {
+        setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
+    };
+
+    const handleGenerate = async () => {
+        setError(null);
+        setSuccess(false);
+        setIsGenerating(true);
+
+        try {
+            const response = await createQrCode({
+                type: params.template as any,
+                payload: payload,
+                design: design,
+                is_dynamic: false
+            });
+
+            downloadQrCode(response.raw_svg, `${params.template}-qrcode.svg`);
+            setSuccess(true);
+            setTimeout(() => setSuccess(false), 3000);
+        } catch (err) {
+            if (err instanceof ApiError) {
+                setError(err.message);
+            } else {
+                setError('Failed to generate QR code. Please try again.');
+            }
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
+    return (
+        <div className="w-full px-4 pb-20">
+            <div className="flex flex-col lg:flex-row gap-8">
+                {/* LEFT PANEL: 75% - Design Controls */}
+                <div className="w-full lg:w-3/4 flex flex-col">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <button
+                            onClick={() => router.back()}
+                            className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4 transition-colors"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            <span className="text-sm font-medium">Back to Content</span>
+                        </button>
+                        <h3 className="text-2xl font-bold text-slate-900">Customize QR Code Design</h3>
+                        <p className="text-slate-500 mt-1">Personalize your QR code appearance</p>
+                    </div>
+
+                    {/* Accordion Sections */}
+                    <div className="space-y-4">
+                        {/* Pattern Section - Now First */}
+                        <AccordionSection
+                            title="QR code pattern"
+                            subtitle="Select a pattern for your QR code and choose colors"
+                            icon={Grid3x3}
+                            color="bg-blue-100 text-blue-600"
+                            isOpen={openSections.pattern}
+                            onToggle={() => toggleSection('pattern')}
+                        >
+                            <div className="mt-4 space-y-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-3">Pattern style</label>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        {[
+                                            { style: 'square', label: 'Square' },
+                                            { style: 'dots', label: 'Dots' },
+                                            { style: 'rounded', label: 'Rounded' },
+                                            { style: 'extra-rounded', label: 'Extra Rounded' },
+                                            { style: 'classy', label: 'Classy' },
+                                            { style: 'classy-rounded', label: 'Classy Rounded' }
+                                        ].map(({ style, label }) => (
+                                            <button
+                                                key={style}
+                                                onClick={() => updateDesign({ dots: { ...design.dots, style } })}
+                                                className={`p-3 border-2 rounded-xl transition-all flex flex-col items-center gap-2 relative ${design.dots?.style === style
+                                                    ? 'border-blue-600 bg-blue-50'
+                                                    : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
+                                                    }`}
+                                            >
+                                                {/* Pattern Image - Actual QR sample */}
+                                                <div className="w-16 h-16 bg-white rounded border border-slate-200 flex items-center justify-center p-1">
+                                                    <img
+                                                        src={`/patterns/qr-pattern-${style}.png`}
+                                                        alt={label}
+                                                        className="w-full h-full object-contain"
+                                                    />
+                                                </div>
+                                                <span className="text-xs font-medium text-slate-700">{label}</span>
+                                                {design.dots?.style === style && (
+                                                    <div className="absolute top-2 right-2 text-blue-600">
+                                                        <CheckCircle2 className="w-4 h-4" />
+                                                    </div>
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Colors moved inside pattern section */}
+                                <div className="pt-4 border-t border-slate-100">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {/* Foreground Color */}
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Dot color</label>
+                                            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                                <input
+                                                    type="color"
+                                                    value={design.dots?.color ?? '#000000'}
+                                                    onChange={(e) => updateDesign({ dots: { ...design.dots, color: e.target.value } })}
+                                                    className="w-10 h-10 rounded border-0 cursor-pointer"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={design.dots?.color ?? '#000000'}
+                                                    onChange={(e) => updateDesign({ dots: { ...design.dots, color: e.target.value } })}
+                                                    className="flex-1 bg-transparent text-sm font-mono text-slate-700 focus:outline-none"
+                                                    placeholder="#000000"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Background Color */}
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Background color</label>
+                                            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                                <input
+                                                    type="color"
+                                                    value={design.background?.color ?? '#ffffff'}
+                                                    onChange={(e) => updateDesign({ background: { color: e.target.value } })}
+                                                    className="w-10 h-10 rounded border-0 cursor-pointer"
+                                                    disabled={design.background?.color === 'transparent'}
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={design.background?.color ?? '#ffffff'}
+                                                    onChange={(e) => updateDesign({ background: { color: e.target.value } })}
+                                                    className="flex-1 bg-transparent text-sm font-mono text-slate-700 focus:outline-none disabled:opacity-50"
+                                                    placeholder="#ffffff"
+                                                    disabled={design.background?.color === 'transparent'}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Transparent Background Checkbox */}
+                                    <label className="flex items-center gap-2 cursor-pointer mt-3">
+                                        <input
+                                            type="checkbox"
+                                            checked={design.background?.color === 'transparent'}
+                                            onChange={(e) => updateDesign({
+                                                background: { color: e.target.checked ? 'transparent' : '#ffffff' }
+                                            })}
+                                            className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm text-slate-700">Transparent background</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </AccordionSection>
+
+
+                        {/* Corners Section */}
+                        <AccordionSection
+                            title="QR code corners"
+                            subtitle="Choose your QR code corner style"
+                            icon={Frame}
+                            color="bg-orange-100 text-orange-600"
+                            isOpen={openSections.corners}
+                            onToggle={() => toggleSection('corners')}
+                        >
+                            <div className="mt-4 text-center py-8">
+                                <p className="text-sm text-slate-500">Corner customization coming soon...</p>
+                            </div>
+                        </AccordionSection>
+
+                        {/* Logo Section */}
+                        <AccordionSection
+                            title="Add logo"
+                            subtitle="Personalize your QR code by adding a logo or image"
+                            icon={ImageIcon}
+                            color="bg-emerald-100 text-emerald-600"
+                            isOpen={openSections.logo}
+                            onToggle={() => toggleSection('logo')}
+                        >
+                            <div className="mt-4 text-center py-8">
+                                <p className="text-sm text-slate-500">Logo upload coming soon...</p>
+                            </div>
+                        </AccordionSection>
+                    </div>
+
+                    {/* Error/Success Messages */}
+                    {error && (
+                        <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="text-sm text-red-600">{error}</p>
+                        </div>
+                    )}
+
+                    {success && (
+                        <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                            <p className="text-sm text-green-600">QR code generated and downloaded successfully!</p>
+                        </div>
+                    )}
+
+                    {/* Download Button */}
+                    <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+                        <button
+                            onClick={handleGenerate}
+                            disabled={isGenerating}
+                            className="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                        >
+                            {isGenerating ? 'Generating...' : 'Download QR Code'}
+                        </button>
+                    </div>
+                </div>
+
+                {/* RIGHT PANEL: 25% - Sticky QR Preview */}
+                <div className="hidden lg:flex w-full lg:w-1/4 relative">
+                    <div className="sticky top-6 w-full flex flex-col items-center h-fit">
+                        <div className="transform transition-all duration-500 origin-top scale-[0.85] xl:scale-[0.9]">
+                            <PhoneMockup className="shadow-2xl shadow-slate-300/50">
+                                <div className="flex flex-col min-h-full font-sans bg-gradient-to-br from-slate-50 to-white overflow-hidden">
+                                    {/* QR Code Display Area */}
+                                    <div className="flex-1 flex flex-col items-center justify-center p-6">
+                                        <div className="text-center mb-4">
+                                            <h3 className="text-base font-bold text-slate-900 mb-1">Your QR Code</h3>
+                                            <p className="text-xs text-slate-500">Scan to test</p>
+                                        </div>
+                                        <div className="bg-white p-4 rounded-2xl shadow-lg border border-slate-200">
+                                            <LiveQrPreview />
+                                        </div>
+                                    </div>
+                                </div>
+                            </PhoneMockup>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
