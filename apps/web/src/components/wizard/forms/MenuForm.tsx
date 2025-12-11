@@ -1,8 +1,7 @@
-import { useForm, useFieldArray, Control, useWatch } from 'react-hook-form';
+import { useForm, useFieldArray, Control } from 'react-hook-form';
 import { useWizardStore } from '../store';
-import { useEffect } from 'react';
-import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp } from 'lucide-react';
-import { z } from 'zod'; // We'll just use the types mostly
+import { useEffect, useState } from 'react';
+import { Plus, Trash2, GripVertical, ChevronDown, Palette, Info, UtensilsCrossed, Image } from 'lucide-react';
 
 // We replicate the schema types locally for the form
 // In a real app we'd share the DTOs from a shared package
@@ -30,10 +29,69 @@ type FormValues = {
     };
 };
 
+// Accordion Section Component
+function AccordionSection({
+    title,
+    subtitle,
+    icon: Icon,
+    color,
+    isOpen,
+    onToggle,
+    children
+}: {
+    title: string;
+    subtitle: string;
+    icon: any;
+    color: string;
+    isOpen: boolean;
+    onToggle: () => void;
+    children: React.ReactNode;
+}) {
+    return (
+        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            {/* Header */}
+            <button
+                type="button"
+                onClick={onToggle}
+                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+            >
+                <div className="flex items-center gap-4">
+                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-7 h-7" />
+                    </div>
+                    <div className="text-left">
+                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-sm text-slate-500">{subtitle}</p>
+                    </div>
+                </div>
+                <ChevronDown
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                />
+            </button>
+
+            {/* Content */}
+            <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                    }`}
+            >
+                <div className="px-6 pb-6 pt-2 border-t border-slate-100">
+                    {children}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export function MenuForm() {
     const { payload, updatePayload } = useWizardStore();
+    const [openSections, setOpenSections] = useState({
+        design: true,  // First section auto-opened
+        restaurant: false,
+        menu: false,
+        welcome: false
+    });
 
-    const { register, control, watch, handleSubmit } = useForm<FormValues>({
+    const { register, control, watch } = useForm<FormValues>({
         defaultValues: {
             restaurant_info: payload.restaurant_info || { name: '', description: '', website: '', phone: '' },
             content: payload.content || { categories: [{ id: 'c1', name: 'Popular', items: [{ id: 'i1', name: 'Signature Burger', description: 'Wagyu beef', price: 18 }] }] },
@@ -55,57 +113,186 @@ export function MenuForm() {
         name: "content.categories"
     });
 
+    const toggleSection = (section: keyof typeof openSections) => {
+        setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
+    };
+
     return (
-        <div className="space-y-8 pb-10">
-            {/* Restaurant Info Section */}
-            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200">
-                <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-4">Restaurant Details</h4>
-                <div className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Restaurant Name</label>
-                        <input {...register('restaurant_info.name')} className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g. The Burger Joint" />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
-                        <textarea {...register('restaurant_info.description')} rows={2} className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Short tagline..." />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Website</label>
-                            <input {...register('restaurant_info.website')} className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="https://..." />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Phone</label>
-                            <input {...register('restaurant_info.phone')} className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="+1..." />
-                        </div>
-                    </div>
-                </div>
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Heading Section - matches create page */}
+            <div>
+                <h3 className="text-2xl font-bold text-slate-900">Add content to the Menu QR code</h3>
+                <p className="text-slate-500 mt-1">Customize your menu with colors, restaurant details, and menu items.</p>
             </div>
 
-            {/* Menu Builder Section */}
-            <div>
-                <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500">Menu Categories</h4>
-                    <button
-                        type="button"
-                        onClick={() => addCategory({ id: crypto.randomUUID(), name: 'New Category', items: [] })}
-                        className="text-xs font-bold flex items-center gap-1 bg-slate-900 text-white px-3 py-1.5 rounded-full hover:bg-slate-700 transition-colors"
-                    >
-                        <Plus className="w-3 h-3" /> Add Category
-                    </button>
-                </div>
+            {/* Accordion Sections */}
+            <div className="space-y-4">
+                {/* Design and Customize Section */}
+                <AccordionSection
+                    title="Design and customize"
+                    subtitle="Choose your color scheme"
+                    icon={Palette}
+                    color="bg-purple-100 text-purple-600"
+                    isOpen={openSections.design}
+                    onToggle={() => toggleSection('design')}
+                >
+                    <div className="space-y-6 mt-4">
+                        {/* Color Palette Presets */}
+                        <div className="flex gap-2 overflow-x-auto pb-2">
+                            {[
+                                { primary: '#2563EB', secondary: '#F8FAFC', name: 'Modern Blue' },
+                                { primary: '#1F2937', secondary: '#F3F4F6', name: 'Elegant Black' },
+                                { primary: '#059669', secondary: '#ECFDF5', name: 'Fresh Green' },
+                                { primary: '#DC2626', secondary: '#FEF2F2', name: 'Bold Red' },
+                                { primary: '#7C3AED', secondary: '#FAF5FF', name: 'Royal Purple' },
+                                { primary: '#EA580C', secondary: '#FFF7ED', name: 'Warm Orange' },
+                                { primary: '#0891B2', secondary: '#F0FDFA', name: 'Ocean Teal' },
+                                { primary: '#BE123C', secondary: '#FFF1F2', name: 'Wine Red' },
+                            ].map((palette, idx) => (
+                                <button
+                                    key={idx}
+                                    type="button"
+                                    className="h-10 w-16 flex-shrink-0 rounded-lg border-2 border-slate-200 hover:border-blue-400 transition-all hover:scale-105 shadow-sm overflow-hidden"
+                                    style={{ background: `linear-gradient(to right, ${palette.primary} 50%, ${palette.secondary} 50%)` }}
+                                    title={palette.name}
+                                />
+                            ))}
+                        </div>
 
-                <div className="space-y-6">
-                    {categories.map((category, index) => (
-                        <CategoryItem
-                            key={category.id}
-                            control={control}
-                            index={index}
-                            register={register}
-                            remove={() => removeCategory(index)}
-                        />
-                    ))}
-                </div>
+                        {/* Custom Colors */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Primary color</label>
+                                <div className="flex items-center gap-3">
+                                    <input
+                                        {...register('styles.primary_color')}
+                                        type="color"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                    />
+                                    <input
+                                        {...register('styles.primary_color')}
+                                        type="text"
+                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                                        placeholder="#232321"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
+                                <div className="flex items-center gap-3">
+                                    <input
+                                        type="color"
+                                        defaultValue="#ECEDF1"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                    />
+                                    <input
+                                        type="text"
+                                        defaultValue="#ECEDF1"
+                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                                        placeholder="#ECEDF1"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </AccordionSection>
+
+                {/* Restaurant Information Section */}
+                <AccordionSection
+                    title="Restaurant information"
+                    subtitle="Provide details about your restaurant"
+                    icon={Info}
+                    color="bg-blue-100 text-blue-600"
+                    isOpen={openSections.restaurant}
+                    onToggle={() => toggleSection('restaurant')}
+                >
+                    <div className="space-y-4 mt-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">Restaurant Name</label>
+                            <input
+                                {...register('restaurant_info.name')}
+                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                placeholder="e.g. The Burger Joint"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">Description</label>
+                            <textarea
+                                {...register('restaurant_info.description')}
+                                rows={3}
+                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                placeholder="Short tagline or description..."
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Website</label>
+                                <input
+                                    {...register('restaurant_info.website')}
+                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    placeholder="https://..."
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Phone</label>
+                                <input
+                                    {...register('restaurant_info.phone')}
+                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    placeholder="+1 (555) 000-0000"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </AccordionSection>
+
+                {/* Menu Section */}
+                <AccordionSection
+                    title="Menu"
+                    subtitle="Input your menu"
+                    icon={UtensilsCrossed}
+                    color="bg-orange-100 text-orange-600"
+                    isOpen={openSections.menu}
+                    onToggle={() => toggleSection('menu')}
+                >
+                    <div className="mt-4">
+                        <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-sm font-bold text-slate-700">Menu Categories</h4>
+                            <button
+                                type="button"
+                                onClick={() => addCategory({ id: crypto.randomUUID(), name: 'New Category', items: [] })}
+                                className="text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors shadow-sm"
+                            >
+                                <Plus className="w-3.5 h-3.5" /> Add Category
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            {categories.map((category, index) => (
+                                <CategoryItem
+                                    key={category.id}
+                                    control={control}
+                                    index={index}
+                                    register={register}
+                                    remove={() => removeCategory(index)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </AccordionSection>
+
+                {/* Welcome Screen Section */}
+                <AccordionSection
+                    title="Welcome screen"
+                    subtitle="Display a custom logo while your page is loading"
+                    icon={Image}
+                    color="bg-emerald-100 text-emerald-600"
+                    isOpen={openSections.welcome}
+                    onToggle={() => toggleSection('welcome')}
+                >
+                    <div className="mt-4 text-center py-8">
+                        <p className="text-sm text-slate-500">Welcome screen customization coming soon...</p>
+                    </div>
+                </AccordionSection>
             </div>
         </div>
     );
@@ -119,40 +306,40 @@ function CategoryItem({ control, index, register, remove }: { control: Control<F
     });
 
     return (
-        <div className="bg-white border text-left border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
             {/* Category Header */}
-            <div className="bg-gray-50 p-3 flex items-center gap-3 border-b border-gray-100">
-                <GripVertical className="w-4 h-4 text-gray-400 cursor-move" />
+            <div className="bg-white p-3 flex items-center gap-3 border-b border-slate-200">
+                <GripVertical className="w-4 h-4 text-slate-400 cursor-move" />
                 <div className="flex-1">
                     <input
                         {...register(`content.categories.${index}.name`)}
-                        className="bg-transparent font-bold text-gray-900 placeholder-gray-400 focus:outline-none w-full"
+                        className="bg-transparent font-bold text-slate-900 placeholder-slate-400 focus:outline-none w-full"
                         placeholder="Category Name (e.g. Starters)"
                     />
                 </div>
-                <button type="button" onClick={remove} className="text-gray-400 hover:text-red-500 p-1">
+                <button type="button" onClick={remove} className="text-slate-400 hover:text-red-500 p-1 transition-colors">
                     <Trash2 className="w-4 h-4" />
                 </button>
             </div>
 
             {/* Items List */}
-            <div className="p-3 bg-white space-y-3">
+            <div className="p-3 space-y-2">
                 {items.map((item, itemIndex) => (
-                    <div key={item.id} className="flex gap-3 items-start p-2 rounded-lg border border-gray-100 hover:border-blue-100 group">
+                    <div key={item.id} className="flex gap-3 items-start p-3 rounded-lg bg-white border border-slate-200 hover:border-blue-300 group transition-colors">
                         <div className="flex-1 space-y-2">
                             <div className="flex gap-2">
                                 <input
                                     {...register(`content.categories.${index}.items.${itemIndex}.name`)}
-                                    className="flex-1 text-sm font-semibold border-b border-transparent focus:border-blue-300 focus:outline-none px-1"
+                                    className="flex-1 text-sm font-semibold border-b border-transparent focus:border-blue-400 focus:outline-none px-1 py-1"
                                     placeholder="Item Name"
                                 />
-                                <div className="flex items-center text-sm text-gray-500">
+                                <div className="flex items-center text-sm text-slate-600 font-semibold">
                                     $
                                     <input
                                         type="number"
                                         step="0.01"
                                         {...register(`content.categories.${index}.items.${itemIndex}.price`, { valueAsNumber: true })}
-                                        className="w-16 text-right font-mono border-b border-transparent focus:border-blue-300 focus:outline-none"
+                                        className="w-16 text-right font-mono border-b border-transparent focus:border-blue-400 focus:outline-none py-1"
                                         placeholder="0.00"
                                     />
                                 </div>
@@ -160,12 +347,12 @@ function CategoryItem({ control, index, register, remove }: { control: Control<F
                             <textarea
                                 {...register(`content.categories.${index}.items.${itemIndex}.description`)}
                                 rows={1}
-                                className="w-full text-xs text-gray-500 bg-transparent resize-none border-b border-transparent focus:border-blue-300 focus:outline-none px-1"
-                                placeholder="Description ingredients..."
+                                className="w-full text-xs text-slate-500 bg-transparent resize-none border-b border-transparent focus:border-blue-400 focus:outline-none px-1 py-1"
+                                placeholder="Description, ingredients..."
                             />
                         </div>
-                        <button type="button" onClick={() => removeItem(itemIndex)} className="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Trash2 className="w-3 h-3" />
+                        <button type="button" onClick={() => removeItem(itemIndex)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Trash2 className="w-3.5 h-3.5" />
                         </button>
                     </div>
                 ))}
@@ -173,9 +360,9 @@ function CategoryItem({ control, index, register, remove }: { control: Control<F
                 <button
                     type="button"
                     onClick={() => addItem({ id: crypto.randomUUID(), name: '', description: '', price: 0 })}
-                    className="w-full py-2 border border-dashed border-gray-300 rounded-lg text-xs font-semibold text-gray-500 hover:bg-gray-50 hover:text-blue-600 hover:border-blue-300 transition-colors flex items-center justify-center gap-1"
+                    className="w-full py-2.5 border-2 border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-500 hover:bg-white hover:text-blue-600 hover:border-blue-400 transition-colors flex items-center justify-center gap-1.5"
                 >
-                    <Plus className="w-3 h-3" /> Add Item
+                    <Plus className="w-3.5 h-3.5" /> Add Item
                 </button>
             </div>
         </div>

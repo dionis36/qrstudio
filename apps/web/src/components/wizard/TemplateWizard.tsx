@@ -75,39 +75,32 @@ export function TemplateWizard({ templateType }: TemplateWizardProps) {
     };
 
     return (
-        <div className="w-full max-w-[1600px] mx-auto px-4 pb-20">
+        <div className="w-full px-4 pb-20">
             <div className="flex flex-col lg:flex-row gap-8">
 
                 {/* LEFT PANEL: 75% - Content Area */}
                 <div className="w-full lg:w-3/4 flex flex-col">
-                    <div className="bg-white rounded-[2rem] p-8 lg:p-10 shadow-xl shadow-slate-200/50 border border-slate-100 min-h-[900px]">
+                    {step === 'content' && (
+                        <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                            {renderForm()}
+                        </div>
+                    )}
 
-                        {step === 'content' && (
-                            <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-                                <div className="mb-8 pb-6 border-b border-slate-50">
-                                    <h3 className="text-3xl font-bold text-slate-900 capitalize tracking-tight">Enter {templateType} Details</h3>
-                                </div>
-
-                                {renderForm()}
+                    {step === 'design' && (
+                        <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                            <div className="mb-8">
+                                <h3 className="text-3xl font-bold text-slate-900 capitalize tracking-tight">Customize Design</h3>
                             </div>
-                        )}
 
-                        {step === 'design' && (
-                            <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-                                <div className="mb-8">
-                                    <h3 className="text-3xl font-bold text-slate-900 capitalize tracking-tight">Customize Design</h3>
-                                </div>
+                            <DesignControls />
 
-                                <DesignControls />
-
-                                <div className="mt-12 pt-8 border-t border-slate-100 flex justify-end">
-                                    <button className="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all">
-                                        Download QR Code
-                                    </button>
-                                </div>
+                            <div className="mt-12 pt-8 border-t border-slate-100 flex justify-end">
+                                <button className="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all">
+                                    Download QR Code
+                                </button>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* RIGHT PANEL: 25% - Sticky Preview */}

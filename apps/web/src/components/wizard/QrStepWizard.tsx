@@ -79,36 +79,21 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
                     {step === 1 && <Step1Templates />}
 
                     {step === 2 && (
-                        <div className="bg-white rounded-[2rem] p-8 lg:p-10 shadow-xl shadow-slate-200/50 border border-slate-100 min-h-[900px]">
-                            <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-                                <div className="mb-8 pb-6 border-b border-slate-50 flex items-center justify-between">
-                                    <h3 className="text-3xl font-bold text-slate-900 capitalize tracking-tight">Enter {type} Details</h3>
+                        <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                            {type === 'menu' && <MenuForm />}
+                            {type === 'vcard' && <VCardForm />}
 
-                                    {/* Preview button for small screens */}
-                                    <button
-                                        onClick={() => setIsPreviewModalOpen(true)}
-                                        className="lg:hidden flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl font-medium hover:bg-slate-800 transition-colors"
-                                    >
-                                        <Eye className="w-4 h-4" />
-                                        Preview
-                                    </button>
+                            {type !== 'menu' && type !== 'vcard' && (
+                                <div className="p-12 border-2 border-dashed border-slate-200 rounded-3xl text-center text-slate-400 bg-slate-50/50">
+                                    <p className="text-lg">Content form for <strong>{type}</strong> is under construction.</p>
                                 </div>
+                            )}
 
-                                {type === 'menu' && <MenuForm />}
-                                {type === 'vcard' && <VCardForm />}
-
-                                {type !== 'menu' && type !== 'vcard' && (
-                                    <div className="p-12 border-2 border-dashed border-slate-200 rounded-3xl text-center text-slate-400 bg-slate-50/50">
-                                        <p className="text-lg">Content form for <strong>{type}</strong> is under construction.</p>
-                                    </div>
-                                )}
-
-                                {type !== 'menu' && type !== 'vcard' && (
-                                    <div className="mt-8 flex justify-end">
-                                        <button onClick={() => setStep(3)} className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg">Skip to Design</button>
-                                    </div>
-                                )}
-                            </div>
+                            {type !== 'menu' && type !== 'vcard' && (
+                                <div className="mt-8 flex justify-end">
+                                    <button onClick={() => setStep(3)} className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg">Skip to Design</button>
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -170,6 +155,17 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
                     </div>
                 </div>
             </div>
+
+            {/* Floating Preview Button for Mobile */}
+            {step === 2 && (
+                <button
+                    onClick={() => setIsPreviewModalOpen(true)}
+                    className="lg:hidden fixed bottom-6 right-6 z-50 flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all shadow-2xl hover:scale-105"
+                >
+                    <Eye className="w-5 h-5" />
+                    Preview
+                </button>
+            )}
 
             {/* Preview Modal for small screens (template pages only) */}
             {step > 1 && (
