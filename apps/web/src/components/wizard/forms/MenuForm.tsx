@@ -1,4 +1,4 @@
-import { useForm, useFieldArray, Control } from 'react-hook-form';
+import { useForm, useFieldArray, Control, useWatch } from 'react-hook-form';
 import { useWizardStore } from '../store';
 import { useEffect, useState } from 'react';
 import { Plus, Trash2, GripVertical, ChevronDown, Palette, Info, UtensilsCrossed, Image, CheckCircle2, XCircle } from 'lucide-react';
@@ -106,7 +106,10 @@ export function MenuForm() {
         defaultValues: {
             restaurant_info: payload.restaurant_info || { name: '', description: '', website: '', phone: '', logo: '', cover_image: '' },
             content: payload.content || { categories: [{ id: 'c1', name: 'Popular', items: [{ id: 'i1', name: 'Signature Burger', description: 'Wagyu beef', price: 18, currency: 'USD', available: true }] }] },
-            styles: payload.styles || { primary_color: '#f97316' },
+            styles: {
+                primary_color: payload.styles?.primary_color || '#f97316',
+                secondary_color: payload.styles?.secondary_color || '#fff7ed'
+            },
             welcome_screen: payload.welcome_screen || { logo: '', animation: 'spinner', background_color: '#ffffff' }
         },
         mode: 'onChange'
@@ -376,6 +379,11 @@ function CategoryItem({ control, index, register, remove }: { control: Control<F
         name: `content.categories.${index}.items`
     });
 
+    const watchedItems = useWatch({
+        control,
+        name: `content.categories.${index}.items`
+    });
+
     return (
         <div className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
             {/* Category Header */}
@@ -395,65 +403,70 @@ function CategoryItem({ control, index, register, remove }: { control: Control<F
 
             {/* Items List */}
             <div className="p-3 space-y-2">
-                {items.map((item, itemIndex) => (
-                    <div key={item.id} className="flex gap-3 items-start p-3 rounded-lg bg-white border border-slate-200 hover:border-blue-300 group transition-colors">
-                        <div className="flex-1 space-y-3">
-                            {/* Item Name and Price Row */}
-                            <div className="flex gap-2 items-start">
-                                <input
-                                    {...register(`content.categories.${index}.items.${itemIndex}.name`)}
-                                    className="flex-1 text-sm font-semibold border-b border-transparent focus:border-blue-400 focus:outline-none px-1 py-1"
-                                    placeholder="Item Name"
-                                />
-                                <div className="flex items-center gap-1">
-                                    <select
-                                        {...register(`content.categories.${index}.items.${itemIndex}.currency`)}
-                                        className="text-xs font-semibold text-slate-600 bg-transparent border-b border-transparent focus:border-blue-400 focus:outline-none py-1 pr-1"
-                                    >
-                                        <option value="USD">$</option>
-                                        <option value="TSH">TSh</option>
-                                    </select>
+                {items.map((item, itemIndex) => {
+                    const currentCurrency = watchedItems?.[itemIndex]?.currency || 'TSH';
+                    const stepValue = currentCurrency === 'TSH' ? 100 : 1;
+
+                    return (
+                        <div key={item.id} className="flex gap-3 items-start p-3 rounded-lg bg-white border border-slate-200 hover:border-blue-300 group transition-colors">
+                            <div className="flex-1 space-y-3">
+                                {/* Item Name and Price Row */}
+                                <div className="flex gap-2 items-start">
                                     <input
-                                        type="number"
-                                        step="0.01"
-                                        {...register(`content.categories.${index}.items.${itemIndex}.price`, { valueAsNumber: true })}
-                                        className="w-20 text-right font-mono text-sm border-b border-transparent focus:border-blue-400 focus:outline-none py-1"
-                                        placeholder="0.00"
+                                        {...register(`content.categories.${index}.items.${itemIndex}.name`)}
+                                        className="flex-1 text-sm font-semibold border-b border-transparent focus:border-blue-400 focus:outline-none px-1 py-1"
+                                        placeholder="Item Name"
                                     />
+                                    <div className="flex items-center gap-1">
+                                        <select
+                                            {...register(`content.categories.${index}.items.${itemIndex}.currency`)}
+                                            className="text-xs font-semibold text-slate-600 bg-transparent border-b border-transparent focus:border-blue-400 focus:outline-none py-1 pr-1"
+                                        >
+                                            <option value="USD">$</option>
+                                            <option value="TSH">TSh</option>
+                                        </select>
+                                        <input
+                                            type="number"
+                                            step={stepValue}
+                                            {...register(`content.categories.${index}.items.${itemIndex}.price`, { valueAsNumber: true })}
+                                            className="w-20 text-right font-mono text-sm border-b border-transparent focus:border-blue-400 focus:outline-none py-1"
+                                            placeholder="0.00"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Description */}
-                            <textarea
-                                {...register(`content.categories.${index}.items.${itemIndex}.description`)}
-                                rows={1}
-                                className="w-full text-xs text-slate-500 bg-transparent resize-none border-b border-transparent focus:border-blue-400 focus:outline-none px-1 py-1"
-                                placeholder="Description, ingredients..."
-                            />
-
-                            {/* Availability Toggle */}
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    {...register(`content.categories.${index}.items.${itemIndex}.available`)}
-                                    className="sr-only peer"
+                                {/* Description */}
+                                <textarea
+                                    {...register(`content.categories.${index}.items.${itemIndex}.description`)}
+                                    rows={1}
+                                    className="w-full text-xs text-slate-500 bg-transparent resize-none border-b border-transparent focus:border-blue-400 focus:outline-none px-1 py-1"
+                                    placeholder="Description, ingredients..."
                                 />
-                                <div className="relative w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500"></div>
-                                <span className="text-xs font-medium text-slate-600 flex items-center gap-1">
-                                    <CheckCircle2 className="w-3 h-3 text-green-600" />
-                                    Available
-                                </span>
-                            </label>
+
+                                {/* Availability Toggle */}
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        {...register(`content.categories.${index}.items.${itemIndex}.available`)}
+                                        className="sr-only peer"
+                                    />
+                                    <div className="relative w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500"></div>
+                                    <span className="text-xs font-medium text-slate-600 flex items-center gap-1">
+                                        <CheckCircle2 className="w-3 h-3 text-green-600" />
+                                        Available
+                                    </span>
+                                </label>
+                            </div>
+                            <button type="button" onClick={() => removeItem(itemIndex)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Trash2 className="w-3.5 h-3.5" />
+                            </button>
                         </div>
-                        <button type="button" onClick={() => removeItem(itemIndex)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                    </div>
-                ))}
+                    )
+                })}
 
                 <button
                     type="button"
-                    onClick={() => addItem({ id: crypto.randomUUID(), name: '', description: '', price: 0, currency: 'USD', available: true })}
+                    onClick={() => addItem({ id: crypto.randomUUID(), name: '', description: '', price: 0, currency: 'TSH', available: true })}
                     className="w-full py-2.5 border-2 border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-500 hover:bg-white hover:text-blue-600 hover:border-blue-400 transition-colors flex items-center justify-center gap-1.5"
                 >
                     <Plus className="w-3.5 h-3.5" /> Add Item
