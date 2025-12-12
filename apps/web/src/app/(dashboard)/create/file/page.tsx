@@ -69,7 +69,7 @@ export default function PdfQrPage() {
                     {/* Next Button */}
                     <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
                         <button
-                            onClick={() => router.push(`/create/pdf/design${editId ? `?edit=${editId}` : ''}`)}
+                            onClick={() => router.push(`/create/file/design${editId ? `?edit=${editId}` : ''}`)}
                             className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-base shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all flex items-center gap-2"
                         >
                             {editId ? 'Next: Update Design' : 'Next: Customize QR Design'}

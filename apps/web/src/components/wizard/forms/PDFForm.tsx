@@ -3,13 +3,51 @@ import { useWizardStore } from '../store';
 import { useEffect, useState, useRef } from 'react';
 import { ChevronDown, Palette, FileText, Info, Upload, X } from 'lucide-react';
 
+// Supported file types with size limits (in MB)
+const ALLOWED_FILE_TYPES = {
+    // Documents
+    'application/pdf': { ext: 'PDF', category: 'document', maxSize: 20, color: 'text-red-600' },
+    'application/msword': { ext: 'DOC', category: 'document', maxSize: 20, color: 'text-blue-600' },
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { ext: 'DOCX', category: 'document', maxSize: 20, color: 'text-blue-600' },
+    'application/vnd.ms-excel': { ext: 'XLS', category: 'document', maxSize: 20, color: 'text-green-600' },
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { ext: 'XLSX', category: 'document', maxSize: 20, color: 'text-green-600' },
+    'application/vnd.ms-powerpoint': { ext: 'PPT', category: 'document', maxSize: 20, color: 'text-orange-600' },
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': { ext: 'PPTX', category: 'document', maxSize: 20, color: 'text-orange-600' },
+
+    // Images
+    'image/jpeg': { ext: 'JPG', category: 'image', maxSize: 10, color: 'text-purple-600' },
+    'image/png': { ext: 'PNG', category: 'image', maxSize: 10, color: 'text-purple-600' },
+    'image/svg+xml': { ext: 'SVG', category: 'image', maxSize: 10, color: 'text-purple-600' },
+    'image/gif': { ext: 'GIF', category: 'image', maxSize: 10, color: 'text-purple-600' },
+    'image/webp': { ext: 'WEBP', category: 'image', maxSize: 10, color: 'text-purple-600' },
+
+    // Archives
+    'application/zip': { ext: 'ZIP', category: 'archive', maxSize: 20, color: 'text-yellow-600' },
+    'application/x-rar-compressed': { ext: 'RAR', category: 'archive', maxSize: 20, color: 'text-yellow-600' },
+    'application/x-7z-compressed': { ext: '7Z', category: 'archive', maxSize: 20, color: 'text-yellow-600' },
+
+    // Text
+    'text/plain': { ext: 'TXT', category: 'text', maxSize: 5, color: 'text-slate-600' },
+    'text/csv': { ext: 'CSV', category: 'text', maxSize: 5, color: 'text-slate-600' },
+    'application/json': { ext: 'JSON', category: 'text', maxSize: 5, color: 'text-slate-600' },
+    'application/xml': { ext: 'XML', category: 'text', maxSize: 5, color: 'text-slate-600' },
+    'text/xml': { ext: 'XML', category: 'text', maxSize: 5, color: 'text-slate-600' },
+
+    // Media
+    'audio/mpeg': { ext: 'MP3', category: 'media', maxSize: 15, color: 'text-pink-600' },
+    'video/mp4': { ext: 'MP4', category: 'media', maxSize: 15, color: 'text-indigo-600' },
+};
+
 // Form Value Types
 type FormValues = {
     pdf_file: {
-        file_data: string;        // Base64 encoded PDF
+        file_data: string;
         file_name: string;
         file_size: number;
-        fullscreen_mode: boolean; // Default: false
+        file_type: string;      // MIME type
+        file_extension: string; // e.g., 'PDF', 'DOCX'
+        file_category: string;  // 'document', 'image', 'archive', 'text', 'media'
+        fullscreen_mode: boolean;
     };
     document_info: {
         title?: string;
@@ -151,30 +189,35 @@ export function PDFForm() {
         if (!file) return;
 
         // Validate file type
-        if (file.type !== 'application/pdf') {
-            alert('Please upload a PDF file');
+        const fileInfo = ALLOWED_FILE_TYPES[file.type as keyof typeof ALLOWED_FILE_TYPES];
+
+        if (!fileInfo) {
+            alert(`File type "${file.type}" is not supported. Please upload a supported file type.`);
             return;
         }
 
-        // Validate file size (10MB)
-        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
-        if (file.size > maxSize) {
-            alert('File size must be less than 10MB');
+        // Validate file size
+        const maxSizeBytes = fileInfo.maxSize * 1024 * 1024;
+        if (file.size > maxSizeBytes) {
+            alert(`File size must be less than ${fileInfo.maxSize}MB for ${fileInfo.ext} files`);
             return;
         }
 
         // Extract filename without extension for title
-        const fileNameWithoutExt = file.name.replace(/\.pdf$/i, '');
+        const fileNameWithoutExt = file.name.replace(/\.[^/.]+$/, '');
 
         // Convert to base64
         const reader = new FileReader();
         reader.onload = (e) => {
             const base64 = e.target?.result as string;
-            const base64Data = base64.split(',')[1]; // Remove data:application/pdf;base64, prefix
+            const base64Data = base64.split(',')[1]; // Remove data:xxx;base64, prefix
 
             setValue('pdf_file.file_data', base64Data);
             setValue('pdf_file.file_name', file.name);
             setValue('pdf_file.file_size', file.size);
+            setValue('pdf_file.file_type', file.type);
+            setValue('pdf_file.file_extension', fileInfo.ext);
+            setValue('pdf_file.file_category', fileInfo.category);
 
             // Auto-fill title if it's empty
             if (!watch('document_info.title')) {
@@ -347,11 +390,11 @@ export function PDFForm() {
                     </div>
                 </AccordionSection>
 
-                {/* PDF File Upload Section */}
+                {/* File Upload Section */}
                 <AccordionSection
-                    title="PDF file upload"
-                    subtitle="Upload your PDF document"
-                    icon={FileText}
+                    title="File upload"
+                    subtitle="Upload your file"
+                    icon={Upload}
                     color="bg-blue-100 text-blue-600"
                     isOpen={openSections.upload}
                     onToggle={() => toggleSection('upload')}
@@ -370,7 +413,7 @@ export function PDFForm() {
                             >
                                 <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                                 <p className="text-sm font-semibold text-slate-700 mb-1">
-                                    Drag and drop your PDF here
+                                    Drag and drop your file here
                                 </p>
                                 <p className="text-xs text-slate-500 mb-4">or</p>
                                 <button
@@ -383,11 +426,11 @@ export function PDFForm() {
                                 <input
                                     ref={fileInputRef}
                                     type="file"
-                                    accept="application/pdf"
+                                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.svg,.gif,.webp,.zip,.rar,.7z,.txt,.csv,.json,.xml,.mp3,.mp4"
                                     onChange={handleFileInputChange}
                                     className="hidden"
                                 />
-                                <p className="text-xs text-slate-500 mt-4">Maximum file size: 10MB</p>
+                                <p className="text-xs text-slate-500 mt-4">Supported: Documents, Images, Archives, Text files, Media (max 20MB)</p>
                             </div>
                         ) : (
                             <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
@@ -414,27 +457,14 @@ export function PDFForm() {
                             <p className="text-xs text-red-500">{errors.pdf_file.file_data.message}</p>
                         )}
 
-                        {/* Fullscreen Mode Toggle */}
-                        <div className="pt-4 border-t border-slate-200">
-                            <label className="flex items-center gap-3 cursor-pointer">
-                                <input
-                                    {...register('pdf_file.fullscreen_mode')}
-                                    type="checkbox"
-                                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                                />
-                                <div>
-                                    <p className="text-sm font-semibold text-slate-700">Open PDF in fullscreen mode</p>
-                                    <p className="text-xs text-slate-500">When enabled, users will see the PDF directly. Otherwise, they'll see a preview page first.</p>
-                                </div>
-                            </label>
-                        </div>
+
                     </div>
                 </AccordionSection>
 
                 {/* Document Information Section */}
                 <AccordionSection
                     title="Document information"
-                    subtitle="Optional metadata about your PDF"
+                    subtitle="Optional metadata about your file"
                     icon={Info}
                     color="bg-emerald-100 text-emerald-600"
                     isOpen={openSections.info}
@@ -446,9 +476,9 @@ export function PDFForm() {
                             <input
                                 {...register('document_info.title')}
                                 className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
-                                placeholder="e.g. Product Catalog 2024"
+                                placeholder="e.g. Annual Report 2024"
                             />
-                            <p className="text-xs text-slate-500 mt-1">Display name for your PDF</p>
+                            <p className="text-xs text-slate-500 mt-1">Display name for your file</p>
                         </div>
 
                         <div>

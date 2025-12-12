@@ -1,9 +1,37 @@
-import { FileText, ExternalLink } from 'lucide-react';
+import { FileText, ExternalLink, File, FileImage, FileArchive, FileCode, Music, Video } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 
 type PDFPreviewProps = {
     data: any;
 };
+
+// Helper function to get file icon based on type
+function getFileIcon(extension: string, category: string, primaryColor: string) {
+    const iconClass = "w-8 h-8";
+    const iconStyle = { color: primaryColor };
+
+    // Documents
+    if (extension === 'PDF') return <FileText className={iconClass} style={iconStyle} />;
+    if (['DOC', 'DOCX'].includes(extension)) return <FileText className={iconClass} style={iconStyle} />;
+    if (['XLS', 'XLSX'].includes(extension)) return <FileText className={iconClass} style={iconStyle} />;
+    if (['PPT', 'PPTX'].includes(extension)) return <FileText className={iconClass} style={iconStyle} />;
+
+    // Images
+    if (category === 'image') return <FileImage className={iconClass} style={iconStyle} />;
+
+    // Archives
+    if (category === 'archive') return <FileArchive className={iconClass} style={iconStyle} />;
+
+    // Text
+    if (category === 'text') return <FileCode className={iconClass} style={iconStyle} />;
+
+    // Media
+    if (extension === 'MP3') return <Music className={iconClass} style={iconStyle} />;
+    if (extension === 'MP4') return <Video className={iconClass} style={iconStyle} />;
+
+    // Default
+    return <File className={iconClass} style={iconStyle} />;
+}
 
 export function PDFPreview({ data }: PDFPreviewProps) {
     const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
@@ -17,6 +45,12 @@ export function PDFPreview({ data }: PDFPreviewProps) {
     const secondaryColor = styles.secondary_color || '#EFF6FF';
     const gradientType = styles.gradient_type || 'none';
     const gradientAngle = styles.gradient_angle || 135;
+
+    // File metadata
+    const fileExtension = pdfFile.file_extension || 'FILE';
+    const fileCategory = pdfFile.file_category || 'document';
+    const fileType = pdfFile.file_type || '';
+    const fileSize = pdfFile.file_size || 0;
 
     // Generate background style
     const getBackgroundStyle = () => {
@@ -35,9 +69,18 @@ export function PDFPreview({ data }: PDFPreviewProps) {
         }
     };
 
+    // Format file size
+    const formatFileSize = (bytes: number) => {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Math.round(bytes / Math.pow(k, i) * 10) / 10 + ' ' + sizes[i];
+    };
+
     // Generate PDF thumbnail
     const generateThumbnail = useCallback(async () => {
-        if (!pdfFile.file_data) return;
+        if (!pdfFile.file_data || fileExtension !== 'PDF') return;
 
         try {
             setIsGenerating(true);
@@ -110,16 +153,16 @@ export function PDFPreview({ data }: PDFPreviewProps) {
 
                     <div className="text-center">
                         <h2 className="text-lg font-bold text-slate-900 mb-1 leading-tight">
-                            {docInfo.title || pdfFile.file_name || 'PDF Document'}
+                            {docInfo.title || pdfFile.file_name || 'File'}
                         </h2>
                         <p className="text-xs text-slate-600">
-                            Direct PDF Link
+                            Direct File Link
                         </p>
                     </div>
 
                     <div className="w-full max-w-[280px] bg-white rounded-xl shadow-lg p-4 text-center">
                         <p className="text-xs text-slate-600">
-                            PDF will open directly in fullscreen mode
+                            File will open directly in fullscreen mode
                         </p>
                     </div>
                 </div>
@@ -130,9 +173,17 @@ export function PDFPreview({ data }: PDFPreviewProps) {
     // Preview page view (default)
     return (
         <div className="absolute inset-0 w-full h-full flex flex-col font-sans bg-white" style={getBackgroundStyle()}>
-            <div className="flex-1 flex flex-col items-center justify-center p-4 space-y-4">
-                {/* PDF Thumbnail or Icon */}
-                {thumbnailUrl ? (
+            <div className="flex-1 flex flex-col items-center justify-center p-4 space-y-3">
+                {/* File Preview: Image, PDF Thumbnail, or Icon */}
+                {fileCategory === 'image' && pdfFile.file_data ? (
+                    <div className="w-full max-w-[160px] bg-white rounded-lg shadow-lg overflow-hidden border border-slate-200">
+                        <img
+                            src={`data:${fileType};base64,${pdfFile.file_data}`}
+                            alt="File Preview"
+                            className="w-full h-auto"
+                        />
+                    </div>
+                ) : thumbnailUrl ? (
                     <div className="w-full max-w-[160px] bg-white rounded-lg shadow-lg overflow-hidden border border-slate-200">
                         <img src={thumbnailUrl} alt="PDF Preview" className="w-full h-auto" />
                     </div>
@@ -142,14 +193,25 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                     </div>
                 ) : (
                     <div className="w-16 h-16 rounded-full shadow-lg flex items-center justify-center" style={{ backgroundColor: primaryColor }}>
-                        <FileText className="w-8 h-8 text-white" />
+                        {getFileIcon(fileExtension, fileCategory, primaryColor)}
+                    </div>
+                )}
+
+                {/* File Type Badge */}
+                {pdfFile.file_data && (
+                    <div className="flex items-center gap-2 text-xs">
+                        <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded font-mono font-bold">
+                            {fileExtension}
+                        </span>
+                        <span className="text-slate-400">•</span>
+                        <span className="text-slate-600">{formatFileSize(fileSize)}</span>
                     </div>
                 )}
 
                 {/* Document Title */}
                 <div className="text-center px-4 max-w-[280px]">
                     <h2 className="text-lg font-bold text-slate-900 mb-0.5 leading-tight line-clamp-2">
-                        {docInfo.title || pdfFile.file_name || 'PDF Document'}
+                        {docInfo.title || pdfFile.file_name || 'File'}
                     </h2>
                     {docInfo.topic && (
                         <p className="text-xs text-slate-600 mt-1">{docInfo.topic}</p>
@@ -171,7 +233,7 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                             style={{ backgroundColor: primaryColor }}
                         >
                             <FileText className="w-4 h-4" />
-                            Read PDF
+                            {fileExtension === 'PDF' ? 'Read PDF' : 'View File'}
                         </button>
                         <button
                             className="w-full py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 hover:bg-slate-200"
@@ -179,7 +241,7 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                             </svg>
-                            Download PDF
+                            Download {fileExtension}
                         </button>
                     </div>
                 )}
