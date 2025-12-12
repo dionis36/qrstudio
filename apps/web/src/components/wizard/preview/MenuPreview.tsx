@@ -29,6 +29,9 @@ interface MenuData {
     };
     styles?: {
         primary_color?: string;
+        secondary_color?: string;
+        gradient_type?: 'none' | 'linear' | 'radial';
+        gradient_angle?: number;
     };
 }
 
@@ -48,13 +51,18 @@ export function MenuPreview({ data }: { data: MenuData }) {
                         className="w-full h-full object-cover"
                     />
                 ) : (
-                    <img
-                        src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                        alt="Restaurant Header"
-                        className="w-full h-full object-cover"
+                    <div
+                        className="w-full h-full"
+                        style={{
+                            background: data.styles?.gradient_type === 'linear'
+                                ? `linear-gradient(${data.styles.gradient_angle || 135}deg, ${primaryColor}, ${data.styles.secondary_color || primaryColor})`
+                                : data.styles?.gradient_type === 'radial'
+                                    ? `radial-gradient(circle, ${primaryColor}, ${data.styles.secondary_color || primaryColor})`
+                                    : primaryColor // Solid color (default)
+                        }}
                     />
                 )}
-                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute inset-0 bg-black/20" />
 
                 <div className="absolute bottom-0 left-0 w-full p-4 text-white">
                     <div className="flex items-center gap-3">
