@@ -48,6 +48,76 @@ export class AnalyticsService {
     }
 
     /**
+     * Log scan event (optimized for redirect flow)
+     * Parses user agent and logs asynchronously
+     */
+    async logScan(data: {
+        qrcodeId: string;
+        shortcode: string;
+        ip: string;
+        userAgent: string;
+        referrer?: string;
+    }) {
+        try {
+            // Parse user agent for device detection
+            const deviceInfo = this.parseUserAgent(data.userAgent);
+
+            // Create scan record
+            await prisma.scan.create({
+                data: {
+                    qrCodeId: data.qrcodeId,
+                    shortcode: data.shortcode,
+                    ipHash: this.hashIp(data.ip),
+                    device: deviceInfo.device,
+                    os: deviceInfo.os,
+                    browser: deviceInfo.browser,
+                    referrer: data.referrer,
+                },
+            });
+        } catch (error) {
+            console.error('Failed to log scan:', error);
+            // Don't throw - we don't want to block redirects
+        }
+    }
+
+    /**
+     * Parse user agent string for device detection
+     */
+    private parseUserAgent(userAgent: string): {
+        device: string;
+        os: string;
+        browser: string;
+    } {
+        const ua = userAgent.toLowerCase();
+
+        // Detect device type
+        let device = 'desktop';
+        if (/mobile|android|iphone|ipod|blackberry|iemobile|opera mini/i.test(ua)) {
+            device = 'mobile';
+        } else if (/tablet|ipad/i.test(ua)) {
+            device = 'tablet';
+        }
+
+        // Detect OS
+        let os = 'Unknown';
+        if (/windows/i.test(ua)) os = 'Windows';
+        else if (/mac os x/i.test(ua)) os = 'macOS';
+        else if (/linux/i.test(ua)) os = 'Linux';
+        else if (/android/i.test(ua)) os = 'Android';
+        else if (/iphone|ipad|ipod/i.test(ua)) os = 'iOS';
+
+        // Detect browser
+        let browser = 'Unknown';
+        if (/edg/i.test(ua)) browser = 'Edge';
+        else if (/chrome/i.test(ua)) browser = 'Chrome';
+        else if (/safari/i.test(ua)) browser = 'Safari';
+        else if (/firefox/i.test(ua)) browser = 'Firefox';
+        else if (/opera|opr/i.test(ua)) browser = 'Opera';
+
+        return { device, os, browser };
+    }
+
+    /**
      * Get analytics for a specific QR code
      */
     async getQrAnalytics(

@@ -39,6 +39,7 @@ model QrCode {
 model Scan {
   id        String   @id @default(cuid())
   qrCodeId  String
+  shortcode String?  // Denormalized for faster queries
   scannedAt DateTime @default(now())
   country   String?
   city      String?
@@ -46,10 +47,12 @@ model Scan {
   os        String?
   browser   String?
   ipHash    String?
+  referrer  String?  // Referrer URL
   qrCode    QrCode   @relation(fields: [qrCodeId], references: [id], onDelete: Cascade)
 
   @@index([qrCodeId])
   @@index([scannedAt])
+  @@index([shortcode])
 }
 
 model Subscription {
