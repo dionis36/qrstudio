@@ -21,6 +21,8 @@ interface QrCodeDetail {
     };
 }
 
+import { ConfirmationModal } from '@/components/common/ConfirmationModal';
+
 export default function QrCodeDetailPage({ params }: { params: { id: string } }) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -29,6 +31,8 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
     const [qrCode, setQrCode] = useState<QrCodeDetail | null>(null);
     const [loading, setLoading] = useState(true);
     const [qrCodeInstance, setQrCodeInstance] = useState<QRCodeStyling | null>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         loadQrCode();
@@ -129,15 +133,22 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
         }
     }
 
-    async function handleDelete() {
-        if (!qrCode || !confirm('Are you sure you want to delete this QR code?')) return;
+    function handleDeleteClick() {
+        setIsDeleteModalOpen(true);
+    }
+
+    async function confirmDelete() {
+        if (!qrCode) return;
 
         try {
+            setIsDeleting(true);
             await qrApi.delete(qrCode.id);
             router.push('/qrcodes');
         } catch (error) {
             console.error('Failed to delete QR code:', error);
             alert('Failed to delete QR code');
+        } finally {
+            setIsDeleting(false);
         }
     }
 
@@ -199,7 +210,7 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
                                 Edit
                             </Link>
                             <button
-                                onClick={handleDelete}
+                                onClick={handleDeleteClick}
                                 className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
                             >
                                 <Trash2 className="w-4 h-4" />
@@ -293,6 +304,17 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
                         </div>
                     </div>
                 </div>
+
+                <ConfirmationModal
+                    isOpen={isDeleteModalOpen}
+                    onClose={() => setIsDeleteModalOpen(false)}
+                    onConfirm={confirmDelete}
+                    title="Delete QR Code"
+                    message="Are you sure you want to delete this QR code? This action cannot be undone and the QR code will stop working immediately."
+                    confirmText="Delete"
+                    isDestructive={true}
+                    isLoading={isDeleting}
+                />
             </div>
         </div>
     );

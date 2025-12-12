@@ -18,6 +18,8 @@ interface QrCodeItem {
     };
 }
 
+import { ConfirmationModal } from '@/components/common/ConfirmationModal';
+
 export default function QrCodesPage() {
     const router = useRouter();
     const [qrCodes, setQrCodes] = useState<QrCodeItem[]>([]);
@@ -26,6 +28,8 @@ export default function QrCodesPage() {
     const [typeFilter, setTypeFilter] = useState<string>('');
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         loadQrCodes();
@@ -52,15 +56,24 @@ export default function QrCodesPage() {
         }
     }
 
-    async function handleDelete(id: string) {
-        if (!confirm('Are you sure you want to delete this QR code?')) return;
+    function handleDeleteClick(id: string, e: React.MouseEvent) {
+        e.stopPropagation();
+        setDeleteId(id);
+    }
+
+    async function confirmDelete() {
+        if (!deleteId) return;
 
         try {
-            await qrApi.delete(id);
+            setIsDeleting(true);
+            await qrApi.delete(deleteId);
+            setDeleteId(null);
             loadQrCodes(); // Reload list
         } catch (error) {
             console.error('Failed to delete QR code:', error);
             alert('Failed to delete QR code');
+        } finally {
+            setIsDeleting(false);
         }
     }
 
@@ -219,7 +232,7 @@ export default function QrCodesPage() {
                                                         <Edit className="w-4 h-4" />
                                                     </Link>
                                                     <button
-                                                        onClick={() => handleDelete(qr.id)}
+                                                        onClick={(e) => handleDeleteClick(qr.id, e)}
                                                         className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                         title="Delete"
                                                     >
@@ -259,6 +272,17 @@ export default function QrCodesPage() {
                         </>
                     )}
                 </div>
+
+                <ConfirmationModal
+                    isOpen={!!deleteId}
+                    onClose={() => setDeleteId(null)}
+                    onConfirm={confirmDelete}
+                    title="Delete QR Code"
+                    message="Are you sure you want to delete this QR code? This action cannot be undone and the QR code will stop working immediately."
+                    confirmText="Delete"
+                    isDestructive={true}
+                    isLoading={isDeleting}
+                />
             </div>
         </div>
     );

@@ -172,15 +172,15 @@ export class QrService {
     }
 
     /**
-     * Delete a QR code (soft delete by setting isActive to false)
+     * Delete a QR code (hard delete - permanently removes from database)
      */
     async deleteQrCode(id: string, userId: string) {
         // Verify ownership
         await this.getQrCodeById(id, userId);
 
-        await prisma.qrCode.update({
+        // Hard delete - actually remove from database
+        await prisma.qrCode.delete({
             where: { id },
-            data: { isActive: false },
         });
 
         return { success: true };
