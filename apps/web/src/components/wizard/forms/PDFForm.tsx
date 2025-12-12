@@ -1,0 +1,486 @@
+import { useForm } from 'react-hook-form';
+import { useWizardStore } from '../store';
+import { useEffect, useState, useRef } from 'react';
+import { ChevronDown, Palette, FileText, Info, Upload, X } from 'lucide-react';
+
+// Form Value Types
+type FormValues = {
+    pdf_file: {
+        file_data: string;        // Base64 encoded PDF
+        file_name: string;
+        file_size: number;
+        fullscreen_mode: boolean; // Default: false
+    };
+    document_info: {
+        title?: string;
+        topic?: string;
+        description?: string;
+        author?: string;
+    };
+    styles: {
+        primary_color: string;
+        secondary_color?: string;
+        gradient_type?: 'none' | 'linear' | 'radial';
+        gradient_angle?: number;
+    };
+};
+
+// Accordion Section Component
+function AccordionSection({
+    title,
+    subtitle,
+    icon: Icon,
+    color,
+    isOpen,
+    onToggle,
+    children
+}: {
+    title: string;
+    subtitle: string;
+    icon: any;
+    color: string;
+    isOpen: boolean;
+    onToggle: () => void;
+    children: React.ReactNode;
+}) {
+    return (
+        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <button
+                type="button"
+                onClick={onToggle}
+                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+            >
+                <div className="flex items-center gap-4">
+                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-7 h-7" />
+                    </div>
+                    <div className="text-left">
+                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-sm text-slate-500">{subtitle}</p>
+                    </div>
+                </div>
+                <ChevronDown
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                />
+            </button>
+
+            <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                    }`}
+            >
+                <div className="px-6 pb-6 pt-2 border-t border-slate-100 overflow-x-hidden">
+                    {children}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export function PDFForm() {
+    const { payload, updatePayload, editMode } = useWizardStore();
+    const [openSections, setOpenSections] = useState({
+        design: true,  // First section auto-opened
+        upload: false,
+        info: false
+    });
+
+    const [isDragging, setIsDragging] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const hasLoadedEditData = useRef(false);
+
+    const { register, watch, setValue, reset, formState: { errors } } = useForm<FormValues>({
+        defaultValues: {
+            pdf_file: payload.pdf_file || { file_data: '', file_name: '', file_size: 0, fullscreen_mode: false },
+            document_info: payload.document_info || { title: '', topic: '', description: '', author: '' },
+            styles: {
+                primary_color: payload.styles?.primary_color || '#2563EB',
+                secondary_color: payload.styles?.secondary_color || '#EFF6FF'
+            }
+        },
+        mode: 'onChange'
+    });
+
+    // Random color palette on initial load (not in edit mode)
+    useEffect(() => {
+        if (!editMode && !payload.styles?.primary_color) {
+            const palettes = [
+                { primary: '#2563EB', secondary: '#EFF6FF' },
+                { primary: '#1F2937', secondary: '#F3F4F6' },
+                { primary: '#059669', secondary: '#ECFDF5' },
+                { primary: '#DC2626', secondary: '#FEF2F2' },
+                { primary: '#7C3AED', secondary: '#FAF5FF' },
+            ];
+            const randomPalette = palettes[Math.floor(Math.random() * palettes.length)];
+            setValue('styles.primary_color', randomPalette.primary);
+            setValue('styles.secondary_color', randomPalette.secondary);
+        }
+    }, []);
+
+    // Sync form data with wizard store
+    useEffect(() => {
+        const subscription = watch((value) => {
+            updatePayload(value as any);
+        });
+        return () => subscription.unsubscribe();
+    }, [watch, updatePayload]);
+
+    // Reset form ONCE when entering edit mode with loaded data
+    useEffect(() => {
+        if (editMode && !hasLoadedEditData.current && payload.pdf_file?.file_data) {
+            hasLoadedEditData.current = true;
+            reset({
+                pdf_file: payload.pdf_file || { file_data: '', file_name: '', file_size: 0, fullscreen_mode: false },
+                document_info: payload.document_info || { title: '', topic: '', description: '', author: '' },
+                styles: {
+                    primary_color: payload.styles?.primary_color || '#2563EB',
+                    secondary_color: payload.styles?.secondary_color || '#EFF6FF'
+                }
+            });
+        }
+        if (!editMode) {
+            hasLoadedEditData.current = false;
+        }
+    }, [editMode, payload, reset]);
+
+    const toggleSection = (section: keyof typeof openSections) => {
+        setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
+    };
+
+    // File upload handlers
+    const handleFileSelect = async (file: File) => {
+        if (!file) return;
+
+        // Validate file type
+        if (file.type !== 'application/pdf') {
+            alert('Please upload a PDF file');
+            return;
+        }
+
+        // Validate file size (10MB)
+        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+        if (file.size > maxSize) {
+            alert('File size must be less than 10MB');
+            return;
+        }
+
+        // Extract filename without extension for title
+        const fileNameWithoutExt = file.name.replace(/\.pdf$/i, '');
+
+        // Convert to base64
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64 = e.target?.result as string;
+            const base64Data = base64.split(',')[1]; // Remove data:application/pdf;base64, prefix
+
+            setValue('pdf_file.file_data', base64Data);
+            setValue('pdf_file.file_name', file.name);
+            setValue('pdf_file.file_size', file.size);
+
+            // Auto-fill title if it's empty
+            if (!watch('document_info.title')) {
+                setValue('document_info.title', fileNameWithoutExt);
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = () => {
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const file = e.dataTransfer.files[0];
+        handleFileSelect(file);
+    };
+
+    const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) handleFileSelect(file);
+    };
+
+    const handleRemoveFile = () => {
+        setValue('pdf_file.file_data', '');
+        setValue('pdf_file.file_name', '');
+        setValue('pdf_file.file_size', 0);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    const formatFileSize = (bytes: number) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    };
+
+    return (
+        <div className="w-full">
+            {/* Accordion Sections */}
+            <div className="space-y-4">
+                {/* Design and Customize Section */}
+                <AccordionSection
+                    title="Design and customize"
+                    subtitle="Choose your color scheme"
+                    icon={Palette}
+                    color="bg-purple-100 text-purple-600"
+                    isOpen={openSections.design}
+                    onToggle={() => toggleSection('design')}
+                >
+                    <div className="space-y-6 mt-4 min-w-0">
+                        {/* Color Palette Presets */}
+                        <div className='w-full max-w-full overflow-hidden min-w-0'>
+                            <label className="block text-sm font-semibold text-slate-700 mb-3">Color Presets</label>
+                            <div className="flex gap-2 overflow-x-auto pb-2 max-w-full" style={{ scrollbarWidth: 'thin', scrollbarColor: '#cbd5e1 #f1f5f9' }}>
+                                {[
+                                    { primary: '#2563EB', secondary: '#EFF6FF', name: 'Classic Blue' },
+                                    { primary: '#1F2937', secondary: '#F3F4F6', name: 'Elegant Black' },
+                                    { primary: '#059669', secondary: '#ECFDF5', name: 'Fresh Green' },
+                                    { primary: '#DC2626', secondary: '#FEF2F2', name: 'Bold Red' },
+                                    { primary: '#7C3AED', secondary: '#FAF5FF', name: 'Royal Purple' },
+                                    { primary: '#EA580C', secondary: '#FFF7ED', name: 'Warm Orange' },
+                                    { primary: '#0891B2', secondary: '#F0FDFA', name: 'Ocean Teal' },
+                                    { primary: '#BE123C', secondary: '#FFF1F2', name: 'Wine Red' },
+                                    { primary: '#EC4899', secondary: '#FCE7F3', name: 'Hot Pink' },
+                                ].map((palette, idx) => (
+                                    <button
+                                        key={idx}
+                                        type="button"
+                                        onClick={() => {
+                                            setValue('styles.primary_color', palette.primary);
+                                            setValue('styles.secondary_color', palette.secondary);
+                                        }}
+                                        className="h-10 w-16 flex-shrink-0 rounded-lg border-2 border-slate-200 hover:border-blue-400 transition-all hover:scale-105 shadow-sm overflow-hidden"
+                                        style={{ background: `linear-gradient(to right, ${palette.primary} 50%, ${palette.secondary} 50%)` }}
+                                        title={palette.name}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Custom Colors */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Primary color</label>
+                                <div className="flex items-center gap-3">
+                                    <input
+                                        type="color"
+                                        value={watch('styles.primary_color') || '#2563EB'}
+                                        onChange={(e) => setValue('styles.primary_color', e.target.value)}
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={watch('styles.primary_color') || '#2563EB'}
+                                        onChange={(e) => setValue('styles.primary_color', e.target.value)}
+                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        placeholder="#2563EB"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
+                                <div className="flex items-center gap-3">
+                                    <input
+                                        type="color"
+                                        value={watch('styles.secondary_color') || '#EFF6FF'}
+                                        onChange={(e) => setValue('styles.secondary_color', e.target.value)}
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={watch('styles.secondary_color') || '#EFF6FF'}
+                                        onChange={(e) => setValue('styles.secondary_color', e.target.value)}
+                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        placeholder="#EFF6FF"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Gradient Controls */}
+                        <div className="space-y-4 pt-4 border-t border-slate-200">
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Background Style</label>
+                                <select
+                                    {...register('styles.gradient_type')}
+                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                >
+                                    <option value="none">Solid Color</option>
+                                    <option value="linear">Linear Gradient</option>
+                                    <option value="radial">Radial Gradient</option>
+                                </select>
+                            </div>
+
+                            {watch('styles.gradient_type') === 'linear' && (
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                        Gradient Angle: {watch('styles.gradient_angle') || 135}°
+                                    </label>
+                                    <input
+                                        {...register('styles.gradient_angle')}
+                                        type="range"
+                                        min="0"
+                                        max="360"
+                                        step="45"
+                                        defaultValue="135"
+                                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                                    />
+                                    <div className="flex justify-between text-xs text-slate-500 mt-1">
+                                        <span>0°</span>
+                                        <span>90°</span>
+                                        <span>180°</span>
+                                        <span>270°</span>
+                                        <span>360°</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </AccordionSection>
+
+                {/* PDF File Upload Section */}
+                <AccordionSection
+                    title="PDF file upload"
+                    subtitle="Upload your PDF document"
+                    icon={FileText}
+                    color="bg-blue-100 text-blue-600"
+                    isOpen={openSections.upload}
+                    onToggle={() => toggleSection('upload')}
+                >
+                    <div className="space-y-4 mt-4">
+                        {/* Upload Area */}
+                        {!watch('pdf_file.file_data') ? (
+                            <div
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                                className={`border-2 border-dashed rounded-xl p-8 text-center transition-all ${isDragging
+                                    ? 'border-blue-500 bg-blue-50'
+                                    : 'border-slate-300 hover:border-blue-400 hover:bg-slate-50'
+                                    }`}
+                            >
+                                <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                                <p className="text-sm font-semibold text-slate-700 mb-1">
+                                    Drag and drop your PDF here
+                                </p>
+                                <p className="text-xs text-slate-500 mb-4">or</p>
+                                <button
+                                    type="button"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                                >
+                                    Browse Files
+                                </button>
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="application/pdf"
+                                    onChange={handleFileInputChange}
+                                    className="hidden"
+                                />
+                                <p className="text-xs text-slate-500 mt-4">Maximum file size: 10MB</p>
+                            </div>
+                        ) : (
+                            <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <FileText className="w-8 h-8 text-red-600" />
+                                        <div>
+                                            <p className="text-sm font-semibold text-slate-900">{watch('pdf_file.file_name')}</p>
+                                            <p className="text-xs text-slate-500">{formatFileSize(watch('pdf_file.file_size'))}</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={handleRemoveFile}
+                                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                    >
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {errors.pdf_file?.file_data && (
+                            <p className="text-xs text-red-500">{errors.pdf_file.file_data.message}</p>
+                        )}
+
+                        {/* Fullscreen Mode Toggle */}
+                        <div className="pt-4 border-t border-slate-200">
+                            <label className="flex items-center gap-3 cursor-pointer">
+                                <input
+                                    {...register('pdf_file.fullscreen_mode')}
+                                    type="checkbox"
+                                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                />
+                                <div>
+                                    <p className="text-sm font-semibold text-slate-700">Open PDF in fullscreen mode</p>
+                                    <p className="text-xs text-slate-500">When enabled, users will see the PDF directly. Otherwise, they'll see a preview page first.</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </AccordionSection>
+
+                {/* Document Information Section */}
+                <AccordionSection
+                    title="Document information"
+                    subtitle="Optional metadata about your PDF"
+                    icon={Info}
+                    color="bg-emerald-100 text-emerald-600"
+                    isOpen={openSections.info}
+                    onToggle={() => toggleSection('info')}
+                >
+                    <div className="space-y-4 mt-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">Title (Optional)</label>
+                            <input
+                                {...register('document_info.title')}
+                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                placeholder="e.g. Product Catalog 2024"
+                            />
+                            <p className="text-xs text-slate-500 mt-1">Display name for your PDF</p>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">Topic/Category (Optional)</label>
+                            <input
+                                {...register('document_info.topic')}
+                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                placeholder="e.g. Marketing, Technical Documentation"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">Description (Optional)</label>
+                            <textarea
+                                {...register('document_info.description')}
+                                rows={3}
+                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                placeholder="Brief description of the document..."
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">Author (Optional)</label>
+                            <input
+                                {...register('document_info.author')}
+                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                placeholder="Document author name"
+                            />
+                        </div>
+                    </div>
+                </AccordionSection>
+            </div>
+        </div>
+    );
+}
