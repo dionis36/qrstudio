@@ -5,7 +5,7 @@ import { authMiddleware } from '../middleware/auth';
 
 // Validation schemas
 const createQrSchema = z.object({
-    type: z.enum(['menu', 'vcard', 'url', 'text', 'wifi', 'pdf']),
+    type: z.enum(['menu', 'vcard', 'url', 'text', 'wifi', 'file']),
     name: z.string().min(1).max(100),
     payload: z.any(),
     design: z.any(),

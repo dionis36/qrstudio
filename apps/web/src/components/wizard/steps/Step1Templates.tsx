@@ -7,7 +7,7 @@ const TEMPLATES = [
     { id: 'vcard', label: 'vCard', desc: 'Digital business card & contacts', icon: Contact, color: 'bg-blue-100 text-blue-600' },
     { id: 'url', label: 'Website', desc: 'Link to any website URL', icon: Link, color: 'bg-emerald-100 text-emerald-600' },
     { id: 'wifi', label: 'Wi-Fi', desc: 'Connect to Wi-Fi network', icon: Wifi, color: 'bg-indigo-100 text-indigo-600' },
-    { id: 'pdf', label: 'File', desc: 'Share any file type easily', icon: File, color: 'bg-red-100 text-red-600' },
+    { id: 'file', label: 'File', desc: 'Share any file type easily', icon: File, color: 'bg-red-100 text-red-600' },
     { id: 'text', label: 'Text', desc: 'Display plain text message', icon: FileText, color: 'bg-slate-100 text-slate-600' },
 ];
 
