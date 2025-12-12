@@ -86,6 +86,13 @@ export default function DesignPage({ params }: { params: { template: string } })
         }
     }, [editId, editMode]);
 
+    // Load QR name from wizard store when in edit mode
+    useEffect(() => {
+        if (editMode && useWizardStore.getState().qrName) {
+            setQrName(useWizardStore.getState().qrName);
+        }
+    }, [editMode]);
+
     async function loadExistingQr() {
         try {
             const { qrApi } = await import('@/lib/api-client');
