@@ -1,4 +1,33 @@
-import { Phone, Mail, Globe, MapPin, Share2, UserPlus, Building2, AlignLeft } from 'lucide-react';
+import { Phone, Mail, Globe, MapPin, Building2, AlignLeft } from 'lucide-react';
+import {
+    FaLinkedin, FaFacebook, FaXTwitter, FaInstagram, FaYoutube, FaTiktok, FaPinterest, FaMastodon,
+    FaGithub, FaBehance, FaDribbble, FaMedium, FaTwitch, FaFlickr,
+    FaGlobe, FaTelegram, FaWhatsapp, FaReddit, FaSpotify, FaSkype
+} from 'react-icons/fa6';
+
+// Social network configuration with brand colors
+const SOCIAL_NETWORK_CONFIG: Record<string, { icon: any; color: string }> = {
+    linkedin: { icon: FaLinkedin, color: '#0A66C2' },
+    facebook: { icon: FaFacebook, color: '#1877F2' },
+    twitter: { icon: FaXTwitter, color: '#000000' },
+    instagram: { icon: FaInstagram, color: '#E4405F' },
+    youtube: { icon: FaYoutube, color: '#FF0000' },
+    tiktok: { icon: FaTiktok, color: '#000000' },
+    pinterest: { icon: FaPinterest, color: '#BD081C' },
+    mastodon: { icon: FaMastodon, color: '#6364FF' },
+    github: { icon: FaGithub, color: '#181717' },
+    behance: { icon: FaBehance, color: '#1769FF' },
+    dribbble: { icon: FaDribbble, color: '#EA4C89' },
+    medium: { icon: FaMedium, color: '#000000' },
+    twitch: { icon: FaTwitch, color: '#9146FF' },
+    flickr: { icon: FaFlickr, color: '#0063DC' },
+    website: { icon: FaGlobe, color: '#2563EB' },
+    telegram: { icon: FaTelegram, color: '#26A5E4' },
+    whatsapp: { icon: FaWhatsapp, color: '#25D366' },
+    reddit: { icon: FaReddit, color: '#FF4500' },
+    spotify: { icon: FaSpotify, color: '#1DB954' },
+    skype: { icon: FaSkype, color: '#00AFF0' },
+};
 
 export function VCardPreview({ data }: { data: any }) {
     // Destructure with defaults to prevent crashes
@@ -14,137 +43,294 @@ export function VCardPreview({ data }: { data: any }) {
     const jobTitle = company.job_title || 'Product Designer';
     const companyName = company.company_name || 'Creative Studio Inc.';
 
-    // Helper to get icon for social network
-    const getSocialIcon = (network: string) => {
-        // You could map specific icons here if you import them
-        return Share2;
+    // Helper to lighten a color
+    const lightenColor = (hex: string, percent: number = 90) => {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = (num >> 16) + Math.round((255 - (num >> 16)) * (percent / 100));
+        const g = ((num >> 8) & 0x00FF) + Math.round((255 - ((num >> 8) & 0x00FF)) * (percent / 100));
+        const b = (num & 0x0000FF) + Math.round((255 - (num & 0x0000FF)) * (percent / 100));
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
     };
 
+    // Helper to darken a color
+    const darkenColor = (hex: string, percent: number = 20) => {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = Math.max(0, (num >> 16) - Math.round((num >> 16) * (percent / 100)));
+        const g = Math.max(0, ((num >> 8) & 0x00FF) - Math.round(((num >> 8) & 0x00FF) * (percent / 100)));
+        const b = Math.max(0, (num & 0x0000FF) - Math.round((num & 0x0000FF) * (percent / 100)));
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+    };
+
+    const lightPrimary = lightenColor(styles.primary_color, 95);
+    const darkPrimary = darkenColor(styles.primary_color, 15);
+
     return (
-        <div className="flex flex-col min-h-full font-sans bg-gray-50 h-full overflow-y-auto custom-scrollbar">
+        <div className="flex flex-col h-full font-sans bg-slate-50 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
 
-            {/* Header Section */}
-            <div className="relative pt-10 px-6 pb-6 bg-white shadow-sm flex flex-col items-center text-center">
-                {/* Dynamic Cover BG (Primary Color) */}
-                <div
-                    className="absolute top-0 left-0 w-full h-24"
-                    style={{ background: `linear-gradient(to right, ${styles.primary_color}, ${styles.primary_color}dd)` }}
-                />
-
+            {/* Header Section - ONLY Avatar, Name, Button */}
+            <div
+                className="px-7 pt-14 pb-10 flex flex-col items-center text-center"
+                style={{
+                    background: `linear-gradient(135deg, ${styles.primary_color} 0%, ${darkPrimary} 100%)`
+                }}
+            >
                 {/* Avatar */}
-                <div className="w-24 h-24 rounded-full border-4 border-white shadow-md bg-gray-200 z-10 overflow-hidden relative">
+                <div
+                    className="rounded-full border-[5px] shadow-2xl overflow-hidden relative mb-5"
+                    style={{
+                        borderColor: lightenColor(styles.primary_color, 80),
+                        width: '7rem',
+                        height: '7rem'
+                    }}
+                >
                     {personal.avatar_image ? (
                         <img src={personal.avatar_image} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
-                        <img src={`https://ui-avatars.com/api/?name=${fullName}&background=random`} alt="Profile" className="w-full h-full object-cover" />
+                        <div
+                            className="w-full h-full flex items-center justify-center font-bold"
+                            style={{
+                                backgroundColor: lightenColor(styles.primary_color, 80),
+                                color: styles.primary_color,
+                                fontSize: '2rem'
+                            }}
+                        >
+                            {fullName.split(' ').map(n => n[0]).join('').toUpperCase()}
+                        </div>
                     )}
                 </div>
 
-                <div className="mt-3">
-                    <h2 className="text-xl font-bold text-gray-900">{fullName}</h2>
-                    <p className="text-sm font-bold" style={{ color: styles.primary_color }}>{jobTitle}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{companyName}</p>
-                </div>
+                {/* Name - Reduced size */}
+                <h2 className="font-bold text-white mb-1.5" style={{ fontSize: '1.375rem', lineHeight: '1.75rem' }}>{fullName}</h2>
+                {/* Job Title - Increased size */}
+                <p className="font-semibold text-white/90" style={{ fontSize: '0.9375rem' }}>{jobTitle}</p>
 
-                {/* Save Contact Button */}
-                <div className="flex gap-3 mt-6 w-full">
-                    <button
-                        className="flex-1 text-white py-2.5 rounded-xl text-xs font-bold shadow-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-                        style={{ backgroundColor: styles.primary_color, boxShadow: `0 4px 10px -2px ${styles.primary_color}40` }}
-                    >
-                        <UserPlus className="w-3.5 h-3.5" /> Save Contact
-                    </button>
-                </div>
+                {/* Save Contact Button - Better balanced */}
+                <button
+                    className="mt-7 w-full py-3.5 rounded-2xl font-bold shadow-xl transition-all hover:scale-105"
+                    style={{
+                        backgroundColor: styles.secondary_color || lightenColor(styles.primary_color, 85),
+                        color: styles.primary_color,
+                        fontSize: '0.9375rem'
+                    }}
+                >
+                    Save Contact
+                </button>
             </div>
 
-            {/* Info Lists */}
-            <div className="p-4 space-y-3 pb-20">
+            {/* Content Section - All Details */}
+            <div className="px-4 py-4 space-y-3.5 pb-20">
 
-                {/* About / Summary Section */}
-                {summary && (
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                            <AlignLeft className="w-3 h-3" /> About
+                {/* Contact Details Card */}
+                {(contact.phone || contact.alternative_phone || contact.email || contact.website) && (
+                    <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
+                        {contact.phone && (
+                            <a
+                                href={`tel:${contact.phone}`}
+                                className="flex items-center gap-3.5 p-4 border-b border-gray-100 hover:bg-slate-50 transition-colors"
+                            >
+                                <div
+                                    className="rounded-xl flex items-center justify-center shrink-0"
+                                    style={{
+                                        backgroundColor: lightPrimary,
+                                        color: styles.primary_color,
+                                        width: '2.75rem',
+                                        height: '2.75rem'
+                                    }}
+                                >
+                                    <Phone style={{ width: '1.125rem', height: '1.125rem' }} />
+                                </div>
+                                <div className="text-left flex-1 min-w-0">
+                                    <p
+                                        className="font-bold uppercase tracking-wide mb-0.5"
+                                        style={{ color: styles.primary_color, fontSize: '0.6875rem', letterSpacing: '0.05em' }}
+                                    >
+                                        MOBILE
+                                    </p>
+                                    <p className="text-gray-900 font-semibold" style={{ fontSize: '0.9375rem', wordBreak: 'break-word' }}>{contact.phone}</p>
+                                </div>
+                            </a>
+                        )}
+
+                        {contact.alternative_phone && (
+                            <a
+                                href={`tel:${contact.alternative_phone}`}
+                                className="flex items-center gap-3.5 p-4 border-b border-gray-100 hover:bg-slate-50 transition-colors"
+                            >
+                                <div
+                                    className="rounded-xl flex items-center justify-center shrink-0"
+                                    style={{
+                                        backgroundColor: lightPrimary,
+                                        color: styles.primary_color,
+                                        width: '2.75rem',
+                                        height: '2.75rem'
+                                    }}
+                                >
+                                    <Phone style={{ width: '1.125rem', height: '1.125rem' }} />
+                                </div>
+                                <div className="text-left flex-1 min-w-0">
+                                    <p
+                                        className="font-bold uppercase tracking-wide mb-0.5"
+                                        style={{ color: styles.primary_color, fontSize: '0.6875rem', letterSpacing: '0.05em' }}
+                                    >
+                                        ALTERNATIVE
+                                    </p>
+                                    <p className="text-gray-900 font-semibold" style={{ fontSize: '0.9375rem', wordBreak: 'break-word' }}>{contact.alternative_phone}</p>
+                                </div>
+                            </a>
+                        )}
+
+                        {contact.email && (
+                            <a
+                                href={`mailto:${contact.email}`}
+                                className="flex items-center gap-3.5 p-4 border-b border-gray-100 last:border-0 hover:bg-slate-50 transition-colors"
+                            >
+                                <div
+                                    className="rounded-xl flex items-center justify-center shrink-0"
+                                    style={{
+                                        backgroundColor: lightPrimary,
+                                        color: styles.primary_color,
+                                        width: '2.75rem',
+                                        height: '2.75rem'
+                                    }}
+                                >
+                                    <Mail style={{ width: '1.125rem', height: '1.125rem' }} />
+                                </div>
+                                <div className="text-left flex-1 min-w-0">
+                                    <p
+                                        className="font-bold uppercase tracking-wide mb-0.5"
+                                        style={{ color: styles.primary_color, fontSize: '0.6875rem', letterSpacing: '0.05em' }}
+                                    >
+                                        EMAIL
+                                    </p>
+                                    <p className="text-gray-900 font-semibold" style={{ fontSize: '0.9375rem', wordBreak: 'break-all' }}>{contact.email}</p>
+                                </div>
+                            </a>
+                        )}
+
+                        {contact.website && (
+                            <a
+                                href={contact.website.startsWith('http') ? contact.website : `https://${contact.website}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-3.5 p-4 hover:bg-slate-50 transition-colors"
+                            >
+                                <div
+                                    className="rounded-xl flex items-center justify-center shrink-0"
+                                    style={{
+                                        backgroundColor: lightPrimary,
+                                        color: styles.primary_color,
+                                        width: '2.75rem',
+                                        height: '2.75rem'
+                                    }}
+                                >
+                                    <Globe style={{ width: '1.125rem', height: '1.125rem' }} />
+                                </div>
+                                <div className="text-left flex-1 min-w-0">
+                                    <p
+                                        className="font-bold uppercase tracking-wide mb-0.5"
+                                        style={{ color: styles.primary_color, fontSize: '0.6875rem', letterSpacing: '0.05em' }}
+                                    >
+                                        WEBSITE
+                                    </p>
+                                    <p className="text-gray-900 font-semibold" style={{ fontSize: '0.9375rem', wordBreak: 'break-all' }}>{contact.website}</p>
+                                </div>
+                            </a>
+                        )}
+                    </div>
+                )}
+
+                {/* Company Information Card */}
+                {(company.company_name || company.job_title) && (
+                    <div className="bg-white rounded-2xl p-5 shadow-sm">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <Building2 style={{ width: '1rem', height: '1rem' }} /> COMPANY
                         </h3>
-                        <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
+                        {company.company_name && (
+                            <p className="text-gray-900 font-semibold mb-1.5" style={{ fontSize: '0.9375rem' }}>{company.company_name}</p>
+                        )}
+                        {company.job_title && (
+                            <p className="text-gray-600 font-medium" style={{ fontSize: '0.875rem' }}>{company.job_title}</p>
+                        )}
+                    </div>
+                )}
+
+                {/* Summary Card */}
+                {summary && (
+                    <div className="bg-white rounded-2xl p-5 shadow-sm">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <AlignLeft style={{ width: '1rem', height: '1rem' }} /> ABOUT
+                        </h3>
+                        <p className="text-gray-700 leading-relaxed" style={{ fontSize: '0.875rem', lineHeight: '1.5' }}>
                             {summary}
                         </p>
                     </div>
                 )}
 
-                {/* Contact Details List */}
-                <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-100">
-                    {[
-                        { icon: Phone, label: 'Mobile', value: contact.phone, action: 'tel:' },
-                        { icon: Phone, label: 'Alternative', value: contact.alternative_phone, action: 'tel:' },
-                        { icon: Mail, label: 'Email', value: contact.email, action: 'mailto:' },
-                        { icon: Globe, label: 'Website', value: contact.website, action: 'https://' },
-                        {
-                            icon: MapPin,
-                            label: 'Address',
-                            value: [address.street, address.city, address.state, address.country].filter(Boolean).join(', '),
-                            action: 'http://maps.google.com/?q='
-                        },
-                    ].filter(item => item.value).map((item, i) => (
+                {/* Address Card */}
+                {(address.street || address.city || address.state || address.country) && (
+                    <div className="bg-white rounded-2xl p-5 shadow-sm">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <MapPin style={{ width: '1rem', height: '1rem' }} /> ADDRESS
+                        </h3>
                         <a
-                            key={i}
-                            href={`${item.action}${item.value}`}
+                            href={`http://maps.google.com/?q=${[address.street, address.city, address.state, address.country].filter(Boolean).join(', ')}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-4 p-3.5 border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors cursor-pointer group"
+                            className="text-gray-900 hover:text-blue-600 transition-colors font-medium"
+                            style={{ fontSize: '0.875rem', lineHeight: '1.5' }}
                         >
-                            <div
-                                className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors"
-                                style={{ backgroundColor: styles.secondary_color, color: styles.primary_color }}
-                            >
-                                <item.icon className="w-4 h-4" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                                <p className="text-[10px] text-gray-400 font-semibold uppercase">{item.label}</p>
-                                <p className="text-sm text-gray-900 font-medium truncate group-hover:text-blue-600 transition-colors">{item.value}</p>
-                            </div>
+                            {[address.street, address.city, address.state, address.country].filter(Boolean).join(', ')}
                         </a>
-                    ))}
-                </div>
+                    </div>
+                )}
 
-                {/* Social Networks Grid */}
+                {/* Social Networks Card */}
                 {socialNetworks.length > 0 && (
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                            <Share2 className="w-3 h-3" /> Social Media
+                    <div className="bg-white rounded-2xl p-5 shadow-sm">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-4 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            SOCIAL MEDIA
                         </h3>
                         <div className="grid grid-cols-4 gap-3">
-                            {socialNetworks.map((net: any, idx: number) => (
-                                <a
-                                    key={idx}
-                                    href={net.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="aspect-square bg-gray-50 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:text-white hover:shadow-md transition-all group"
-                                    style={{}}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.backgroundColor = styles.primary_color;
-                                        e.currentTarget.style.color = 'white';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.backgroundColor = '#f9fafb';
-                                        e.currentTarget.style.color = '#9ca3af';
-                                    }}
-                                >
-                                    <Share2 className="w-5 h-5 mb-1" />
-                                    <span className="text-[9px] font-bold capitalize">{net.network}</span>
-                                </a>
-                            ))}
+                            {socialNetworks.map((net: any, idx: number) => {
+                                const config = SOCIAL_NETWORK_CONFIG[net.network] || { icon: FaGlobe, color: '#64748b' };
+                                const Icon = config.icon;
+
+                                return (
+                                    <a
+                                        key={idx}
+                                        href={net.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="aspect-square rounded-xl flex items-center justify-center text-white hover:opacity-90 transition-all shadow-sm"
+                                        style={{ backgroundColor: config.color }}
+                                    >
+                                        <Icon style={{ width: '1.375rem', height: '1.375rem' }} />
+                                    </a>
+                                );
+                            })}
                         </div>
                     </div>
                 )}
             </div>
 
-            <div className="mt-auto mb-6 text-center">
-                <span className="text-[10px] text-gray-400 font-medium bg-gray-100 px-3 py-1 rounded-full">
-                    Generated via QR Studio
-                </span>
-            </div>
+            {/* Hide scrollbar */}
+            <style jsx>{`
+                div::-webkit-scrollbar {
+                    display: none;
+                }
+            `}</style>
         </div>
     );
 }

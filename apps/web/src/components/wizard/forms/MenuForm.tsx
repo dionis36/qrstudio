@@ -1,6 +1,6 @@
 import { useForm, useFieldArray, Control, useWatch } from 'react-hook-form';
 import { useWizardStore } from '../store';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Plus, Trash2, GripVertical, ChevronDown, Palette, Info, UtensilsCrossed, Image, CheckCircle2, XCircle } from 'lucide-react';
 import { ImageUpload } from '@/components/common/ImageUpload';
 
@@ -94,7 +94,7 @@ function AccordionSection({
 }
 
 export function MenuForm() {
-    const { payload, updatePayload } = useWizardStore();
+    const { payload, updatePayload, editMode } = useWizardStore();
     const [openSections, setOpenSections] = useState({
         design: true,  // First section auto-opened
         restaurant: false,
@@ -102,7 +102,10 @@ export function MenuForm() {
         welcome: false
     });
 
-    const { register, control, watch, setValue } = useForm<FormValues>({
+    // Track if we've already loaded edit data
+    const hasLoadedEditData = useRef(false);
+
+    const { register, control, watch, setValue, reset } = useForm<FormValues>({
         defaultValues: {
             restaurant_info: payload.restaurant_info || { name: '', description: '', website: '', phone: '', logo: '', cover_image: '' },
             content: payload.content || { categories: [{ id: 'c1', name: 'Popular', items: [{ id: 'i1', name: 'Signature Burger', description: 'Wagyu beef', price: 18, currency: 'USD', available: true }] }] },
@@ -114,6 +117,27 @@ export function MenuForm() {
         },
         mode: 'onChange'
     });
+
+    // Reset form ONCE when entering edit mode with loaded data
+    useEffect(() => {
+        if (editMode && !hasLoadedEditData.current && payload.restaurant_info?.name) {
+            // Only reset if we have actual data (not just defaults)
+            hasLoadedEditData.current = true;
+            reset({
+                restaurant_info: payload.restaurant_info || { name: '', description: '', website: '', phone: '', logo: '', cover_image: '' },
+                content: payload.content || { categories: [{ id: 'c1', name: 'Popular', items: [{ id: 'i1', name: 'Signature Burger', description: 'Wagyu beef', price: 18, currency: 'USD', available: true }] }] },
+                styles: {
+                    primary_color: payload.styles?.primary_color || '#f97316',
+                    secondary_color: payload.styles?.secondary_color || '#fff7ed'
+                },
+                welcome_screen: payload.welcome_screen || { logo: '', animation: 'spinner', background_color: '#ffffff' }
+            });
+        }
+        // Reset the flag when leaving edit mode
+        if (!editMode) {
+            hasLoadedEditData.current = false;
+        }
+    }, [editMode, payload, reset]);
 
     // Watch for changes and update global store
     useEffect(() => {

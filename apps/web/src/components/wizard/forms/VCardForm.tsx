@@ -1,6 +1,6 @@
 import { useForm, useFieldArray, Control, useWatch } from 'react-hook-form';
 import { useWizardStore } from '../store';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ChevronDown, Palette, Info, Image, Plus, Trash2, User, Share2, Phone, Mail, Globe, Briefcase, MapPin, AlignLeft, ChevronRight } from 'lucide-react';
 import { ImageUpload } from '@/components/common/ImageUpload';
 
@@ -149,11 +149,13 @@ function AccordionSection({
 // Sub Accordion Component for nested sections
 function SubAccordion({
     title,
+    icon: Icon,
     isOpen,
     onToggle,
     children
 }: {
     title: string;
+    icon?: any;
     isOpen: boolean;
     onToggle: () => void;
     children: React.ReactNode;
@@ -165,7 +167,10 @@ function SubAccordion({
                 onClick={onToggle}
                 className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-100 transition-colors bg-white"
             >
-                <span className="text-sm font-bold text-slate-700">{title}</span>
+                <span className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                    {Icon && <Icon className="w-4 h-4 text-slate-500" />}
+                    {title}
+                </span>
                 <ChevronRight
                     className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
                 />
@@ -183,7 +188,7 @@ function SubAccordion({
 }
 
 export function VCardForm() {
-    const { payload, updatePayload } = useWizardStore();
+    const { payload, updatePayload, editMode } = useWizardStore();
 
     // Main Sections State
     const [openSections, setOpenSections] = useState({
@@ -202,7 +207,10 @@ export function VCardForm() {
         address: false
     });
 
-    const { register, control, watch, setValue, formState: { errors } } = useForm<FormValues>({
+    // Track if we've already loaded edit data
+    const hasLoadedEditData = useRef(false);
+
+    const { register, control, watch, setValue, formState: { errors }, reset } = useForm<FormValues>({
         defaultValues: {
             styles: {
                 primary_color: payload.styles?.primary_color || '#2563EB',
@@ -223,6 +231,31 @@ export function VCardForm() {
         control,
         name: "social_networks"
     });
+
+    // Reset form ONCE when entering edit mode with loaded data
+    useEffect(() => {
+        if (editMode && !hasLoadedEditData.current && payload.contact_details?.phone) {
+            // Only reset if we have actual data (not just defaults)
+            hasLoadedEditData.current = true;
+            reset({
+                styles: {
+                    primary_color: payload.styles?.primary_color || '#2563EB',
+                    secondary_color: payload.styles?.secondary_color || '#EFF6FF'
+                },
+                personal_info: payload.personal_info || { first_name: '', last_name: '', avatar_image: '' },
+                contact_details: payload.contact_details || { phone: '', alternative_phone: '', email: '', website: '' },
+                company_details: payload.company_details || { company_name: '', job_title: '' },
+                summary: payload.summary || '',
+                address: payload.address || { street: '', city: '', postal_code: '', country: '', state: '' },
+                social_networks: payload.social_networks || [],
+                welcome_screen: payload.welcome_screen || { logo: '', animation: 'spinner', background_color: '#ffffff' }
+            });
+        }
+        // Reset the flag when leaving edit mode
+        if (!editMode) {
+            hasLoadedEditData.current = false;
+        }
+    }, [editMode, payload, reset]);
 
     // Watch for changes and update global store
     useEffect(() => {
@@ -335,6 +368,7 @@ export function VCardForm() {
                         {/* 2.1 Personal Info */}
                         <SubAccordion
                             title="Personal Information"
+                            icon={User}
                             isOpen={openSubSections.personal}
                             onToggle={() => toggleSubSection('personal')}
                         >
@@ -371,6 +405,7 @@ export function VCardForm() {
                         {/* 2.2 Contact Details */}
                         <SubAccordion
                             title="Contact Details"
+                            icon={Phone}
                             isOpen={openSubSections.contact}
                             onToggle={() => toggleSubSection('contact')}
                         >
@@ -415,6 +450,7 @@ export function VCardForm() {
                         {/* 2.3 Company Details */}
                         <SubAccordion
                             title="Company Information"
+                            icon={Briefcase}
                             isOpen={openSubSections.company}
                             onToggle={() => toggleSubSection('company')}
                         >
@@ -441,6 +477,7 @@ export function VCardForm() {
                         {/* 2.4 Summary */}
                         <SubAccordion
                             title="Summary"
+                            icon={AlignLeft}
                             isOpen={openSubSections.summary}
                             onToggle={() => toggleSubSection('summary')}
                         >
@@ -458,6 +495,7 @@ export function VCardForm() {
                         {/* 2.5 Address */}
                         <SubAccordion
                             title="Address"
+                            icon={MapPin}
                             isOpen={openSubSections.address}
                             onToggle={() => toggleSubSection('address')}
                         >

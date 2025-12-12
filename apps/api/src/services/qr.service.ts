@@ -152,21 +152,33 @@ export class QrService {
         // Verify ownership
         const existing = await this.getQrCodeById(id, userId);
 
+        console.log('=== BACKEND UPDATE DEBUG ===');
+        console.log('QR ID:', id);
+        console.log('User ID:', userId);
+        console.log('Update data received:', JSON.stringify(data, null, 2));
+        console.log('Existing QR code:', JSON.stringify(existing, null, 2));
+
+        const updateData = {
+            ...(data.name && { name: data.name }),
+            ...(data.payload && { payload: data.payload }),
+            ...(data.design && { design: data.design }),
+            ...(data.isActive !== undefined && { isActive: data.isActive }),
+            updatedAt: new Date(),
+        };
+
+        console.log('Prisma update data:', JSON.stringify(updateData, null, 2));
+
         const qrCode = await prisma.qrCode.update({
             where: { id },
-            data: {
-                ...(data.name && { name: data.name }),
-                ...(data.payload && { payload: data.payload }),
-                ...(data.design && { design: data.design }),
-                ...(data.isActive !== undefined && { isActive: data.isActive }),
-                updatedAt: new Date(),
-            },
+            data: updateData,
             include: {
                 _count: {
                     select: { scans: true },
                 },
             },
         });
+
+        console.log('Updated QR code:', JSON.stringify(qrCode, null, 2));
 
         return qrCode;
     }

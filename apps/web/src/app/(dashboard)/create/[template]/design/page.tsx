@@ -78,12 +78,13 @@ export default function DesignPage({ params }: { params: { template: string } })
         logo: false
     });
 
-    // Load existing QR data if in edit mode
+    // Load existing QR data if in edit mode (but only if not already loaded)
     useEffect(() => {
-        if (editId) {
+        if (editId && !editMode) {
+            // Only load if we're not already in edit mode (coming from external link)
             loadExistingQr();
         }
-    }, [editId]);
+    }, [editId, editMode]);
 
     async function loadExistingQr() {
         try {
@@ -118,22 +119,43 @@ export default function DesignPage({ params }: { params: { template: string } })
             // Import API client
             const { qrApi } = await import('@/lib/api-client');
 
+
+            console.log('=== QR CODE UPDATE DEBUG ===');
+            console.log('editMode:', editMode);
+            console.log('editId:', editId);
+            console.log('qrName:', qrName);
+            console.log('payload:', payload);
+            console.log('design:', design);
+
             if (editMode && editId) {
                 // Update existing QR code
+                console.log('Calling qrApi.update with:', {
+                    id: editId,
+                    name: qrName,
+                    payload,
+                    design
+                });
+
                 const response = await qrApi.update(editId, {
                     name: qrName,
                     payload: payload,
                     design: design,
                 });
 
+                console.log('Update response:', response);
+
                 if (response.success && response.data) {
                     // Show success message
                     setSuccess(true);
                     setError(null);
 
-                    // Wait a moment to show success, then redirect to QR codes page
+                    console.log('Update successful! Redirecting...');
+
+                    // Wait a moment to show success, then redirect with cache refresh
                     setTimeout(() => {
-                        router.push('/qrcodes');
+                        // Force router to refresh and clear cache
+                        router.refresh();
+                        router.push(`/qrcodes?updated=${Date.now()}`);
                     }, 1000);
                 } else {
                     throw new Error(response.error || 'Failed to update QR code');
