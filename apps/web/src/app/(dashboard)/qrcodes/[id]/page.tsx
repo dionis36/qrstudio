@@ -16,6 +16,7 @@ interface QrCodeDetail {
     design: any;
     isActive: boolean;
     createdAt: string;
+    updatedAt: string;
     _count: {
         scans: number;
     };
@@ -265,6 +266,14 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
                                         {new Date(qrCode.createdAt).toLocaleDateString()}
                                     </p>
                                 </div>
+                                {qrCode.updatedAt && qrCode.updatedAt !== qrCode.createdAt && (
+                                    <div className="p-4 bg-emerald-50 rounded-lg col-span-2">
+                                        <p className="text-sm text-emerald-600 font-medium">Last updated on</p>
+                                        <p className="text-lg font-bold text-emerald-900 mt-1">
+                                            {new Date(qrCode.updatedAt).toLocaleDateString()} at {new Date(qrCode.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                             <Link
                                 href={`/qrcodes/${qrCode.id}/analytics`}

@@ -10,6 +10,8 @@ type FormValues = {
     styles: {
         primary_color: string;
         secondary_color?: string;
+        gradient_type?: 'none' | 'linear' | 'radial';
+        gradient_angle?: number;
     };
 
     // About You - Personal Info
@@ -291,29 +293,35 @@ export function VCardForm() {
                     isOpen={openSections.design}
                     onToggle={() => toggleSection('design')}
                 >
-                    <div className="space-y-6 mt-4">
+                    <div className="space-y-6 mt-4 min-w-0">
                         {/* Color Palette Presets */}
-                        <div className="flex gap-2 overflow-x-auto pb-2">
-                            {[
-                                { primary: '#2563EB', secondary: '#EFF6FF', name: 'Classic Blue' },
-                                { primary: '#1F2937', secondary: '#F3F4F6', name: 'Elegant Black' },
-                                { primary: '#059669', secondary: '#ECFDF5', name: 'Fresh Green' },
-                                { primary: '#DC2626', secondary: '#FEF2F2', name: 'Bold Red' },
-                                { primary: '#7C3AED', secondary: '#FAF5FF', name: 'Royal Purple' },
-                                { primary: '#EA580C', secondary: '#FFF7ED', name: 'Warm Orange' },
-                            ].map((palette, idx) => (
-                                <button
-                                    key={idx}
-                                    type="button"
-                                    onClick={() => {
-                                        setValue('styles.primary_color', palette.primary);
-                                        setValue('styles.secondary_color', palette.secondary);
-                                    }}
-                                    className="h-10 w-16 flex-shrink-0 rounded-lg border-2 border-slate-200 hover:border-blue-400 transition-all hover:scale-105 shadow-sm overflow-hidden"
-                                    style={{ background: `linear-gradient(to right, ${palette.primary} 50%, ${palette.secondary} 50%)` }}
-                                    title={palette.name}
-                                />
-                            ))}
+                        <div className='w-full max-w-full overflow-hidden min-w-0'>
+                            <label className="block text-sm font-semibold text-slate-700 mb-3">Color Presets</label>
+                            <div className="flex gap-2 overflow-x-auto pb-2 max-w-full" style={{ scrollbarWidth: 'thin', scrollbarColor: '#cbd5e1 #f1f5f9' }}>
+                                {[
+                                    { primary: '#2563EB', secondary: '#EFF6FF', name: 'Classic Blue' },
+                                    { primary: '#1F2937', secondary: '#F3F4F6', name: 'Elegant Black' },
+                                    { primary: '#059669', secondary: '#ECFDF5', name: 'Fresh Green' },
+                                    { primary: '#DC2626', secondary: '#FEF2F2', name: 'Bold Red' },
+                                    { primary: '#7C3AED', secondary: '#FAF5FF', name: 'Royal Purple' },
+                                    { primary: '#EA580C', secondary: '#FFF7ED', name: 'Warm Orange' },
+                                    { primary: '#0891B2', secondary: '#F0FDFA', name: 'Ocean Teal' },
+                                    { primary: '#BE123C', secondary: '#FFF1F2', name: 'Wine Red' },
+                                    { primary: '#EC4899', secondary: '#FCE7F3', name: 'Hot Pink' },
+                                ].map((palette, idx) => (
+                                    <button
+                                        key={idx}
+                                        type="button"
+                                        onClick={() => {
+                                            setValue('styles.primary_color', palette.primary);
+                                            setValue('styles.secondary_color', palette.secondary);
+                                        }}
+                                        className="h-10 w-16 flex-shrink-0 rounded-lg border-2 border-slate-200 hover:border-blue-400 transition-all hover:scale-105 shadow-sm overflow-hidden"
+                                        style={{ background: `linear-gradient(to right, ${palette.primary} 50%, ${palette.secondary} 50%)` }}
+                                        title={palette.name}
+                                    />
+                                ))}
+                            </div>
                         </div>
 
                         {/* Custom Colors */}
@@ -329,7 +337,7 @@ export function VCardForm() {
                                     <input
                                         {...register('styles.primary_color')}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
                                         placeholder="#2563EB"
                                     />
                                 </div>
@@ -345,11 +353,50 @@ export function VCardForm() {
                                     <input
                                         {...register('styles.secondary_color')}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
                                         placeholder="#EFF6FF"
                                     />
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Gradient Controls */}
+                        <div className="space-y-4 pt-4 border-t border-slate-200">
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Background Style</label>
+                                <select
+                                    {...register('styles.gradient_type')}
+                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                >
+                                    <option value="none">Solid Color</option>
+                                    <option value="linear">Linear Gradient</option>
+                                    <option value="radial">Radial Gradient</option>
+                                </select>
+                            </div>
+
+                            {watch('styles.gradient_type') === 'linear' && (
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                        Gradient Angle: {watch('styles.gradient_angle') || 135}°
+                                    </label>
+                                    <input
+                                        {...register('styles.gradient_angle')}
+                                        type="range"
+                                        min="0"
+                                        max="360"
+                                        step="45"
+                                        defaultValue="135"
+                                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                                    />
+                                    <div className="flex justify-between text-xs text-slate-500 mt-1">
+                                        <span>0°</span>
+                                        <span>90°</span>
+                                        <span>180°</span>
+                                        <span>270°</span>
+                                        <span>360°</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </AccordionSection>
