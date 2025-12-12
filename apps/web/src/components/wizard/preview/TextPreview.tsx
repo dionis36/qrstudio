@@ -36,9 +36,27 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
     };
 
     return (
-        <div className="absolute inset-0 w-full h-full flex flex-col font-sans" style={getBackgroundStyle()}>
-            <div className="flex-1 flex items-center justify-center p-6">
-                <div className="w-full max-w-[320px] bg-white rounded-2xl shadow-xl p-6">
+        <div
+            className="absolute inset-0 w-full h-full overflow-y-auto font-sans"
+            style={{
+                ...getBackgroundStyle(),
+                scrollbarWidth: 'none', // Firefox
+                msOverflowStyle: 'none', // IE/Edge
+            }}
+        >
+            {/* Hide scrollbar for Chrome/Safari */}
+            <style jsx>{`
+                div::-webkit-scrollbar {
+                    display: none;
+                }
+            `}</style>
+
+            <div className="min-h-full p-6 flex flex-col">
+                {/* Top spacing */}
+                <div className="flex-shrink-0 h-8"></div>
+
+                {/* Text card - expands with content */}
+                <div className="w-full bg-white rounded-2xl shadow-xl p-6">
                     {textContent.message ? (
                         <p className="text-sm text-slate-800 leading-relaxed whitespace-pre-wrap break-words">
                             {textContent.message}
@@ -49,6 +67,9 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
                         </p>
                     )}
                 </div>
+
+                {/* Bottom spacing for scroll allowance */}
+                <div className="flex-shrink-0 h-8"></div>
             </div>
         </div>
     );

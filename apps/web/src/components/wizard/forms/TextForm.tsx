@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useWizardStore } from '../store';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ChevronDown, Palette, FileText } from 'lucide-react';
 
 // Form Value Types
@@ -67,7 +67,6 @@ function AccordionSection({
     );
 }
 
-
 export function TextForm() {
     const { payload, updatePayload, editMode } = useWizardStore();
     const { register, watch, setValue, reset } = useForm<FormValues>({
@@ -90,22 +89,36 @@ export function TextForm() {
         content: false,
     });
 
+    const hasLoadedEditData = useRef(false);
+
     const toggleSection = (section: keyof typeof openSections) => {
         setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
     };
 
-    // Sync form with wizard store
+    // Sync form with wizard store (but not during initial load in edit mode)
     useEffect(() => {
         const subscription = watch((value) => {
-            updatePayload(value as any);
+            if (!hasLoadedEditData.current || !editMode) {
+                updatePayload(value as any);
+            }
         });
         return () => subscription.unsubscribe();
-    }, [watch, updatePayload]);
+    }, [watch, updatePayload, editMode]);
 
-    // Load existing data in edit mode
+    // Load existing data in edit mode ONCE
     useEffect(() => {
-        if (editMode && payload) {
+        if (editMode && payload && !hasLoadedEditData.current) {
+            hasLoadedEditData.current = true;
             reset(payload as any);
+            // After reset, allow updates again
+            setTimeout(() => {
+                hasLoadedEditData.current = false;
+            }, 100);
+        }
+
+        // Reset flag when leaving edit mode
+        if (!editMode) {
+            hasLoadedEditData.current = false;
         }
     }, [editMode, payload, reset]);
 
