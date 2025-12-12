@@ -147,8 +147,8 @@ export function PDFPreview({ data }: PDFPreviewProps) {
         return (
             <div className="absolute inset-0 w-full h-full flex flex-col font-sans" style={getBackgroundStyle()}>
                 <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-4">
-                    <div className="w-16 h-16 rounded-full shadow-lg flex items-center justify-center" style={{ backgroundColor: primaryColor }}>
-                        <ExternalLink className="w-8 h-8 text-white" />
+                    <div className="w-20 h-20 rounded-full shadow-lg flex items-center justify-center" style={{ backgroundColor: secondaryColor }}>
+                        <ExternalLink className="w-10 h-10" style={{ color: primaryColor }} />
                     </div>
 
                     <div className="text-center">
@@ -188,12 +188,17 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                         <img src={thumbnailUrl} alt="PDF Preview" className="w-full h-auto" />
                     </div>
                 ) : isGenerating ? (
-                    <div className="w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                    <div className="w-20 h-20 rounded-full shadow-lg flex items-center justify-center" style={{ backgroundColor: secondaryColor }}>
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2" style={{ borderColor: primaryColor }}></div>
+                    </div>
+                ) : pdfFile.file_data ? (
+                    <div className="w-20 h-20 rounded-full shadow-lg flex items-center justify-center" style={{ backgroundColor: secondaryColor }}>
+                        {getFileIcon(fileExtension, fileCategory, primaryColor)}
                     </div>
                 ) : (
-                    <div className="w-16 h-16 rounded-full shadow-lg flex items-center justify-center" style={{ backgroundColor: primaryColor }}>
-                        {getFileIcon(fileExtension, fileCategory, primaryColor)}
+                    // Placeholder when no file uploaded
+                    <div className="w-20 h-20 rounded-full shadow-lg flex items-center justify-center" style={{ backgroundColor: secondaryColor }}>
+                        <FileText className="w-10 h-10" style={{ color: primaryColor }} />
                     </div>
                 )}
 
@@ -211,45 +216,53 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                 {/* Document Title */}
                 <div className="text-center px-4 max-w-[280px]">
                     <h2 className="text-lg font-bold text-slate-900 mb-0.5 leading-tight line-clamp-2">
-                        {docInfo.title || pdfFile.file_name || 'File'}
+                        {docInfo.title || pdfFile.file_name || 'Your File Title'}
                     </h2>
-                    {docInfo.topic && (
+                    {docInfo.topic ? (
                         <p className="text-xs text-slate-600 mt-1">{docInfo.topic}</p>
+                    ) : !pdfFile.file_data && (
+                        <p className="text-xs text-slate-500 mt-1">Category or topic</p>
                     )}
                 </div>
 
                 {/* Description */}
-                {docInfo.description && (
+                {docInfo.description ? (
                     <p className="text-xs text-slate-600 text-center max-w-[280px] px-4 line-clamp-3 leading-relaxed">
                         {docInfo.description}
+                    </p>
+                ) : !pdfFile.file_data && (
+                    <p className="text-xs text-slate-400 text-center max-w-[280px] px-4 line-clamp-3 leading-relaxed italic">
+                        Add a brief description to help users understand what this file contains
                     </p>
                 )}
 
                 {/* Action Buttons */}
-                {pdfFile.file_data && (
-                    <div className="w-full max-w-[280px] px-4 space-y-2">
-                        <button
-                            className="w-full py-2.5 rounded-xl text-white font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
-                            style={{ backgroundColor: primaryColor }}
-                        >
-                            <FileText className="w-4 h-4" />
-                            {fileExtension === 'PDF' ? 'Read PDF' : 'View File'}
-                        </button>
-                        <button
-                            className="w-full py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 hover:bg-slate-200"
-                        >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                            Download {fileExtension}
-                        </button>
-                    </div>
-                )}
+                <div className="w-full max-w-[280px] px-4 space-y-2">
+                    <button
+                        className="w-full py-2.5 rounded-xl text-white font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                        style={{ backgroundColor: primaryColor }}
+                    >
+                        <FileText className="w-4 h-4" />
+                        {pdfFile.file_data ? (fileExtension === 'PDF' ? 'Read PDF' : 'View File') : 'View File'}
+                    </button>
+                    <button
+                        className="w-full py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 hover:bg-slate-200"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        {pdfFile.file_data ? `Download ${fileExtension}` : 'Download'}
+                    </button>
+                </div>
 
                 {/* Author */}
-                {docInfo.author && (
+                {docInfo.author ? (
                     <p className="text-[10px] text-slate-500 mt-2">
                         By {docInfo.author}
+                    </p>
+                ) : !pdfFile.file_data && (
+                    <p className="text-[10px] text-slate-400 mt-2 italic">
+                        Optional author name
                     </p>
                 )}
             </div>
