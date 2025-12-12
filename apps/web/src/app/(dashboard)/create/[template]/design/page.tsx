@@ -149,7 +149,7 @@ export default function DesignPage({ params }: { params: { template: string } })
 
                 if (response.success && response.data) {
                     // Redirect to QR detail page
-                    router.push(`/qrcodes/${response.data.id}`);
+                    router.push(`/qrcodes/${response.data.id}?created=true`);
                 } else {
                     throw new Error(response.error || 'Failed to create QR code');
                 }

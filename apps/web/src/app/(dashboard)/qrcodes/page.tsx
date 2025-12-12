@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { qrApi } from '@/lib/api-client';
-import { Search, Filter, QrCode, Eye, Edit, Trash2, Download, MoreVertical } from 'lucide-react';
+import { Search, Filter, QrCode, Eye, Edit, Trash2, Download, MoreVertical, BarChart2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -171,7 +171,7 @@ export default function QrCodesPage() {
                                     {qrCodes.map((qr) => (
                                         <tr
                                             key={qr.id}
-                                            onClick={() => router.push(`/qrcodes/${qr.id}/analytics`)}
+                                            onClick={() => router.push(`/qrcodes/${qr.id}`)}
                                             className="hover:bg-slate-50 transition-colors cursor-pointer"
                                         >
                                             <td className="px-6 py-4">
@@ -205,11 +205,11 @@ export default function QrCodesPage() {
                                             <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
                                                 <div className="flex items-center justify-end gap-2">
                                                     <Link
-                                                        href={`/qrcodes/${qr.id}`}
+                                                        href={`/qrcodes/${qr.id}/analytics`}
                                                         className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                                                        title="View Details"
+                                                        title="Analytics"
                                                     >
-                                                        <Eye className="w-4 h-4" />
+                                                        <BarChart2 className="w-4 h-4" />
                                                     </Link>
                                                     <Link
                                                         href={`/create/${qr.type}?edit=${qr.id}`}

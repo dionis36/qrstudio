@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { qrApi } from '@/lib/api-client';
 import { ArrowLeft, Download, Edit, Trash2, QrCode as QrCodeIcon, BarChart3, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import QRCodeStyling from 'qr-code-styling';
 
 interface QrCodeDetail {
@@ -23,6 +23,9 @@ interface QrCodeDetail {
 
 export default function QrCodeDetailPage({ params }: { params: { id: string } }) {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const isJustCreated = searchParams.get('created') === 'true';
+
     const [qrCode, setQrCode] = useState<QrCodeDetail | null>(null);
     const [loading, setLoading] = useState(true);
     const [qrCodeInstance, setQrCodeInstance] = useState<QRCodeStyling | null>(null);
@@ -152,9 +155,9 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
                 <div className="text-center">
                     <QrCodeIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
                     <h2 className="text-2xl font-bold text-slate-900 mb-2">QR Code Not Found</h2>
-                    <Link href="/qrcodes" className="text-blue-600 hover:underline">
-                        Back to QR Codes
-                    </Link>
+                    <button onClick={() => router.back()} className="text-blue-600 hover:underline">
+                        Back
+                    </button>
                 </div>
             </div>
         );
@@ -165,13 +168,13 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
                 <div className="mb-8">
-                    <Link
-                        href="/qrcodes"
+                    <button
+                        onClick={() => isJustCreated ? router.push('/dashboard') : router.back()}
                         className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4 transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4" />
-                        <span className="text-sm font-medium">Back to QR Codes</span>
-                    </Link>
+                        <span className="text-sm font-medium">{isJustCreated ? 'Dashboard' : 'Back'}</span>
+                    </button>
                     <div className="flex items-start justify-between">
                         <div>
                             <h1 className="text-3xl font-bold text-slate-900">{qrCode.name}</h1>
