@@ -1,17 +1,67 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { EventForm } from '@/components/wizard/forms/EventForm';
-import { EventPreview } from '@/components/wizard/preview/EventPreview';
 import { PhoneMockup } from '@/components/common/PhoneMockup';
+import { EventPreview } from '@/components/wizard/preview/EventPreview';
+import { useWizardStore } from '@/components/wizard/store';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { qrApi } from '@/lib/api-client';
 
 export default function EventPage() {
+    const { payload, setEditMode, loadQrData } = useWizardStore();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const editId = searchParams.get('edit');
+    const [loading, setLoading] = useState(!!editId);
+
+    useEffect(() => {
+        if (editId) {
+            // Load existing QR code data for editing
+            loadExistingQr(editId);
+        } else {
+            // Clear edit mode if no edit parameter
+            setEditMode(null);
+        }
+    }, [editId]);
+
+    async function loadExistingQr(id: string) {
+        try {
+            setLoading(true);
+            const response = await qrApi.getById(id);
+
+            if (response.success && response.data) {
+                // Set edit mode and load data into store
+                setEditMode(id);
+                loadQrData(response.data);
+            } else {
+                alert('Failed to load QR code');
+                router.push('/qrcodes');
+            }
+        } catch (error) {
+            console.error('Failed to load QR code:', error);
+            alert('Failed to load QR code');
+            router.push('/qrcodes');
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const handleNext = () => {
-        router.push('/create/event/design');
+        router.push(`/create/event/design${editId ? `?edit=${editId}` : ''}`);
     };
+
+    if (loading) {
+        return (
+            <div className="w-full px-4 pb-20 flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-slate-600">Loading QR code data...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full px-4 pb-20">
@@ -26,7 +76,7 @@ export default function EventPage() {
                             onClick={handleNext}
                             className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-base shadow-lg hover:bg-blue-700 hover:-translate-y-0.5 transition-all flex items-center gap-2"
                         >
-                            Next: Customize QR Code
+                            {editId ? 'Next: Update Design' : 'Next: Customize QR Design'}
                             <ArrowRight className="w-5 h-5" />
                         </button>
                     </div>
