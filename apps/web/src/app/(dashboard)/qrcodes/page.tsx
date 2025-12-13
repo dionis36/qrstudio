@@ -79,14 +79,15 @@ export default function QrCodesPage() {
 
     function getTypeColor(type: string) {
         const colors: Record<string, string> = {
-            menu: 'bg-orange-100 text-orange-700',
-            vcard: 'bg-blue-100 text-blue-700',
-            url: 'bg-green-100 text-green-700',
-            text: 'bg-purple-100 text-purple-700',
-            wifi: 'bg-cyan-100 text-cyan-700',
-            pdf: 'bg-red-100 text-red-700',
+            menu: 'bg-orange-100 text-orange-700 border border-orange-200',
+            vcard: 'bg-blue-100 text-blue-700 border border-blue-200',
+            url: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+            text: 'bg-purple-100 text-purple-700 border border-purple-200',
+            wifi: 'bg-cyan-100 text-cyan-700 border border-cyan-200',
+            file: 'bg-slate-100 text-slate-700 border border-slate-200',
+            event: 'bg-pink-100 text-pink-700 border border-pink-200',
         };
-        return colors[type] || 'bg-slate-100 text-slate-700';
+        return colors[type.toLowerCase()] || 'bg-slate-100 text-slate-700 border border-slate-200';
     }
 
     return (
@@ -142,7 +143,8 @@ export default function QrCodesPage() {
                                 <option value="url">URL</option>
                                 <option value="text">Text</option>
                                 <option value="wifi">Wi-Fi</option>
-                                <option value="pdf">PDF</option>
+                                <option value="file">File</option>
+                                <option value="event">Event</option>
                             </select>
                         </div>
                     </div>
