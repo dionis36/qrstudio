@@ -79,72 +79,64 @@ export function EmailPreview() {
 
             {/* Content Area */}
             <div className="px-4 pb-6 space-y-3 -mt-4">
-                {/* Recipient Card - Column Layout like Event */}
+                {/* Recipient Card - Event Style */}
                 <div className="bg-white rounded-2xl p-5 shadow-sm">
-                    <div className="flex items-start gap-3 mb-3">
-                        <div className="p-2.5 bg-slate-100 rounded-xl flex-shrink-0">
-                            <User className="w-5 h-5 text-slate-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">To</div>
-                            <p className="text-slate-900 font-medium break-all text-base">
-                                {emailDetails.recipient || 'recipient@example.com'}
-                            </p>
-                        </div>
-                    </div>
+                    <h3
+                        className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                        style={{ color: styles.primary_color || '#F59E0B', fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                    >
+                        <User style={{ width: '1rem', height: '1rem' }} /> TO
+                    </h3>
+                    <p className="text-gray-900 font-semibold" style={{ fontSize: '0.9375rem', wordBreak: 'break-all' }}>
+                        {emailDetails.recipient || 'recipient@example.com'}
+                    </p>
                 </div>
 
                 {/* Subject Card */}
                 {emailDetails.subject && (
                     <div className="bg-white rounded-2xl p-5 shadow-sm">
-                        <div className="flex items-start gap-3 mb-3">
-                            <div className="p-2.5 bg-slate-100 rounded-xl flex-shrink-0">
-                                <FileText className="w-5 h-5 text-slate-600" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Subject</div>
-                                <p className="text-slate-900 font-medium text-base">
-                                    {emailDetails.subject}
-                                </p>
-                            </div>
-                        </div>
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color || '#F59E0B', fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <FileText style={{ width: '1rem', height: '1rem' }} /> SUBJECT
+                        </h3>
+                        <p className="text-gray-900 font-semibold" style={{ fontSize: '0.9375rem' }}>
+                            {emailDetails.subject}
+                        </p>
                     </div>
                 )}
 
                 {/* Message Body Card */}
                 {emailDetails.body && (
                     <div className="bg-white rounded-2xl p-5 shadow-sm">
-                        <div className="flex items-start gap-3 mb-3">
-                            <div className="p-2.5 bg-slate-100 rounded-xl flex-shrink-0">
-                                <Mail className="w-5 h-5 text-slate-600" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Message</div>
-                                <p className="text-slate-700 whitespace-pre-wrap text-sm leading-relaxed">
-                                    {emailDetails.body}
-                                </p>
-                            </div>
-                        </div>
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color || '#F59E0B', fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <Mail style={{ width: '1rem', height: '1rem' }} /> MESSAGE
+                        </h3>
+                        <p className="text-gray-700 leading-relaxed" style={{ fontSize: '0.875rem', lineHeight: '1.5' }}>
+                            {emailDetails.body}
+                        </p>
                     </div>
                 )}
 
                 {/* CC Recipients Card */}
                 {ccEmails.length > 0 && (
                     <div className="bg-white rounded-2xl p-5 shadow-sm">
-                        <div className="flex items-start gap-3 mb-3">
-                            <div className="p-2.5 bg-slate-100 rounded-xl flex-shrink-0">
-                                <Users className="w-5 h-5 text-slate-600" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">CC</div>
-                                <div className="space-y-1">
-                                    {ccEmails.map((email, idx) => (
-                                        <p key={idx} className="text-slate-700 text-sm break-all">
-                                            {email}
-                                        </p>
-                                    ))}
-                                </div>
-                            </div>
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color || '#F59E0B', fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <Users style={{ width: '1rem', height: '1rem' }} /> CC
+                        </h3>
+                        <div className="space-y-1">
+                            {ccEmails.map((email, idx) => (
+                                <p key={idx} className="text-gray-700" style={{ fontSize: '0.875rem', wordBreak: 'break-all' }}>
+                                    {email}
+                                </p>
+                            ))}
                         </div>
                     </div>
                 )}
@@ -152,20 +144,18 @@ export function EmailPreview() {
                 {/* BCC Recipients Card */}
                 {bccEmails.length > 0 && (
                     <div className="bg-white rounded-2xl p-5 shadow-sm">
-                        <div className="flex items-start gap-3 mb-3">
-                            <div className="p-2.5 bg-slate-100 rounded-xl flex-shrink-0">
-                                <Eye className="w-5 h-5 text-slate-600" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">BCC</div>
-                                <div className="space-y-1">
-                                    {bccEmails.map((email, idx) => (
-                                        <p key={idx} className="text-slate-700 text-sm break-all">
-                                            {email}
-                                        </p>
-                                    ))}
-                                </div>
-                            </div>
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color || '#F59E0B', fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <Eye style={{ width: '1rem', height: '1rem' }} /> BCC
+                        </h3>
+                        <div className="space-y-1">
+                            {bccEmails.map((email, idx) => (
+                                <p key={idx} className="text-gray-700" style={{ fontSize: '0.875rem', wordBreak: 'break-all' }}>
+                                    {email}
+                                </p>
+                            ))}
                         </div>
                     </div>
                 )}

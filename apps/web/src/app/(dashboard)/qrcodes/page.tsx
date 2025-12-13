@@ -87,6 +87,7 @@ export default function QrCodesPage() {
             file: 'bg-slate-100 text-slate-700 border border-slate-200',
             event: 'bg-pink-100 text-pink-700 border border-pink-200',
             email: 'bg-amber-100 text-amber-700 border border-amber-200',
+            message: 'bg-green-100 text-green-700 border border-green-200',
         };
         return colors[type.toLowerCase()] || 'bg-slate-100 text-slate-700 border border-slate-200';
     }
@@ -147,6 +148,7 @@ export default function QrCodesPage() {
                                 <option value="file">File</option>
                                 <option value="event">Event</option>
                                 <option value="email">Email</option>
+                                <option value="message">Message</option>
                             </select>
                         </div>
                     </div>
