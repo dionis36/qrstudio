@@ -95,18 +95,19 @@ function AccordionSection({
 }
 
 const TIMEZONES = [
-    { value: 'UTC', label: 'UTC (Coordinated Universal Time)' },
-    { value: 'America/New_York', label: 'Eastern Time (US & Canada)' },
-    { value: 'America/Chicago', label: 'Central Time (US & Canada)' },
-    { value: 'America/Denver', label: 'Mountain Time (US & Canada)' },
-    { value: 'America/Los_Angeles', label: 'Pacific Time (US & Canada)' },
-    { value: 'Europe/London', label: 'London (GMT)' },
-    { value: 'Europe/Paris', label: 'Paris, Berlin, Rome' },
-    { value: 'Asia/Dubai', label: 'Dubai, Abu Dhabi' },
-    { value: 'Asia/Kolkata', label: 'Mumbai, New Delhi' },
-    { value: 'Asia/Singapore', label: 'Singapore, Kuala Lumpur' },
-    { value: 'Asia/Tokyo', label: 'Tokyo, Osaka' },
-    { value: 'Australia/Sydney', label: 'Sydney, Melbourne' },
+    { value: 'UTC', label: 'GMT+0 - UTC (Coordinated Universal Time)' },
+    { value: 'America/New_York', label: 'GMT-5 - Eastern Time (US & Canada)' },
+    { value: 'America/Chicago', label: 'GMT-6 - Central Time (US & Canada)' },
+    { value: 'America/Denver', label: 'GMT-7 - Mountain Time (US & Canada)' },
+    { value: 'America/Los_Angeles', label: 'GMT-8 - Pacific Time (US & Canada)' },
+    { value: 'Europe/London', label: 'GMT+0 - London (GMT)' },
+    { value: 'Europe/Paris', label: 'GMT+1 - Paris, Berlin, Rome' },
+    { value: 'Africa/Nairobi', label: 'GMT+3 - Nairobi, East Africa' },
+    { value: 'Asia/Dubai', label: 'GMT+4 - Dubai, Abu Dhabi' },
+    { value: 'Asia/Kolkata', label: 'GMT+5:30 - Mumbai, New Delhi' },
+    { value: 'Asia/Singapore', label: 'GMT+8 - Singapore, Kuala Lumpur' },
+    { value: 'Asia/Tokyo', label: 'GMT+9 - Tokyo, Osaka' },
+    { value: 'Australia/Sydney', label: 'GMT+11 - Sydney, Melbourne' },
 ];
 
 const REMINDER_OPTIONS = [
@@ -253,7 +254,8 @@ export function EventForm() {
                                         className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
                                     />
                                     <input
-                                        {...register('styles.primary_color')}
+                                        value={watch('styles.primary_color') || '#7C3AED'}
+                                        onChange={(e) => setValue('styles.primary_color', e.target.value)}
                                         type="text"
                                         className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
                                         placeholder="#7C3AED"
@@ -269,7 +271,8 @@ export function EventForm() {
                                         className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
                                     />
                                     <input
-                                        {...register('styles.secondary_color')}
+                                        value={watch('styles.secondary_color') || '#FAF5FF'}
+                                        onChange={(e) => setValue('styles.secondary_color', e.target.value)}
                                         type="text"
                                         className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
                                         placeholder="#FAF5FF"

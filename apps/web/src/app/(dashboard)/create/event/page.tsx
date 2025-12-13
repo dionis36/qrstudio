@@ -24,7 +24,7 @@ export default function EventPage() {
                     <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
                         <button
                             onClick={handleNext}
-                            className="px-10 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-purple-500/20 hover:shadow-purple-500/40 hover:-translate-y-1 transition-all flex items-center gap-2"
+                            className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-base shadow-lg hover:bg-blue-700 hover:-translate-y-0.5 transition-all flex items-center gap-2"
                         >
                             Next: Customize QR Code
                             <ArrowRight className="w-5 h-5" />

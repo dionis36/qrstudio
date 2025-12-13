@@ -64,6 +64,24 @@ export function EventPreview() {
         }
     };
 
+    // Helper to lighten a color
+    const lightenColor = (hex: string, percent: number = 90) => {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = (num >> 16) + Math.round((255 - (num >> 16)) * (percent / 100));
+        const g = ((num >> 8) & 0x00FF) + Math.round((255 - ((num >> 8) & 0x00FF)) * (percent / 100));
+        const b = (num & 0x0000FF) + Math.round((255 - (num & 0x0000FF)) * (percent / 100));
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+    };
+
+    // Helper to darken a color
+    const darkenColor = (hex: string, percent: number = 20) => {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = Math.max(0, (num >> 16) - Math.round((num >> 16) * (percent / 100)));
+        const g = Math.max(0, ((num >> 8) & 0x00FF) - Math.round(((num >> 8) & 0x00FF) * (percent / 100)));
+        const b = Math.max(0, (num & 0x0000FF) - Math.round((num & 0x0000FF) * (percent / 100)));
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+    };
+
     // Generate background style
     const getBackgroundStyle = () => {
         const { primary_color, secondary_color, gradient_type, gradient_angle } = styles;
@@ -78,15 +96,21 @@ export function EventPreview() {
             };
         }
 
-        return { backgroundColor: primary_color };
+        // Default gradient
+        const darkPrimary = darkenColor(primary_color, 15);
+        return {
+            background: `linear-gradient(135deg, ${primary_color} 0%, ${darkPrimary} 100%)`
+        };
     };
+
+    const lightPrimary = lightenColor(styles.primary_color, 95);
 
     return (
         <div className="flex flex-col h-full font-sans bg-slate-50 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
 
-            {/* Header with gradient - part of scroll flow */}
+            {/* Header Section - Calendar Icon, Title, Button */}
             <div
-                className="relative px-7 pt-12 pb-20 text-white"
+                className="px-7 pt-16 pb-10 flex flex-col items-center text-center"
                 style={getBackgroundStyle()}
             >
                 {/* Calendar Icon */}
@@ -100,6 +124,7 @@ export function EventPreview() {
                 <h1 className="text-xl font-bold text-center mb-3 leading-tight px-4">
                     {eventDetails.title || 'Event Title'}
                 </h1>
+
 
                 {/* Date & Time */}
                 <div className="flex flex-col items-center gap-1 mb-2">
@@ -127,100 +152,123 @@ export function EventPreview() {
                     </div>
                 )}
 
-                {/* Decorative wave - part of the flow */}
-                <div className="absolute bottom-0 left-0 right-0 h-12">
-                    <svg
-                        viewBox="0 0 1440 120"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-full h-full"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M0,120 L0,40 Q360,100 720,40 T1440,40 L1440,120 Z"
-                            fill="rgb(248, 250, 252)"
-                        />
-                    </svg>
-                </div>
-            </div>
-
-            {/* Content Area - continuous scroll */}
-            <div className="px-4 -mt-8 pb-20 space-y-3.5">
                 {/* Add to Calendar Button */}
                 <button
-                    className="w-full py-3.5 rounded-xl font-bold text-sm shadow-xl transition-all active:scale-95 hover:shadow-2xl"
+                    className="mt-7 w-full py-3.5 rounded-2xl font-bold shadow-xl transition-all hover:scale-105"
                     style={{
-                        backgroundColor: styles.primary_color,
-                        color: 'white'
+                        backgroundColor: styles.secondary_color || lightenColor(styles.primary_color, 85),
+                        color: styles.primary_color,
+                        fontSize: '0.9375rem'
                     }}
                 >
                     Add to Calendar
                 </button>
+            </div>
 
-                {/* Event Details Cards */}
-                {/* Description */}
-                {description && (
-                    <div className="bg-white rounded-xl p-3.5 shadow-sm">
-                        <h3 className="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
-                            <FileText className="w-3.5 h-3.5" />
-                            About this event
+            {/* Content Section - All Details */}
+            <div className="px-4 py-4 space-y-3.5 pb-20">
+
+                {/* Date & Time Card */}
+                <div className="bg-white rounded-2xl p-5 shadow-sm">
+                    <h3
+                        className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                        style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                    >
+                        <Clock style={{ width: '1rem', height: '1rem' }} /> DATE & TIME
+                    </h3>
+                    <p className="text-gray-900 font-semibold mb-1.5" style={{ fontSize: '0.9375rem' }}>
+                        {formatEventDate()}
+                    </p>
+                    {eventDetails.timezone && !eventDetails.all_day && (
+                        <p className="text-gray-500" style={{ fontSize: '0.875rem' }}>
+                            {getTimezoneDisplay(eventDetails.timezone)}
+                        </p>
+                    )}
+                </div>
+
+                {/* Location Card */}
+                {eventDetails.location && (
+                    <div className="bg-white rounded-2xl p-5 shadow-sm">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <MapPin style={{ width: '1rem', height: '1rem' }} /> LOCATION
                         </h3>
-                        <p className="text-xs text-slate-600 leading-relaxed">
+                        <p className="text-gray-900 font-semibold" style={{ fontSize: '0.9375rem', wordBreak: 'break-word' }}>
+                            {eventDetails.location}
+                        </p>
+                    </div>
+                )}
+
+                {/* Description Card */}
+                {description && (
+                    <div className="bg-white rounded-2xl p-5 shadow-sm">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <FileText style={{ width: '1rem', height: '1rem' }} /> ABOUT THIS EVENT
+                        </h3>
+                        <p className="text-gray-700 leading-relaxed" style={{ fontSize: '0.875rem', lineHeight: '1.5' }}>
                             {description}
                         </p>
                     </div>
                 )}
 
-                {/* Organizer */}
+                {/* Organizer Card */}
                 {(organizer.name || organizer.email) && (
-                    <div className="bg-white rounded-xl p-3.5 shadow-sm">
-                        <h3 className="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
-                            <User className="w-3.5 h-3.5" />
-                            Organizer
+                    <div className="bg-white rounded-2xl p-5 shadow-sm">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <User style={{ width: '1rem', height: '1rem' }} /> ORGANIZER
                         </h3>
-                        <div className="space-y-1.5">
-                            {organizer.name && (
-                                <p className="text-xs text-slate-600 font-medium">
-                                    {organizer.name}
+                        {organizer.name && (
+                            <p className="text-gray-900 font-semibold mb-1.5" style={{ fontSize: '0.9375rem' }}>
+                                {organizer.name}
+                            </p>
+                        )}
+                        {organizer.email && (
+                            <div className="flex items-center gap-2 text-gray-600">
+                                <Mail style={{ width: '0.875rem', height: '0.875rem' }} />
+                                <p className="font-medium" style={{ fontSize: '0.875rem', wordBreak: 'break-all' }}>
+                                    {organizer.email}
                                 </p>
-                            )}
-                            {organizer.email && (
-                                <div className="flex items-center gap-1.5 text-slate-500">
-                                    <Mail className="w-3 h-3 flex-shrink-0" />
-                                    <p className="text-xs truncate">
-                                        {organizer.email}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 )}
 
-                {/* Event URL */}
+                {/* Event URL Card */}
                 {eventUrl && (
-                    <div className="bg-white rounded-xl p-3.5 shadow-sm">
-                        <div className="flex items-center gap-2">
-                            <Globe className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
-                            <a
-                                href={eventUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs font-medium truncate hover:underline"
-                                style={{ color: styles.primary_color }}
-                            >
-                                Event Website
-                            </a>
-                        </div>
+                    <div className="bg-white rounded-2xl p-5 shadow-sm">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <Globe style={{ width: '1rem', height: '1rem' }} /> EVENT WEBSITE
+                        </h3>
+                        <a
+                            href={eventUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-900 font-semibold hover:underline"
+                            style={{ fontSize: '0.9375rem', wordBreak: 'break-all' }}
+                        >
+                            {eventUrl}
+                        </a>
                     </div>
                 )}
 
-                {/* Reminder */}
+                {/* Reminder Card */}
                 {reminders.enabled && (
-                    <div className="bg-amber-50 rounded-xl p-3 border border-amber-100">
-                        <div className="flex items-center gap-1.5 text-amber-700">
-                            <Bell className="w-3.5 h-3.5 flex-shrink-0" />
-                            <p className="text-xs font-medium">
-                                Reminder set
+                    <div className="bg-amber-50 rounded-2xl p-4 shadow-sm border border-amber-100">
+                        <div className="flex items-center gap-2">
+                            <Bell style={{ width: '1rem', height: '1rem' }} className="text-amber-600" />
+                            <p className="text-amber-900 font-semibold" style={{ fontSize: '0.875rem' }}>
+                                Reminder set for this event
                             </p>
                         </div>
                     </div>
@@ -228,9 +276,9 @@ export function EventPreview() {
 
                 {/* Empty State */}
                 {!eventDetails.title && !description && (
-                    <div className="text-center py-8">
-                        <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                        <p className="text-xs text-slate-400">
+                    <div className="text-center py-12">
+                        <Calendar className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                        <p className="text-slate-400 font-medium" style={{ fontSize: '0.875rem' }}>
                             Fill in event details to see preview
                         </p>
                     </div>
