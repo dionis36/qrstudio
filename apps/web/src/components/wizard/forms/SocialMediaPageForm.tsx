@@ -316,49 +316,54 @@ export function SocialMediaPageForm() {
                     isOpen={openSections.profile}
                     onToggle={() => toggleSection('profile')}
                 >
-                    <div className="space-y-6 mt-4">
-                        {/* Profile Photo Upload */}
-                        <ImageUpload
-                            label="Profile Photo"
-                            value={watch('profile_photo')}
-                            onChange={(base64) => setValue('profile_photo', base64 || '')}
-                            maxSizeMB={1}
-                        />
-
-                        {/* Display Name */}
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                        {/* Left: Profile Photo Upload */}
                         <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                Display Name <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                {...register('display_name', {
-                                    required: 'Display name is required',
-                                    minLength: { value: 1, message: 'Display name is required' },
-                                    maxLength: { value: 50, message: 'Display name must be 50 characters or less' }
-                                })}
-                                type="text"
-                                className={`w-full px-4 py-2.5 rounded-lg border ${errors.display_name ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-purple-500 outline-none`}
-                                placeholder="John Doe"
+                            <ImageUpload
+                                label="Profile Photo"
+                                value={watch('profile_photo')}
+                                onChange={(base64) => setValue('profile_photo', base64 || '')}
+                                maxSizeMB={1}
                             />
-                            {errors.display_name && <span className="text-xs text-red-500 mt-1">{errors.display_name.message}</span>}
                         </div>
 
-                        {/* Bio */}
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                Bio
-                            </label>
-                            <textarea
-                                {...register('bio', {
-                                    maxLength: { value: 150, message: 'Bio must be 150 characters or less' }
-                                })}
-                                rows={3}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-500 outline-none resize-none"
-                                placeholder="Content Creator | Tech Enthusiast"
-                            />
-                            <div className="flex justify-between items-center mt-1">
-                                {errors.bio && <span className="text-xs text-red-500">{errors.bio.message}</span>}
-                                <span className="text-xs text-slate-400 ml-auto">{watch('bio')?.length || 0}/150</span>
+                        {/* Right: Name & Bio */}
+                        <div className="space-y-4">
+                            {/* Display Name */}
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                    Display Name <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    {...register('display_name', {
+                                        required: 'Display name is required',
+                                        minLength: { value: 1, message: 'Display name is required' },
+                                        maxLength: { value: 50, message: 'Display name must be 50 characters or less' }
+                                    })}
+                                    type="text"
+                                    className={`w-full px-4 py-2.5 rounded-lg border ${errors.display_name ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-purple-500 outline-none`}
+                                    placeholder="John Doe"
+                                />
+                                {errors.display_name && <span className="text-xs text-red-500 mt-1">{errors.display_name.message}</span>}
+                            </div>
+
+                            {/* Bio */}
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                    Bio
+                                </label>
+                                <textarea
+                                    {...register('bio', {
+                                        maxLength: { value: 150, message: 'Bio must be 150 characters or less' }
+                                    })}
+                                    rows={3}
+                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-500 outline-none resize-none"
+                                    placeholder="Content Creator | Tech Enthusiast"
+                                />
+                                <div className="flex justify-between items-center mt-1">
+                                    {errors.bio && <span className="text-xs text-red-500">{errors.bio.message}</span>}
+                                    <span className="text-xs text-slate-400 ml-auto">{watch('bio')?.length || 0}/150</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -377,13 +382,13 @@ export function SocialMediaPageForm() {
                         {/* Platform Icon Selector */}
                         <div>
                             <p className="text-sm font-semibold text-slate-700 mb-3">Click to add platform:</p>
-                            <div className="grid grid-cols-5 gap-3">
+                            <div className="flex flex-wrap gap-3">
                                 {SOCIAL_PLATFORMS.map(platform => (
                                     <button
                                         key={platform.id}
                                         type="button"
                                         onClick={() => addLink({ platform: platform.id, url: '', custom_label: '' })}
-                                        className="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white hover:border-purple-400 hover:bg-slate-50 transition-all shadow-sm group"
+                                        className="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white hover:border-purple-400 hover:bg-slate-50 transition-all w-20 h-20 shadow-sm group"
                                     >
                                         <platform.icon className="w-6 h-6 transition-transform group-hover:scale-110" style={{ color: platform.color }} />
                                         <span className="capitalize text-[10px] font-medium text-slate-600 mt-2 text-center leading-tight">{platform.name}</span>
