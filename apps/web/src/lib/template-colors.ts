@@ -69,6 +69,13 @@ export const TEMPLATE_COLORS = {
         badge: 'bg-indigo-100 text-indigo-700 border border-indigo-200',
         icon: 'bg-indigo-100 text-indigo-600',
     },
+    socialmedia: {
+        bg: 'bg-rose-100',
+        text: 'text-rose-700',
+        border: 'border-rose-200',
+        badge: 'bg-rose-100 text-rose-700 border border-rose-200',
+        icon: 'bg-rose-100 text-rose-600',
+    },
 } as const;
 
 export type TemplateType = keyof typeof TEMPLATE_COLORS;
