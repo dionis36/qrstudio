@@ -10,7 +10,7 @@ const TEMPLATES = [
     { id: 'file', label: 'File', desc: 'Share any file type easily', icon: File, color: 'bg-slate-100 text-slate-600', available: true },
     { id: 'text', label: 'Text', desc: 'Display plain text message', icon: FileText, color: 'bg-purple-100 text-purple-600', available: true },
     { id: 'event', label: 'Event', desc: 'Add event to calendar instantly', icon: Calendar, color: 'bg-pink-100 text-pink-600', available: true },
-    { id: 'email', label: 'Email', desc: 'Send pre-filled email message', icon: Mail, color: 'bg-amber-100 text-amber-600', available: false },
+    { id: 'email', label: 'Email', desc: 'Send pre-filled email message', icon: Mail, color: 'bg-amber-100 text-amber-600', available: true },
     { id: 'sms', label: 'SMS', desc: 'Send instant text message', icon: MessageSquare, color: 'bg-green-100 text-green-600', available: false },
     { id: 'app', label: 'App Store', desc: 'Direct link to app download', icon: Smartphone, color: 'bg-indigo-100 text-indigo-600', available: false },
     { id: 'social', label: 'Social Media', desc: 'Link to social media profile', icon: Share2, color: 'bg-rose-100 text-rose-600', available: false },

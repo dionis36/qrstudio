@@ -86,6 +86,7 @@ export default function QrCodesPage() {
             wifi: 'bg-cyan-100 text-cyan-700 border border-cyan-200',
             file: 'bg-slate-100 text-slate-700 border border-slate-200',
             event: 'bg-pink-100 text-pink-700 border border-pink-200',
+            email: 'bg-amber-100 text-amber-700 border border-amber-200',
         };
         return colors[type.toLowerCase()] || 'bg-slate-100 text-slate-700 border border-slate-200';
     }
@@ -145,6 +146,7 @@ export default function QrCodesPage() {
                                 <option value="wifi">Wi-Fi</option>
                                 <option value="file">File</option>
                                 <option value="event">Event</option>
+                                <option value="email">Email</option>
                             </select>
                         </div>
                     </div>
