@@ -24,6 +24,9 @@ type FormValues = {
     profile_photo?: string;
     display_name: string;
     bio?: string;
+    title?: string;              // NEW: Page title/headline
+    tagline?: string;            // NEW: Longer description
+    gallery_images?: string[];   // NEW: Up to 5 images
 
     // Social Links
     social_links: {
@@ -139,6 +142,9 @@ export function SocialMediaPageForm() {
             profile_photo: payload.profile_photo || '',
             display_name: payload.display_name || '',
             bio: payload.bio || '',
+            title: payload.title || '',
+            tagline: payload.tagline || '',
+            gallery_images: payload.gallery_images || [],
             social_links: payload.social_links || []
         },
         mode: 'onChange'
@@ -159,6 +165,9 @@ export function SocialMediaPageForm() {
                 profile_photo: payload.profile_photo,
                 display_name: payload.display_name,
                 bio: payload.bio,
+                title: payload.title,
+                tagline: payload.tagline,
+                gallery_images: payload.gallery_images || [],
                 social_links: payload.social_links || []
             });
         }
@@ -220,7 +229,7 @@ export function SocialMediaPageForm() {
                                             setValue('styles.primary_color', palette.primary);
                                             setValue('styles.secondary_color', palette.secondary);
                                         }}
-                                        className="h-10 w-16 flex-shrink-0 rounded-lg border-2 border-slate-200 hover:border-purple-400 transition-all hover:scale-105 shadow-sm overflow-hidden"
+                                        className="h-10 w-16 flex-shrink-0 rounded-lg border-2 border-slate-200 hover:border-blue-400 transition-all hover:scale-105 shadow-sm overflow-hidden"
                                         style={{ background: `linear-gradient(to right, ${palette.primary} 50%, ${palette.secondary} 50%)` }}
                                         title={palette.name}
                                     />
@@ -242,7 +251,7 @@ export function SocialMediaPageForm() {
                                         value={watch('styles.primary_color') || '#A855F7'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
                                         placeholder="#A855F7"
                                     />
                                 </div>
@@ -259,7 +268,7 @@ export function SocialMediaPageForm() {
                                         value={watch('styles.secondary_color') || '#FDF4FF'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
                                         placeholder="#FDF4FF"
                                     />
                                 </div>
@@ -272,7 +281,7 @@ export function SocialMediaPageForm() {
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Background Style</label>
                                 <select
                                     {...register('styles.gradient_type')}
-                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-500 outline-none"
+                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
                                 >
                                     <option value="none">Solid Color</option>
                                     <option value="linear">Linear Gradient</option>
@@ -292,7 +301,7 @@ export function SocialMediaPageForm() {
                                         max="360"
                                         step="45"
                                         defaultValue="135"
-                                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
+                                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                                     />
                                     <div className="flex justify-between text-xs text-slate-500 mt-1">
                                         <span>0°</span>
@@ -316,55 +325,159 @@ export function SocialMediaPageForm() {
                     isOpen={openSections.profile}
                     onToggle={() => toggleSection('profile')}
                 >
-                    <div className="grid grid-cols-2 gap-4 mt-4">
-                        {/* Left: Profile Photo Upload */}
-                        <div>
-                            <ImageUpload
-                                label="Profile Photo"
-                                value={watch('profile_photo')}
-                                onChange={(base64) => setValue('profile_photo', base64 || '')}
-                                maxSizeMB={1}
-                            />
-                        </div>
-
-                        {/* Right: Name & Bio */}
-                        <div className="space-y-4">
-                            {/* Display Name */}
+                    <div className="space-y-6 mt-4">
+                        {/* Row 1: Profile Photo + Name & Bio */}
+                        <div className="grid grid-cols-2 gap-4">
+                            {/* Left: Profile Photo Upload */}
                             <div>
-                                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Display Name <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    {...register('display_name', {
-                                        required: 'Display name is required',
-                                        minLength: { value: 1, message: 'Display name is required' },
-                                        maxLength: { value: 50, message: 'Display name must be 50 characters or less' }
-                                    })}
-                                    type="text"
-                                    className={`w-full px-4 py-2.5 rounded-lg border ${errors.display_name ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-purple-500 outline-none`}
-                                    placeholder="John Doe"
+                                <ImageUpload
+                                    label="Profile Photo"
+                                    value={watch('profile_photo')}
+                                    onChange={(base64) => setValue('profile_photo', base64 || '')}
+                                    maxSizeMB={1}
                                 />
-                                {errors.display_name && <span className="text-xs text-red-500 mt-1">{errors.display_name.message}</span>}
                             </div>
 
-                            {/* Bio */}
-                            <div>
-                                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Bio
-                                </label>
-                                <textarea
-                                    {...register('bio', {
-                                        maxLength: { value: 150, message: 'Bio must be 150 characters or less' }
-                                    })}
-                                    rows={3}
-                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-500 outline-none resize-none"
-                                    placeholder="Content Creator | Tech Enthusiast"
-                                />
-                                <div className="flex justify-between items-center mt-1">
-                                    {errors.bio && <span className="text-xs text-red-500">{errors.bio.message}</span>}
-                                    <span className="text-xs text-slate-400 ml-auto">{watch('bio')?.length || 0}/150</span>
+                            {/* Right: Name & Bio */}
+                            <div className="space-y-4">
+                                {/* Display Name */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                        Display Name <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        {...register('display_name', {
+                                            required: 'Display name is required',
+                                            minLength: { value: 1, message: 'Display name is required' },
+                                            maxLength: { value: 50, message: 'Display name must be 50 characters or less' }
+                                        })}
+                                        type="text"
+                                        className={`w-full px-4 py-2.5 rounded-lg border ${errors.display_name ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                        placeholder="John Doe"
+                                    />
+                                    {errors.display_name && <span className="text-xs text-red-500 mt-1">{errors.display_name.message}</span>}
+                                </div>
+
+                                {/* Bio */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                        Bio
+                                    </label>
+                                    <textarea
+                                        {...register('bio', {
+                                            maxLength: { value: 150, message: 'Bio must be 150 characters or less' }
+                                        })}
+                                        rows={3}
+                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                        placeholder="Content Creator | Tech Enthusiast"
+                                    />
+                                    <div className="flex justify-between items-center mt-1">
+                                        {errors.bio && <span className="text-xs text-red-500">{errors.bio.message}</span>}
+                                        <span className="text-xs text-slate-400 ml-auto">{watch('bio')?.length || 0}/150</span>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Row 2: Title */}
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                Title/Headline (Optional)
+                            </label>
+                            <input
+                                {...register('title', {
+                                    maxLength: { value: 30, message: 'Title must be 30 characters or less' }
+                                })}
+                                type="text"
+                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                placeholder="My Works"
+                            />
+                            <span className="text-xs text-slate-400">{watch('title')?.length || 0}/30</span>
+                        </div>
+
+                        {/* Row 3: Tagline */}
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                Tagline (Optional)
+                            </label>
+                            <textarea
+                                {...register('tagline', {
+                                    maxLength: { value: 100, message: 'Tagline must be 100 characters or less' }
+                                })}
+                                rows={2}
+                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                placeholder="Hi, I'm a photographer and I want to share my work with you..."
+                            />
+                            <span className="text-xs text-slate-400">{watch('tagline')?.length || 0}/100</span>
+                        </div>
+
+                        {/* Row 4: Gallery Images */}
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                Gallery Images (Optional)
+                                <span className="text-slate-400 text-xs ml-2">Up to 5 images</span>
+                            </label>
+
+
+                            {/* Upload Area - Only show if less than 5 images */}
+                            {(watch('gallery_images')?.filter((img: string) => img).length || 0) < 5 && (
+                                <ImageUpload
+                                    label=""
+                                    value=""
+                                    onChange={(base64) => {
+                                        if (base64) {
+                                            const currentImages = watch('gallery_images') || [];
+                                            if (currentImages.length < 5) {
+                                                setValue('gallery_images', [...currentImages, base64]);
+                                            }
+                                        }
+                                    }}
+                                    maxSizeMB={1}
+                                />
+                            )}
+
+
+                            {/* Uploaded Images Thumbnails */}
+                            {watch('gallery_images')?.filter((img: string) => img).length > 0 && (
+                                <div className="mt-4">
+                                    <p className="text-xs font-semibold text-slate-700 mb-2">
+                                        Uploaded Images ({watch('gallery_images')?.filter((img: string) => img).length}/5)
+                                    </p>
+                                    <div className="flex flex-wrap gap-3">
+                                        {watch('gallery_images')?.map((image: string, index: number) => {
+                                            if (!image) return null;
+                                            return (
+                                                <div key={index} className="relative group">
+                                                    <div className="w-20 h-20 rounded-lg overflow-hidden border-2 border-slate-200">
+                                                        <img
+                                                            src={image}
+                                                            alt={`Gallery ${index + 1}`}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    </div>
+                                                    {/* Remove Button */}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const currentImages = watch('gallery_images') || [];
+                                                            const newImages = currentImages.filter((_: string, i: number) => i !== index);
+                                                            setValue('gallery_images', newImages);
+                                                        }}
+                                                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-600"
+                                                        title="Remove image"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            <p className="text-xs text-slate-500 mt-2">
+                                Showcase your work, products, or photos
+                            </p>
                         </div>
                     </div>
                 </AccordionSection>
@@ -388,7 +501,7 @@ export function SocialMediaPageForm() {
                                         key={platform.id}
                                         type="button"
                                         onClick={() => addLink({ platform: platform.id, url: '', custom_label: '' })}
-                                        className="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white hover:border-purple-400 hover:bg-slate-50 transition-all w-20 h-20 shadow-sm group"
+                                        className="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-slate-50 transition-all w-20 h-20 shadow-sm group"
                                     >
                                         <platform.icon className="w-6 h-6 transition-transform group-hover:scale-110" style={{ color: platform.color }} />
                                         <span className="capitalize text-[10px] font-medium text-slate-600 mt-2 text-center leading-tight">{platform.name}</span>
@@ -427,7 +540,7 @@ export function SocialMediaPageForm() {
                                                             message: 'Please enter a valid URL'
                                                         }
                                                     })}
-                                                    className="w-full pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-500 outline-none text-sm transition-shadow"
+                                                    className="w-full pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-shadow"
                                                     placeholder="https://..."
                                                     style={{ paddingLeft: `${(platformConfig?.name?.length || 8) * 9 + 20}px` }}
                                                 />
@@ -439,7 +552,7 @@ export function SocialMediaPageForm() {
                                             {platformId === 'website' && (
                                                 <input
                                                     {...register(`social_links.${index}.custom_label` as const)}
-                                                    className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                                                    className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
                                                     placeholder="Custom button text (optional)"
                                                 />
                                             )}

@@ -56,7 +56,7 @@ export default function SocialMediaPage() {
         return (
             <div className="w-full px-4 pb-20 flex items-center justify-center min-h-[400px]">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                     <p className="text-slate-600">Loading QR code data...</p>
                 </div>
             </div>
@@ -74,7 +74,7 @@ export default function SocialMediaPage() {
                     <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
                         <button
                             onClick={handleNext}
-                            className="px-8 py-3 bg-purple-600 text-white rounded-xl font-bold text-base shadow-lg hover:bg-purple-700 hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                            className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-base shadow-lg hover:bg-blue-700 hover:-translate-y-0.5 transition-all flex items-center gap-2"
                         >
                             {editId ? 'Next: Update Design' : 'Next: Customize QR Design'}
                             <ArrowRight className="w-5 h-5" />

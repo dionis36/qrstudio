@@ -110,7 +110,7 @@ export function EventPreview() {
 
             {/* Header Section - Calendar Icon, Title, Button */}
             <div
-                className="px-7 pt-16 pb-10 flex flex-col items-center text-center"
+                className="px-7 pt-24 pb-10 flex flex-col items-center text-center"
                 style={getBackgroundStyle()}
             >
                 {/* Calendar Icon */}

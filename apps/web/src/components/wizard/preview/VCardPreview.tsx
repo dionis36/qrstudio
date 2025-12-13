@@ -69,7 +69,7 @@ export function VCardPreview({ data }: { data: any }) {
 
             {/* Header Section - ONLY Avatar, Name, Button */}
             <div
-                className="px-7 pt-14 pb-10 flex flex-col items-center text-center"
+                className="px-7 pt-24 pb-10 flex flex-col items-center text-center"
                 style={{
                     background: `linear-gradient(135deg, ${styles.primary_color} 0%, ${darkPrimary} 100%)`
                 }}
