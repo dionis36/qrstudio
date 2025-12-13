@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useWizardStore } from '@/components/wizard/store';
 import { LiveQrPreview } from '@/components/wizard/preview/LiveQrPreview';
-import { ArrowLeft, Palette, Grid3x3, Frame, Image as ImageIcon, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Palette, Grid3x3, Frame, Image as ImageIcon, ChevronDown, CheckCircle2, Copy, Check, AlertTriangle } from 'lucide-react';
 import { PhoneMockup } from '@/components/common/PhoneMockup';
 
 
@@ -78,6 +78,8 @@ export default function DesignPage({ params }: { params: { template: string } })
         logo: false
     });
 
+    const [copiedColor, setCopiedColor] = useState<string | null>(null);
+
     // Load existing QR data if in edit mode (but only if not already loaded)
     useEffect(() => {
         if (editId && !editMode) {
@@ -110,6 +112,34 @@ export default function DesignPage({ params }: { params: { template: string } })
     const toggleSection = (section: keyof typeof openSections) => {
         setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
     };
+
+    // Helper function to copy color to clipboard
+    const copyColor = (color: string, label: string) => {
+        navigator.clipboard.writeText(color);
+        setCopiedColor(label);
+        setTimeout(() => setCopiedColor(null), 2000);
+    };
+
+    // Helper function to calculate contrast ratio for accessibility
+    const getContrastRatio = (color1: string, color2: string): number => {
+        // Convert hex to RGB and calculate luminance
+        const getLuminance = (hex: string) => {
+            if (!hex || hex === 'transparent') return 1;
+            const rgb = parseInt(hex.slice(1), 16);
+            const r = ((rgb >> 16) & 0xff) / 255;
+            const g = ((rgb >> 8) & 0xff) / 255;
+            const b = ((rgb >> 0) & 0xff) / 255;
+            const [rs, gs, bs] = [r, g, b].map(c =>
+                c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+            );
+            return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+        };
+
+        const l1 = getLuminance(color1);
+        const l2 = getLuminance(color2);
+        return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    };
+
 
     const handleGenerate = async () => {
         // Validate QR name
@@ -345,60 +375,180 @@ export default function DesignPage({ params }: { params: { template: string } })
                             isOpen={openSections.corners}
                             onToggle={() => toggleSection('corners')}
                         >
-                            <div className="mt-4 space-y-4">
-                                {/* Corner Square Style */}
-                                <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-3">Corner square style</label>
-                                    <div className="grid grid-cols-3 gap-3">
-                                        {[
-                                            { style: 'square', label: 'Square' },
-                                            { style: 'dot', label: 'Dot' },
-                                            { style: 'extra-rounded', label: 'Rounded' }
-                                        ].map(({ style, label }) => (
-                                            <button
-                                                key={style}
-                                                onClick={() => updateDesign({ cornersSquare: { ...design.cornersSquare, style } })}
-                                                className={`p-3 border-2 rounded-xl transition-all flex flex-col items-center gap-2 ${design.cornersSquare?.style === style
-                                                    ? 'border-orange-600 bg-orange-50'
-                                                    : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'
-                                                    }`}
-                                            >
-                                                <div className="w-12 h-12 flex items-center justify-center">
-                                                    <div className={`w-8 h-8 border-4 border-slate-800 ${style === 'dot' ? 'rounded-full' :
-                                                        style === 'extra-rounded' ? 'rounded-xl' :
-                                                            'rounded-sm'
-                                                        }`} />
-                                                </div>
-                                                <span className="text-xs font-medium text-slate-700">{label}</span>
-                                            </button>
-                                        ))}
-                                    </div>
+                            <div className="mt-4 space-y-6">
+                                {/* Match Pattern Color Button */}
+                                <div className="flex justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            updateDesign({
+                                                cornersSquare: { ...design.cornersSquare, color: design.dots?.color },
+                                                cornersDot: { ...design.cornersDot, color: design.dots?.color }
+                                            });
+                                        }}
+                                        className="text-xs text-blue-600 hover:text-blue-700 font-medium underline transition-colors"
+                                    >
+                                        Match pattern color
+                                    </button>
                                 </div>
 
-                                {/* Corner Dot Style */}
-                                <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-3">Corner dot style</label>
-                                    <div className="grid grid-cols-3 gap-3">
-                                        {[
-                                            { style: 'square', label: 'Square' },
-                                            { style: 'dot', label: 'Dot' }
-                                        ].map(({ style, label }) => (
-                                            <button
-                                                key={style}
-                                                onClick={() => updateDesign({ cornersDot: { ...design.cornersDot, style } })}
-                                                className={`p-3 border-2 rounded-xl transition-all flex flex-col items-center gap-2 ${design.cornersDot?.style === style
-                                                    ? 'border-orange-600 bg-orange-50'
-                                                    : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'
-                                                    }`}
-                                            >
-                                                <div className="w-12 h-12 flex items-center justify-center">
-                                                    <div className={`w-6 h-6 bg-slate-800 ${style === 'dot' ? 'rounded-full' : 'rounded-sm'
-                                                        }`} />
-                                                </div>
-                                                <span className="text-xs font-medium text-slate-700">{label}</span>
-                                            </button>
-                                        ))}
+                                <div className="flex gap-6">
+                                  {/* Corner Square Style */}
+                                  <div className="flex-1">
+                                    <label className="block text-sm font-semibold text-slate-700 mb-3">Corner square style</label>
+                                    {/* Grid set to 2 columns for a smaller layout */}
+                                    <div className="grid grid-cols-2 gap-3">
+                                      {[
+                                        { style: 'square', label: 'Square' },
+                                        { style: 'dot', label: 'Dot' },
+                                        { style: 'extra-rounded', label: 'Rounded' }
+                                      ].map(({ style, label }) => (
+                                        <button
+                                          key={style}
+                                          onClick={() => updateDesign({ cornersSquare: { ...design.cornersSquare, style } })}
+                                          // Reduced p-3 to p-2 and rounded-xl to rounded-lg for smaller size
+                                          className={`p-2 border-2 rounded-lg transition-all flex flex-col items-center gap-1.5 ${design.cornersSquare?.style === style
+                                              ? 'border-orange-600 bg-orange-50'
+                                              : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'
+                                            }`}
+                                        >
+                                          {/* Reduced size of preview icon wrapper */}
+                                          <div className="w-8 h-8 flex items-center justify-center">
+                                            {/* Reduced size of preview icon */}
+                                            <div className={`w-5 h-5 border-2 border-slate-800 ${style === 'dot' ? 'rounded-full' :
+                                              style === 'extra-rounded' ? 'rounded-md' :
+                                                'rounded-sm'
+                                              }`} />
+                                          </div>
+                                          <span className="text-xs font-medium text-slate-700">{label}</span>
+                                        </button>
+                                      ))}
+                                      {/* This is a simple placeholder to ensure the grid items align correctly. 
+                                        It renders an empty cell only if the number of items is odd (3 % 2 = 1).
+                                      */}
+                                      {([
+                                        { style: 'square', label: 'Square' },
+                                        { style: 'dot', label: 'Dot' },
+                                        { style: 'extra-rounded', label: 'Rounded' }
+                                      ].length % 2 !== 0) && <div className="h-0" />}
                                     </div>
+                                  </div>                                
+
+                                  {/* Corner Dot Style */}
+                                  {/* Added pt-4 border-t border-slate-100 here to visually separate it from other sections */}
+                                  <div className="flex-1">
+                                    <label className="block text-sm font-semibold text-slate-700 mb-3">Corner dot style</label>
+                                    <div className="grid grid-cols-2 gap-3">
+                                      {[
+                                        { style: 'square', label: 'Square' },
+                                        { style: 'dot', label: 'Dot' }
+                                      ].map(({ style, label }) => (
+                                        <button
+                                          key={style}
+                                          onClick={() => updateDesign({ cornersDot: { ...design.cornersDot, style } })}
+                                          // Reduced p-3 to p-2 and rounded-xl to rounded-lg for smaller size
+                                          className={`p-2 border-2 rounded-lg transition-all flex flex-col items-center gap-1.5 ${design.cornersDot?.style === style
+                                              ? 'border-orange-600 bg-orange-50'
+                                              : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'
+                                            }`}
+                                        >
+                                          {/* Reduced size of preview icon wrapper */}
+                                          <div className="w-8 h-8 flex items-center justify-center">
+                                            {/* Reduced size of preview icon */}
+                                            <div className={`w-4 h-4 bg-slate-800 ${style === 'dot' ? 'rounded-full' : 'rounded-sm'
+                                              }`} />
+                                          </div>
+                                          <span className="text-xs font-medium text-slate-700">{label}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="flex gap-6">
+                                  {/* Corner Square Color */}
+                                  <div className="flex-1 pt-4 border-t border-slate-100">
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">Corner square color</label>
+                                    <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                      <input
+                                        type="color"
+                                        value={design.cornersSquare?.color ?? design.dots?.color ?? '#000000'}
+                                        onChange={(e) => updateDesign({ cornersSquare: { ...design.cornersSquare, color: e.target.value } })}
+                                        className="w-10 h-10 rounded border-0 cursor-pointer"
+                                      />
+                                      <input
+                                        type="text"
+                                        value={design.cornersSquare?.color ?? design.dots?.color ?? '#000000'}
+                                        onChange={(e) => updateDesign({ cornersSquare: { ...design.cornersSquare, color: e.target.value } })}
+                                        className="flex-1 bg-transparent text-sm font-mono text-slate-700 focus:outline-none uppercase"
+                                        placeholder="#000000"
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={() => copyColor(design.cornersSquare?.color ?? design.dots?.color ?? '#000000', 'square')}
+                                        className="p-1.5 hover:bg-slate-200 rounded transition-colors"
+                                        title="Copy color"
+                                      >
+                                        {copiedColor === 'square' ? (
+                                          <Check className="w-4 h-4 text-green-600" />
+                                        ) : (
+                                          <Copy className="w-4 h-4 text-slate-500" />
+                                        )}
+                                      </button>
+                                    </div>
+                                    {/* Contrast Warning for Corner Square */}
+                                    {getContrastRatio(
+                                      design.cornersSquare?.color ?? design.dots?.color ?? '#000000',
+                                      design.background?.color ?? '#ffffff'
+                                    ) < 3 && design.background?.color !== 'transparent' && (
+                                      <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                                        <AlertTriangle className="w-3 h-3" />
+                                        Low contrast may reduce scanability
+                                      </p>
+                                    )}
+                                  </div>
+                                
+                                  {/* Corner Dot Color */}
+                                  <div className="flex-1 pt-4 border-t border-slate-100">
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">Corner dot color</label>
+                                    <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                      <input
+                                        type="color"
+                                        value={design.cornersDot?.color ?? design.dots?.color ?? '#000000'}
+                                        onChange={(e) => updateDesign({ cornersDot: { ...design.cornersDot, color: e.target.value } })}
+                                        className="w-10 h-10 rounded border-0 cursor-pointer"
+                                      />
+                                      <input
+                                        type="text"
+                                        value={design.cornersDot?.color ?? design.dots?.color ?? '#000000'}
+                                        onChange={(e) => updateDesign({ cornersDot: { ...design.cornersDot, color: e.target.value } })}
+                                        className="flex-1 bg-transparent text-sm font-mono text-slate-700 focus:outline-none uppercase"
+                                        placeholder="#000000"
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={() => copyColor(design.cornersDot?.color ?? design.dots?.color ?? '#000000', 'dot')}
+                                        className="p-1.5 hover:bg-slate-200 rounded transition-colors"
+                                        title="Copy color"
+                                      >
+                                        {copiedColor === 'dot' ? (
+                                          <Check className="w-4 h-4 text-green-600" />
+                                        ) : (
+                                          <Copy className="w-4 h-4 text-slate-500" />
+                                        )}
+                                      </button>
+                                    </div>
+                                    {/* Contrast Warning for Corner Dot */}
+                                    {getContrastRatio(
+                                      design.cornersDot?.color ?? design.dots?.color ?? '#000000',
+                                      design.background?.color ?? '#ffffff'
+                                    ) < 3 && design.background?.color !== 'transparent' && (
+                                      <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                                        <AlertTriangle className="w-3 h-3" />
+                                        Low contrast may reduce scanability
+                                      </p>
+                                    )}
+                                  </div>
                                 </div>
                             </div>
                         </AccordionSection>
