@@ -62,6 +62,13 @@ export const TEMPLATE_COLORS = {
         badge: 'bg-green-100 text-green-700 border border-green-200',
         icon: 'bg-green-100 text-green-600',
     },
+    appstore: {
+        bg: 'bg-indigo-100',
+        text: 'text-indigo-700',
+        border: 'border-indigo-200',
+        badge: 'bg-indigo-100 text-indigo-700 border border-indigo-200',
+        icon: 'bg-indigo-100 text-indigo-600',
+    },
 } as const;
 
 export type TemplateType = keyof typeof TEMPLATE_COLORS;

@@ -12,7 +12,7 @@ const TEMPLATES = [
     { id: 'event', label: 'Event', desc: 'Add event to calendar instantly', icon: Calendar, color: 'bg-pink-100 text-pink-600', available: true },
     { id: 'email', label: 'Email', desc: 'Send pre-filled email message', icon: Mail, color: 'bg-amber-100 text-amber-600', available: true },
     { id: 'message', label: 'Message', desc: 'Send via SMS, WhatsApp, or Telegram', icon: MessageSquare, color: 'bg-green-100 text-green-600', available: true },
-    { id: 'app', label: 'App Store', desc: 'Direct link to app download', icon: Smartphone, color: 'bg-indigo-100 text-indigo-600', available: false },
+    { id: 'appstore', label: 'App Store', desc: 'Link to Google Play, iOS, or Amazon', icon: Smartphone, color: 'bg-indigo-100 text-indigo-600', available: true },
     { id: 'social', label: 'Social Media', desc: 'Link to social media profile', icon: Share2, color: 'bg-rose-100 text-rose-600', available: false },
 ];
 
