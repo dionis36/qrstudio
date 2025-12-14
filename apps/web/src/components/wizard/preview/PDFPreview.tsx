@@ -46,6 +46,15 @@ export function PDFPreview({ data }: PDFPreviewProps) {
     const gradientType = styles.gradient_type || 'none';
     const gradientAngle = styles.gradient_angle || 135;
 
+    // Helper to lighten a color
+    const lightenColor = (hex: string, percent: number = 30) => {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = Math.min(255, (num >> 16) + Math.round(((255 - (num >> 16)) * percent) / 100));
+        const g = Math.min(255, ((num >> 8) & 0x00FF) + Math.round(((255 - ((num >> 8) & 0x00FF)) * percent) / 100));
+        const b = Math.min(255, (num & 0x0000FF) + Math.round(((255 - (num & 0x0000FF)) * percent) / 100));
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+    };
+
     // File metadata
     const fileExtension = pdfFile.file_extension || 'FILE';
     const fileCategory = pdfFile.file_category || 'document';
@@ -142,11 +151,14 @@ export function PDFPreview({ data }: PDFPreviewProps) {
         }
     }, [pdfFile.file_data, pdfFile.fullscreen_mode, generateThumbnail]);
 
+    const lightPrimary = lightenColor(primaryColor, 95);
+    const mediumPrimary = lightenColor(primaryColor, 85);
+
     // Fullscreen mode view
     if (pdfFile.fullscreen_mode && pdfFile.file_data) {
         return (
-            <div className="absolute inset-0 w-full h-full flex flex-col font-sans" style={getBackgroundStyle()}>
-                <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-4">
+            <div className="absolute inset-0 w-full h-full flex flex-col font-sans overflow-hidden" style={getBackgroundStyle()}>
+                <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 space-y-4">
                     <div className="w-20 h-20 rounded-full shadow-lg flex items-center justify-center" style={{ backgroundColor: secondaryColor }}>
                         <ExternalLink className="w-10 h-10" style={{ color: primaryColor }} />
                     </div>
@@ -160,11 +172,18 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                         </p>
                     </div>
 
-                    <div className="w-full max-w-[280px] bg-white rounded-xl shadow-lg p-4 text-center">
+                    <div className="w-full max-w-[280px] bg-white rounded-xl shadow-lg p-4 text-center border-2" style={{ borderColor: lightPrimary }}>
                         <p className="text-xs text-slate-600">
                             File will open directly in fullscreen mode
                         </p>
                     </div>
+                </div>
+
+                {/* Footer Branding */}
+                <div className="pb-6 text-center">
+                    <p className="text-xs text-slate-600">
+                        Powered by <span className="font-semibold">QR Studio</span>
+                    </p>
                 </div>
             </div>
         );
@@ -172,11 +191,11 @@ export function PDFPreview({ data }: PDFPreviewProps) {
 
     // Preview page view (default)
     return (
-        <div className="absolute inset-0 w-full h-full flex flex-col font-sans bg-white" style={getBackgroundStyle()}>
-            <div className="flex-1 flex flex-col items-center justify-center p-4 space-y-3">
+        <div className="absolute inset-0 w-full h-full flex flex-col font-sans overflow-hidden" style={getBackgroundStyle()}>
+            <div className="flex-1 flex flex-col items-center justify-center px-4 py-6 space-y-3">
                 {/* File Preview: Image, PDF Thumbnail, or Icon */}
                 {fileCategory === 'image' && pdfFile.file_data ? (
-                    <div className="w-full max-w-[160px] bg-white rounded-lg shadow-lg overflow-hidden border border-slate-200">
+                    <div className="w-full max-w-[160px] bg-white rounded-lg shadow-lg overflow-hidden border-2" style={{ borderColor: lightPrimary }}>
                         <img
                             src={`data:${fileType};base64,${pdfFile.file_data}`}
                             alt="File Preview"
@@ -205,7 +224,14 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                 {/* File Type Badge */}
                 {pdfFile.file_data && (
                     <div className="flex items-center gap-2 text-xs">
-                        <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded font-mono font-bold">
+                        <span
+                            className="px-2 py-0.5 rounded font-mono font-bold border"
+                            style={{
+                                backgroundColor: lightPrimary,
+                                color: primaryColor,
+                                borderColor: mediumPrimary
+                            }}
+                        >
                             {fileExtension}
                         </span>
                         <span className="text-slate-400">•</span>
@@ -239,14 +265,14 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                 {/* Action Buttons */}
                 <div className="w-full max-w-[280px] px-4 space-y-2">
                     <button
-                        className="w-full py-2.5 rounded-xl text-white font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                        className="w-full py-3 rounded-xl text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
                         style={{ backgroundColor: primaryColor }}
                     >
                         <FileText className="w-4 h-4" />
                         {pdfFile.file_data ? (fileExtension === 'PDF' ? 'Read PDF' : 'View File') : 'View File'}
                     </button>
                     <button
-                        className="w-full py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 hover:bg-slate-200"
+                        className="w-full py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 hover:bg-slate-200"
                     >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -265,6 +291,13 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                         Optional author name
                     </p>
                 )}
+            </div>
+
+            {/* Footer Branding */}
+            <div className="pb-6 text-center">
+                <p className="text-xs text-slate-600">
+                    Powered by <span className="font-semibold">QR Studio</span>
+                </p>
             </div>
         </div>
     );

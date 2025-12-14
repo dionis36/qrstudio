@@ -40,10 +40,34 @@ export function MenuPreview({ data }: { data: MenuData }) {
     const categories = data.content?.categories || [];
     const primaryColor = data.styles?.primary_color || '#f97316';
 
+    // Helper to lighten a color
+    const lightenColor = (hex: string, percent: number = 30) => {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = Math.min(255, (num >> 16) + Math.round(((255 - (num >> 16)) * percent) / 100));
+        const g = Math.min(255, ((num >> 8) & 0x00FF) + Math.round(((255 - ((num >> 8) & 0x00FF)) * percent) / 100));
+        const b = Math.min(255, (num & 0x0000FF) + Math.round(((255 - (num & 0x0000FF)) * percent) / 100));
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+    };
+
+    const lightPrimary = lightenColor(primaryColor, 95);
+
     return (
-        <div className="flex flex-col min-h-full font-sans pb-20 bg-white">
+        <div
+            className="absolute inset-0 w-full h-full flex flex-col bg-white overflow-y-auto"
+            style={{
+                scrollbarWidth: 'none', // Firefox
+                msOverflowStyle: 'none', // IE/Edge
+            }}
+        >
+            {/* Hide scrollbar */}
+            <style jsx>{`
+                div::-webkit-scrollbar {
+                    display: none;
+                }
+            `}</style>
+
             {/* Hero Banner */}
-            <div className="h-40 bg-gray-200 relative shrink-0">
+            <div className="h-48 bg-gray-200 relative shrink-0">
                 {info.cover_image ? (
                     <img
                         src={info.cover_image}
@@ -85,26 +109,22 @@ export function MenuPreview({ data }: { data: MenuData }) {
 
             {/* Info Bar */}
             <div className="px-4 py-3 flex gap-4 border-b border-gray-100 bg-white sticky top-0 z-10 shadow-sm overflow-x-auto no-scrollbar">
-                <div className="flex items-center gap-1.5 text-xs text-gray-600 whitespace-nowrap">
-                    <Clock className="w-3.5 h-3.5 text-green-600" />
-                    <span>Open Now</span>
-                </div>
                 {info.phone && (
-                    <a href={`tel:${info.phone}`} className="flex items-center gap-1.5 text-xs text-gray-600 whitespace-nowrap hover:text-blue-600">
-                        <Phone className="w-3.5 h-3.5" />
+                    <a href={`tel:${info.phone}`} className="flex items-center gap-1.5 text-xs text-gray-600 whitespace-nowrap hover:opacity-80 transition-opacity">
+                        <Phone className="w-3.5 h-3.5" style={{ color: primaryColor }} />
                         <span>Call</span>
                     </a>
                 )}
                 {info.website && (
-                    <a href={info.website} target="_blank" className="flex items-center gap-1.5 text-xs text-gray-600 whitespace-nowrap hover:text-blue-600">
-                        <Globe className="w-3.5 h-3.5" />
+                    <a href={info.website} target="_blank" className="flex items-center gap-1.5 text-xs text-gray-600 whitespace-nowrap hover:opacity-80 transition-opacity">
+                        <Globe className="w-3.5 h-3.5" style={{ color: primaryColor }} />
                         <span>Website</span>
                     </a>
                 )}
             </div>
 
             {/* Categories & Items */}
-            <div className="p-4 space-y-8">
+            <div className="flex-1 p-4 space-y-8">
                 {categories.length === 0 && (
                     <div className="text-center py-10 text-gray-400 text-sm">
                         Add categories and items to see them here.
@@ -113,7 +133,7 @@ export function MenuPreview({ data }: { data: MenuData }) {
 
                 {categories.map((category) => (
                     <div key={category.id} className="scroll-mt-20">
-                        <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <h3 className="text-lg font-bold mb-3 flex items-center gap-2" style={{ color: primaryColor }}>
                             {category.name || 'Category'}
                             <span className="h-px bg-gray-100 flex-1"></span>
                         </h3>
@@ -130,7 +150,14 @@ export function MenuPreview({ data }: { data: MenuData }) {
                                                 <div className="flex items-center gap-2">
                                                     <h4 className="font-bold text-sm text-gray-900">{item.name || 'Item Name'}</h4>
                                                     {!isAvailable && (
-                                                        <span className="text-[10px] font-semibold px-2 py-0.5 bg-red-100 text-red-600 rounded-full">
+                                                        <span
+                                                            className="text-[10px] font-semibold px-2 py-0.5 rounded-full border"
+                                                            style={{
+                                                                backgroundColor: lightenColor('#EF4444', 95),
+                                                                color: '#DC2626',
+                                                                borderColor: lightenColor('#EF4444', 85)
+                                                            }}
+                                                        >
                                                             Unavailable
                                                         </span>
                                                     )}
@@ -141,9 +168,11 @@ export function MenuPreview({ data }: { data: MenuData }) {
                                                     </span>
                                                 ) : null}
                                             </div>
-                                            <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
-                                                {item.description || 'Description goes here.'}
-                                            </p>
+                                            {item.description && (
+                                                <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
+                                                    {item.description}
+                                                </p>
+                                            )}
                                         </div>
                                         {/* Placeholder for item image if we add that feature later */}
                                         {/* <div className="w-16 h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden"></div> */}
@@ -156,6 +185,13 @@ export function MenuPreview({ data }: { data: MenuData }) {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            {/* Footer Branding */}
+            <div className="pb-4 pt-2 text-center bg-white border-t border-gray-100 mt-8">
+                <p className="text-xs text-slate-600">
+                    Powered by <span className="font-semibold">QR Studio</span>
+                </p>
             </div>
         </div>
     );
