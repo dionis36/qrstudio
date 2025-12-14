@@ -68,7 +68,7 @@ export default function MessagePage() {
     }
 
     return (
-        <div className="w-full px-4 sm:px-6 pb-20">
+        <div className="w-full px-3 sm:px-6 pb-20">
             <SEO
                 title="Create Message QR Code"
                 description="Create a QR code with a text message"

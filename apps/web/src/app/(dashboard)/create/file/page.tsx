@@ -64,7 +64,7 @@ export default function PdfQrPage() {
     }
 
     return (
-        <div className="w-full px-4 sm:px-6 pb-20">
+        <div className="w-full px-3 sm:px-6 pb-20">
             <SEO
                 title="Create File/PDF QR Code"
                 description="Create a QR code to share PDF files and documents"

@@ -15,7 +15,7 @@ export default function CreateQrPage() {
     }, []);
 
     return (
-        <div className="flex-1 flex flex-col px-4 sm:px-6">
+        <div className="flex-1 flex flex-col px-3 sm:px-6">
             <SEO
                 title="Create QR Code"
                 description="Choose from menu, vCard, URL, WiFi, and more QR code types"

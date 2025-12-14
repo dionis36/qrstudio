@@ -64,7 +64,7 @@ export default function WifiQrPage() {
     }
 
     return (
-        <div className="w-full px-4 sm:px-6 pb-20">
+        <div className="w-full px-3 sm:px-6 pb-20">
             <SEO
                 title="Create WiFi QR Code"
                 description="Create a QR code to share WiFi network credentials"

@@ -68,7 +68,7 @@ export default function EmailPage() {
     }
 
     return (
-        <div className="w-full px-4 sm:px-6 pb-20">
+        <div className="w-full px-3 sm:px-6 pb-20">
             <SEO
                 title="Create Email QR Code"
                 description="Create a QR code that opens an email with pre-filled content"

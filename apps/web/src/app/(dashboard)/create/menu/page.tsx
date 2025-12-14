@@ -65,7 +65,7 @@ export default function MenuQrPage() {
     }
 
     return (
-        <div className="w-full px-4 sm:px-6 pb-20">
+        <div className="w-full px-3 sm:px-6 pb-20">
             <SEO
                 title="Create Menu QR Code"
                 description="Create a digital menu QR code for your restaurant with customizable colors and design"

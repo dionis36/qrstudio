@@ -26,13 +26,13 @@ export function Step1Templates() {
     };
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
-                <h3 className="text-2xl font-bold text-slate-900">Choose your QR Code type</h3>
-                <p className="text-slate-500 mt-1">Select a template to get started with your design.</p>
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900">Choose your QR Code type</h3>
+                <p className="text-sm sm:text-base text-slate-500 mt-1">Select a template to get started with your design.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {TEMPLATES.map((t, idx) => (
                     <motion.button
                         key={t.id}
@@ -41,18 +41,18 @@ export function Step1Templates() {
                         transition={{ delay: idx * 0.05 }}
                         onClick={() => handleSelect(t.id, t.available)}
                         disabled={!t.available}
-                        className={`group relative p-6 rounded-2xl bg-white border border-gray-200 shadow-sm transition-all text-left flex items-center gap-5 overflow-hidden ${t.available
-                            ? 'hover:shadow-xl hover:border-blue-500/30 cursor-pointer'
+                        className={`group relative p-4 sm:p-6 rounded-2xl bg-white border border-gray-200 shadow-sm transition-all text-left flex items-center gap-3 sm:gap-5 overflow-hidden min-h-[80px] sm:min-h-[100px] ${t.available
+                            ? 'hover:shadow-xl hover:border-blue-500/30 cursor-pointer active:scale-[0.98]'
                             : 'opacity-60 cursor-not-allowed'
                             }`}
                     >
-                        <div className={`p-4 rounded-xl ${t.color} ${t.available ? 'group-hover:scale-110' : ''} transition-transform duration-300 flex-shrink-0`}>
-                            <t.icon className="w-7 h-7" />
+                        <div className={`p-3 sm:p-4 rounded-xl ${t.color} ${t.available ? 'group-hover:scale-110' : ''} transition-transform duration-300 flex-shrink-0`}>
+                            <t.icon className="w-6 h-6 sm:w-7 sm:h-7" />
                         </div>
 
                         <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                                <div className={`font-bold text-lg text-slate-900 ${t.available ? 'group-hover:text-blue-600' : ''} transition-colors`}>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <div className={`font-bold text-base sm:text-lg text-slate-900 ${t.available ? 'group-hover:text-blue-600' : ''} transition-colors`}>
                                     {t.label}
                                 </div>
                                 {!t.available && (
@@ -61,7 +61,7 @@ export function Step1Templates() {
                                     </span>
                                 )}
                             </div>
-                            <p className="text-sm text-slate-500 mt-1">{t.desc}</p>
+                            <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1 line-clamp-1">{t.desc}</p>
                         </div>
 
                         {/* Hover Gradient Effect - only for available templates */}

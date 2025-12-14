@@ -69,7 +69,7 @@ export default function SocialMediaPage() {
     }
 
     return (
-        <div className="w-full px-4 sm:px-6 pb-20">
+        <div className="w-full px-3 sm:px-6 pb-20">
             <SEO
                 title="Create Social Media QR Code"
                 description="Create a QR code with all your social media links in one place"

@@ -72,7 +72,7 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
     };
 
     return (
-        <div className="w-full px-4 pb-20">
+        <div className="w-full pb-20">
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* LEFT PANEL: 75% - Content Area */}
                 <div className="w-full lg:w-3/4 flex flex-col">
@@ -148,11 +148,7 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
 
                         {/* Phone Mockup */}
                         <div className="transform transition-all duration-500 origin-top scale-[0.85] xl:scale-[0.9]">
-                            <PhoneMockup
-                                className="shadow-2xl shadow-slate-300/50"
-                                backgroundColor={payload?.styles?.primary_color || '#FFFFFF'}
-                                statusBarStyle={type === 'menu' ? 'dark' : 'auto'}
-                            >
+                            <PhoneMockup className="shadow-2xl shadow-slate-300/50">
                                 {renderPreviewContent()}
                             </PhoneMockup>
                         </div>
