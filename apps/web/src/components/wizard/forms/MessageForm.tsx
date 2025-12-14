@@ -47,19 +47,19 @@ function AccordionSection({
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-slate-50 transition-colors min-h-[60px]"
             >
-                <div className="flex items-center gap-4">
-                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className="w-7 h-7" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`p-3 sm:p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
                     </div>
                     <div className="text-left">
-                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
-                        <p className="text-sm text-slate-500">{subtitle}</p>
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-xs sm:text-sm text-slate-500">{subtitle}</p>
                     </div>
                 </div>
                 <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -68,7 +68,7 @@ function AccordionSection({
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
             >
-                <div className="px-6 pb-6 pt-2 border-t border-slate-100">
+                <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-slate-100">
                     {children}
                 </div>
             </div>
@@ -190,37 +190,37 @@ export function MessageForm() {
                         </div>
 
                         {/* Custom Colors */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Primary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('styles.primary_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         value={watch('styles.primary_color') || '#10B981'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#10B981"
                                     />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('styles.secondary_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         value={watch('styles.secondary_color') || '#D1FAE5'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#D1FAE5"
                                     />
                                 </div>
@@ -278,48 +278,48 @@ export function MessageForm() {
                     onToggle={() => toggleSection('message')}
                 >
                     <div className="space-y-6 mt-4">
-                        {/* Platform Selection - Horizontal */}
+                        {/* Platform Selection - Responsive */}
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-3">Platform</label>
-                            <div className="flex gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 {/* SMS Option */}
-                                <label className="flex-1 flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 transition-all has-[:checked]:border-green-500 has-[:checked]:bg-green-50">
+                                <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 transition-all has-[:checked]:border-green-500 has-[:checked]:bg-green-50 min-h-[60px]">
                                     <input
                                         {...register('platform')}
                                         type="radio"
                                         value="sms"
-                                        className="w-5 h-5 text-green-600 focus:ring-green-500"
+                                        className="w-5 h-5 text-green-600 focus:ring-green-500 flex-shrink-0"
                                     />
                                     <div className="flex items-center gap-2 flex-1">
-                                        <MessageSquare className="w-5 h-5 text-slate-600" />
+                                        <MessageSquare className="w-5 h-5 text-slate-600 flex-shrink-0" />
                                         <div className="font-semibold text-slate-900">SMS</div>
                                     </div>
                                 </label>
 
                                 {/* WhatsApp Option */}
-                                <label className="flex-1 flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 transition-all has-[:checked]:border-green-500 has-[:checked]:bg-green-50">
+                                <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 transition-all has-[:checked]:border-green-500 has-[:checked]:bg-green-50 min-h-[60px]">
                                     <input
                                         {...register('platform')}
                                         type="radio"
                                         value="whatsapp"
-                                        className="w-5 h-5 text-green-600 focus:ring-green-500"
+                                        className="w-5 h-5 text-green-600 focus:ring-green-500 flex-shrink-0"
                                     />
                                     <div className="flex items-center gap-2 flex-1">
-                                        <Smartphone className="w-5 h-5 text-slate-600" />
+                                        <Smartphone className="w-5 h-5 text-slate-600 flex-shrink-0" />
                                         <div className="font-semibold text-slate-900">WhatsApp</div>
                                     </div>
                                 </label>
 
                                 {/* Telegram Option */}
-                                <label className="flex-1 flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 transition-all has-[:checked]:border-green-500 has-[:checked]:bg-green-50">
+                                <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 transition-all has-[:checked]:border-green-500 has-[:checked]:bg-green-50 min-h-[60px]">
                                     <input
                                         {...register('platform')}
                                         type="radio"
                                         value="telegram"
-                                        className="w-5 h-5 text-green-600 focus:ring-green-500"
+                                        className="w-5 h-5 text-green-600 focus:ring-green-500 flex-shrink-0"
                                     />
                                     <div className="flex items-center gap-2 flex-1">
-                                        <Send className="w-5 h-5 text-slate-600" />
+                                        <Send className="w-5 h-5 text-slate-600 flex-shrink-0" />
                                         <div className="font-semibold text-slate-900">Telegram</div>
                                     </div>
                                 </label>
@@ -330,7 +330,7 @@ export function MessageForm() {
                         <div className="pt-4 border-t border-slate-200">
                             {/* SMS Fields */}
                             {currentPlatform === 'sms' && (
-                                <div className="space-y-4">
+                                <div className="space-y-5">
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">
                                             Phone Number
@@ -348,7 +348,7 @@ export function MessageForm() {
                                                 }
                                             })}
                                             type="tel"
-                                            className={`w-full px-4 py-2.5 rounded-lg border ${errors.phone_number ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                            className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.phone_number ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                             placeholder="+1234567890"
                                         />
                                         <p className="text-xs text-slate-500 mt-1">Include country code (e.g., +1 for US)</p>
@@ -356,10 +356,12 @@ export function MessageForm() {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                            Message
-                                            <span className="text-xs text-slate-500 ml-2">({messageLength}/160)</span>
-                                        </label>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <label className="block text-sm font-semibold text-slate-700">
+                                                Message
+                                            </label>
+                                            <span className="text-xs text-slate-500">({messageLength}/160)</span>
+                                        </div>
                                         <textarea
                                             {...register('message', {
                                                 maxLength: {
@@ -368,7 +370,7 @@ export function MessageForm() {
                                                 }
                                             })}
                                             rows={4}
-                                            className={`w-full px-4 py-2.5 rounded-lg border ${errors.message ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none resize-none`}
+                                            className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.message ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none resize-none text-base`}
                                             placeholder="Enter your message..."
                                         />
                                         <p className="text-xs text-slate-500 mt-1">Keep under 160 characters for single SMS</p>
@@ -379,13 +381,13 @@ export function MessageForm() {
 
                             {/* WhatsApp Fields */}
                             {currentPlatform === 'whatsapp' && (
-                                <div className="space-y-4">
+                                <div className="space-y-5">
                                     <div>
-                                        <label className="flex items-center gap-2 mb-3">
+                                        <label className="flex items-center gap-3 mb-3 min-h-[44px]">
                                             <input
                                                 {...register('message_only')}
                                                 type="checkbox"
-                                                className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+                                                className="w-5 h-5 text-green-600 rounded focus:ring-green-500 flex-shrink-0"
                                             />
                                             <span className="text-sm font-semibold text-slate-700">Message only (user selects contact)</span>
                                         </label>
@@ -405,7 +407,7 @@ export function MessageForm() {
                                                     }
                                                 })}
                                                 type="tel"
-                                                className={`w-full px-4 py-2.5 rounded-lg border ${errors.phone_number ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                                className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.phone_number ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                                 placeholder="1234567890"
                                             />
                                             <p className="text-xs text-slate-500 mt-1">No + or spaces (e.g., 1234567890)</p>
@@ -420,7 +422,7 @@ export function MessageForm() {
                                         <textarea
                                             {...register('message')}
                                             rows={4}
-                                            className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                            className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none text-base"
                                             placeholder="Enter your message..."
                                         />
                                     </div>
@@ -429,7 +431,7 @@ export function MessageForm() {
 
                             {/* Telegram Fields */}
                             {currentPlatform === 'telegram' && (
-                                <div className="space-y-4">
+                                <div className="space-y-5">
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">
                                             Username
@@ -447,7 +449,7 @@ export function MessageForm() {
                                                 }
                                             })}
                                             type="text"
-                                            className={`w-full px-4 py-2.5 rounded-lg border ${errors.username ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                            className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.username ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                             placeholder="username"
                                         />
                                         <p className="text-xs text-slate-500 mt-1">Without @ symbol (e.g., username)</p>
@@ -468,7 +470,7 @@ export function MessageForm() {
                                                 }
                                             })}
                                             type="tel"
-                                            className={`w-full px-4 py-2.5 rounded-lg border ${errors.phone_number ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                            className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.phone_number ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                             placeholder="+1234567890"
                                         />
                                         <p className="text-xs text-slate-500 mt-1">Include country code (e.g., +1 for US)</p>
@@ -482,7 +484,7 @@ export function MessageForm() {
                                         <textarea
                                             {...register('message')}
                                             rows={4}
-                                            className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                            className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none text-base"
                                             placeholder="Enter your message..."
                                         />
                                     </div>

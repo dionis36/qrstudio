@@ -65,19 +65,19 @@ function AccordionSection({
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-slate-50 transition-colors min-h-[60px]"
             >
-                <div className="flex items-center gap-4">
-                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className="w-7 h-7" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`p-3 sm:p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
                     </div>
                     <div className="text-left">
-                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
-                        <p className="text-sm text-slate-500">{subtitle}</p>
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-xs sm:text-sm text-slate-500">{subtitle}</p>
                     </div>
                 </div>
                 <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -86,7 +86,7 @@ function AccordionSection({
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
             >
-                <div className="px-6 pb-6 pt-2 border-t border-slate-100">
+                <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-slate-100">
                     {children}
                 </div>
             </div>
@@ -244,37 +244,37 @@ export function EventForm() {
                         </div>
 
                         {/* Custom Colors */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Primary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('styles.primary_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         value={watch('styles.primary_color') || '#7C3AED'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#7C3AED"
                                     />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('styles.secondary_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         value={watch('styles.secondary_color') || '#FAF5FF'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#FAF5FF"
                                     />
                                 </div>
@@ -331,7 +331,7 @@ export function EventForm() {
                     isOpen={openSections.details}
                     onToggle={() => toggleSection('details')}
                 >
-                    <div className="space-y-4 mt-4">
+                    <div className="space-y-5 mt-4">
                         {/* Event Title */}
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -339,19 +339,19 @@ export function EventForm() {
                             </label>
                             <input
                                 {...register('event_details.title', { required: 'Event title is required', minLength: { value: 3, message: 'Title must be at least 3 characters' } })}
-                                className={`w-full px-4 py-2.5 rounded-lg border ${errors.event_details?.title ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.event_details?.title ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                 placeholder="e.g., Team Meeting, Birthday Party, Conference"
                             />
                             {errors.event_details?.title && <span className="text-xs text-red-500 mt-1">{errors.event_details.title.message}</span>}
                         </div>
 
                         {/* Location */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Location</label>
                                 <input
                                     {...register('event_details.location')}
-                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                     placeholder="Conference Room A"
                                 />
                             </div>
@@ -360,24 +360,24 @@ export function EventForm() {
                                 <input
                                     {...register('event_details.location_url')}
                                     type="url"
-                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                     placeholder="https://maps.google.com/..."
                                 />
                             </div>
                         </div>
 
                         {/* All Day Toggle */}
-                        <label className="flex items-center gap-2 cursor-pointer">
+                        <label className="flex items-center gap-3 cursor-pointer min-h-[44px]">
                             <input
                                 {...register('event_details.all_day')}
                                 type="checkbox"
-                                className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500 flex-shrink-0"
                             />
                             <span className="text-sm font-medium text-slate-700">All-day event</span>
                         </label>
 
                         {/* Date and Time */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">
                                     Start Date <span className="text-red-500">*</span>
@@ -385,7 +385,7 @@ export function EventForm() {
                                 <input
                                     {...register('event_details.start_date', { required: 'Start date is required' })}
                                     type="date"
-                                    className={`w-full px-4 py-2.5 rounded-lg border ${errors.event_details?.start_date ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                    className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.event_details?.start_date ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                 />
                                 {errors.event_details?.start_date && <span className="text-xs text-red-500 mt-1">{errors.event_details.start_date.message}</span>}
                             </div>
@@ -396,20 +396,20 @@ export function EventForm() {
                                 <input
                                     {...register('event_details.end_date', { required: 'End date is required' })}
                                     type="date"
-                                    className={`w-full px-4 py-2.5 rounded-lg border ${errors.event_details?.end_date ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                    className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.event_details?.end_date ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                 />
                                 {errors.event_details?.end_date && <span className="text-xs text-red-500 mt-1">{errors.event_details.end_date.message}</span>}
                             </div>
                         </div>
 
                         {!watch('event_details.all_day') && (
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-2">Start Time</label>
                                     <input
                                         {...register('event_details.start_time')}
                                         type="time"
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                     />
                                 </div>
                                 <div>
@@ -417,7 +417,7 @@ export function EventForm() {
                                     <input
                                         {...register('event_details.end_time')}
                                         type="time"
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                     />
                                 </div>
                             </div>
@@ -428,7 +428,7 @@ export function EventForm() {
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Timezone</label>
                             <select
                                 {...register('event_details.timezone')}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                             >
                                 {TIMEZONES.map(tz => (
                                     <option key={tz.value} value={tz.value}>{tz.label}</option>
@@ -447,25 +447,25 @@ export function EventForm() {
                     isOpen={openSections.description}
                     onToggle={() => toggleSection('description')}
                 >
-                    <div className="space-y-4 mt-4">
+                    <div className="space-y-5 mt-4">
                         {/* Description */}
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Description</label>
                             <textarea
                                 {...register('description')}
                                 rows={4}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none text-base"
                                 placeholder="Add event description, agenda, or additional information..."
                             />
                         </div>
 
                         {/* Organizer Details */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Organizer Name</label>
                                 <input
                                     {...register('organizer.name')}
-                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                     placeholder="John Doe"
                                 />
                             </div>
@@ -479,7 +479,7 @@ export function EventForm() {
                                         }
                                     })}
                                     type="email"
-                                    className={`w-full px-4 py-2.5 rounded-lg border ${errors.organizer?.email ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                    className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.organizer?.email ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                     placeholder="john@example.com"
                                 />
                                 {errors.organizer?.email && <span className="text-xs text-red-500 mt-1">{errors.organizer.email.message}</span>}
@@ -492,7 +492,7 @@ export function EventForm() {
                             <input
                                 {...register('event_url')}
                                 type="url"
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 placeholder="https://example.com/event"
                             />
                         </div>
@@ -508,13 +508,13 @@ export function EventForm() {
                     isOpen={openSections.reminders}
                     onToggle={() => toggleSection('reminders')}
                 >
-                    <div className="space-y-4 mt-4">
+                    <div className="space-y-5 mt-4">
                         {/* Enable Reminders */}
-                        <label className="flex items-center gap-2 cursor-pointer">
+                        <label className="flex items-center gap-3 cursor-pointer min-h-[44px]">
                             <input
                                 {...register('reminders.enabled')}
                                 type="checkbox"
-                                className="w-4 h-4 rounded border-slate-300 text-orange-600 focus:ring-2 focus:ring-orange-500"
+                                className="w-5 h-5 rounded border-slate-300 text-orange-600 focus:ring-2 focus:ring-orange-500 flex-shrink-0"
                             />
                             <span className="text-sm font-medium text-slate-700">Enable event reminders</span>
                         </label>
@@ -524,7 +524,7 @@ export function EventForm() {
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Reminder Time</label>
                                 <select
                                     {...register('reminders.times.0')}
-                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-orange-500 outline-none"
+                                    className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-orange-500 outline-none text-base min-h-[44px]"
                                 >
                                     {REMINDER_OPTIONS.map(option => (
                                         <option key={option.value} value={option.value}>{option.label}</option>
