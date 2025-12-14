@@ -193,35 +193,42 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
                         <ArrowLeft className="w-4 h-4" />
                         <span className="text-sm font-medium">{isJustCreated ? 'Dashboard' : 'Back'}</span>
                     </button>
-                    <div className="flex items-start justify-between">
-                        <div>
-                            <h1 className="text-3xl font-bold text-slate-900">{qrCode.name}</h1>
-                            <p className="text-slate-600 mt-2">qrstudio.app/q/{qrCode.shortcode}</p>
-                        </div>
+
+                    {/* Title Row with Status Badge */}
+                    <div className="flex items-center justify-between mb-2">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{qrCode.name}</h1>
+                        <button
+                            onClick={handleToggleStatus}
+                            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium transition-all ${qrCode.isActive
+                                    ? 'bg-green-100 text-green-700 hover:bg-green-200 border border-green-200'
+                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                                }`}
+                        >
+                            {qrCode.isActive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                            <span>{qrCode.isActive ? 'Active' : 'Inactive'}</span>
+                        </button>
+                    </div>
+
+                    {/* URL Row with Action Buttons */}
+                    <div className="flex items-center justify-between">
+                        <p className="text-sm sm:text-base text-slate-600">qrstudio.app/q/{qrCode.shortcode}</p>
+
+                        {/* Icon-Only Action Buttons */}
                         <div className="flex gap-2">
-                            <button
-                                onClick={handleToggleStatus}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${qrCode.isActive
-                                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                                    }`}
-                            >
-                                {qrCode.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                                {qrCode.isActive ? 'Active' : 'Inactive'}
-                            </button>
                             <Link
                                 href={`/create/${qrCode.type}?edit=${qrCode.id}`}
-                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                                className="p-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg hover:shadow-blue-500/25 transition-all"
+                                title="Edit"
                             >
                                 <Edit className="w-4 h-4" />
-                                Edit
                             </Link>
+
                             <button
                                 onClick={handleDeleteClick}
-                                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
+                                className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 border border-red-200 transition-all"
+                                title="Delete"
                             >
                                 <Trash2 className="w-4 h-4" />
-                                Delete
                             </button>
                         </div>
                     </div>
