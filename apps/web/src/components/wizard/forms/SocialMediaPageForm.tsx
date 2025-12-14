@@ -89,19 +89,19 @@ function AccordionSection({
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-slate-50 transition-colors min-h-[60px]"
             >
-                <div className="flex items-center gap-4">
-                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className="w-7 h-7" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`p-3 sm:p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
                     </div>
                     <div className="text-left">
-                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
-                        <p className="text-sm text-slate-500">{subtitle}</p>
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-xs sm:text-sm text-slate-500">{subtitle}</p>
                     </div>
                 </div>
                 <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -110,7 +110,7 @@ function AccordionSection({
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
             >
-                <div className="px-6 pb-6 pt-2 border-t border-slate-100">
+                <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-slate-100">
                     {children}
                 </div>
             </div>
@@ -238,37 +238,37 @@ export function SocialMediaPageForm() {
                         </div>
 
                         {/* Custom Colors */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Primary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('styles.primary_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         value={watch('styles.primary_color') || '#A855F7'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#A855F7"
                                     />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('styles.secondary_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         value={watch('styles.secondary_color') || '#FDF4FF'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#FDF4FF"
                                     />
                                 </div>
@@ -325,9 +325,9 @@ export function SocialMediaPageForm() {
                     isOpen={openSections.profile}
                     onToggle={() => toggleSection('profile')}
                 >
-                    <div className="space-y-6 mt-4">
+                    <div className="space-y-5 mt-4">
                         {/* Row 1: Profile Photo + Name & Bio */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {/* Left: Profile Photo Upload */}
                             <div>
                                 <ImageUpload
@@ -352,7 +352,7 @@ export function SocialMediaPageForm() {
                                             maxLength: { value: 50, message: 'Display name must be 50 characters or less' }
                                         })}
                                         type="text"
-                                        className={`w-full px-4 py-2.5 rounded-lg border ${errors.display_name ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                        className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.display_name ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                         placeholder="John Doe"
                                     />
                                     {errors.display_name && <span className="text-xs text-red-500 mt-1">{errors.display_name.message}</span>}
@@ -368,7 +368,7 @@ export function SocialMediaPageForm() {
                                             maxLength: { value: 150, message: 'Bio must be 150 characters or less' }
                                         })}
                                         rows={3}
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none text-base"
                                         placeholder="Content Creator | Tech Enthusiast"
                                     />
                                     <div className="flex justify-between items-center mt-1">
@@ -389,7 +389,7 @@ export function SocialMediaPageForm() {
                                     maxLength: { value: 30, message: 'Title must be 30 characters or less' }
                                 })}
                                 type="text"
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 placeholder="My Works"
                             />
                             <span className="text-xs text-slate-400">{watch('title')?.length || 0}/30</span>
@@ -405,7 +405,7 @@ export function SocialMediaPageForm() {
                                     maxLength: { value: 100, message: 'Tagline must be 100 characters or less' }
                                 })}
                                 rows={2}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none text-base"
                                 placeholder="Hi, I'm a photographer and I want to share my work with you..."
                             />
                             <span className="text-xs text-slate-400">{watch('tagline')?.length || 0}/100</span>
@@ -495,16 +495,16 @@ export function SocialMediaPageForm() {
                         {/* Platform Icon Selector */}
                         <div>
                             <p className="text-sm font-semibold text-slate-700 mb-3">Click to add platform:</p>
-                            <div className="flex flex-wrap gap-3">
+                            <div className="grid grid-cols-4 sm:grid-cols-5 md:flex md:flex-wrap gap-2 sm:gap-3">
                                 {SOCIAL_PLATFORMS.map(platform => (
                                     <button
                                         key={platform.id}
                                         type="button"
                                         onClick={() => addLink({ platform: platform.id, url: '', custom_label: '' })}
-                                        className="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-slate-50 transition-all w-20 h-20 shadow-sm group"
+                                        className="flex flex-col items-center justify-center p-2 sm:p-3 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-slate-50 transition-all w-full md:w-16 h-12 sm:h-16 shadow-sm group"
+                                        title={platform.name}
                                     >
-                                        <platform.icon className="w-6 h-6 transition-transform group-hover:scale-110" style={{ color: platform.color }} />
-                                        <span className="capitalize text-[10px] font-medium text-slate-600 mt-2 text-center leading-tight">{platform.name}</span>
+                                        <platform.icon className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:scale-110 flex-shrink-0" style={{ color: platform.color }} />
                                     </button>
                                 ))}
                             </div>
@@ -520,18 +520,15 @@ export function SocialMediaPageForm() {
                                 const brandColor = platformConfig?.color || '#64748b';
 
                                 return (
-                                    <div key={field.id} className="flex gap-3 items-start animate-in slide-in-from-left-2 duration-300">
+                                    <div key={field.id} className="flex gap-2 sm:gap-3 items-center animate-in slide-in-from-left-2 duration-300">
                                         <div
-                                            className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white shadow-sm mt-1"
+                                            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-white shadow-sm"
                                             style={{ backgroundColor: brandColor }}
                                         >
-                                            <Icon className="w-5 h-5" />
+                                            <Icon className="w-4 h-4" />
                                         </div>
-                                        <div className="flex-1 space-y-2">
+                                        <div className="flex-1 min-w-0 space-y-2">
                                             <div className="relative">
-                                                <span className="absolute left-3 top-2.5 text-slate-400 text-sm capitalize font-medium">
-                                                    {platformConfig?.name || platformId}:
-                                                </span>
                                                 <input
                                                     {...register(`social_links.${index}.url` as const, {
                                                         required: 'URL is required',
@@ -540,9 +537,8 @@ export function SocialMediaPageForm() {
                                                             message: 'Please enter a valid URL'
                                                         }
                                                     })}
-                                                    className="w-full pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-shadow"
+                                                    className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-xs sm:text-sm transition-shadow min-h-[44px]"
                                                     placeholder="https://..."
-                                                    style={{ paddingLeft: `${(platformConfig?.name?.length || 8) * 9 + 20}px` }}
                                                 />
                                             </div>
                                             {errors.social_links?.[index]?.url && (
@@ -552,7 +548,7 @@ export function SocialMediaPageForm() {
                                             {platformId === 'website' && (
                                                 <input
                                                     {...register(`social_links.${index}.custom_label` as const)}
-                                                    className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                                    className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-xs sm:text-sm min-h-[44px]"
                                                     placeholder="Custom button text (optional)"
                                                 />
                                             )}
@@ -560,7 +556,7 @@ export function SocialMediaPageForm() {
                                         <button
                                             type="button"
                                             onClick={() => removeLink(index)}
-                                            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors mt-1"
+                                            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center flex-shrink-0"
                                             title="Remove"
                                         >
                                             <Trash2 className="w-5 h-5" />
