@@ -52,60 +52,60 @@ export default function DashboardPage() {
 
                 {/* Header */}
                 <div className="mb-6 sm:mb-8">
-                    <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-                    <p className="text-slate-600 mt-2">Welcome back! Here's your QR code overview.</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Dashboard</h1>
+                    <p className="text-sm sm:text-base text-slate-600 mt-2">Welcome back! Here's your QR code overview.</p>
                 </div>
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {/* Stats Grid - 2x2 on mobile, 4 columns on desktop */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
                     {/* Total QR Codes */}
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-slate-600">Total QR Codes</p>
-                                <p className="text-3xl font-bold text-slate-900 mt-2">{stats?.totalQrCodes || 0}</p>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs sm:text-sm font-medium text-slate-600 truncate">Total QR Codes</p>
+                                <p className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1 sm:mt-2">{stats?.totalQrCodes || 0}</p>
                             </div>
-                            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <QrCode className="w-6 h-6 text-blue-600" />
+                            <div className="bg-blue-100 p-2 sm:p-3 rounded-lg ml-2">
+                                <QrCode className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                             </div>
                         </div>
                     </div>
 
                     {/* Active QR Codes */}
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-slate-600">Active QR Codes</p>
-                                <p className="text-3xl font-bold text-green-600 mt-2">{stats?.activeQrCodes || 0}</p>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs sm:text-sm font-medium text-slate-600 truncate">Active</p>
+                                <p className="text-2xl sm:text-3xl font-bold text-green-600 mt-1 sm:mt-2">{stats?.activeQrCodes || 0}</p>
                             </div>
-                            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                                <Activity className="w-6 h-6 text-green-600" />
+                            <div className="bg-green-100 p-2 sm:p-3 rounded-lg ml-2">
+                                <Activity className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                             </div>
                         </div>
                     </div>
 
                     {/* Total Scans */}
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-slate-600">Total Scans</p>
-                                <p className="text-3xl font-bold text-purple-600 mt-2">{stats?.totalScans || 0}</p>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs sm:text-sm font-medium text-slate-600 truncate">Total Scans</p>
+                                <p className="text-2xl sm:text-3xl font-bold text-purple-600 mt-1 sm:mt-2">{stats?.totalScans || 0}</p>
                             </div>
-                            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                                <BarChart3 className="w-6 h-6 text-purple-600" />
+                            <div className="bg-purple-100 p-2 sm:p-3 rounded-lg ml-2">
+                                <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                             </div>
                         </div>
                     </div>
 
                     {/* Recent Scans (Last 7 Days) */}
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-slate-600">Last 7 Days</p>
-                                <p className="text-3xl font-bold text-orange-600 mt-2">{stats?.recentScans || 0}</p>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs sm:text-sm font-medium text-slate-600 truncate">Last 7 Days</p>
+                                <p className="text-2xl sm:text-3xl font-bold text-orange-600 mt-1 sm:mt-2">{stats?.recentScans || 0}</p>
                             </div>
-                            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                                <TrendingUp className="w-6 h-6 text-orange-600" />
+                            <div className="bg-orange-100 p-2 sm:p-3 rounded-lg ml-2">
+                                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
                             </div>
                         </div>
                     </div>
