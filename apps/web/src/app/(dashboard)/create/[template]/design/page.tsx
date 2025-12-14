@@ -33,19 +33,19 @@ function AccordionSection({
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-slate-50 transition-colors min-h-[60px]"
             >
-                <div className="flex items-center gap-4">
-                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className="w-7 h-7" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`p-3 sm:p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
                     </div>
                     <div className="text-left">
-                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
-                        <p className="text-sm text-slate-500">{subtitle}</p>
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-xs sm:text-sm text-slate-500">{subtitle}</p>
                     </div>
                 </div>
                 <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -54,7 +54,7 @@ function AccordionSection({
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
             >
-                <div className="px-6 pb-6 pt-2 border-t border-slate-100">
+                <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-slate-100">
                     {children}
                 </div>
             </div>
@@ -306,22 +306,22 @@ export default function DesignPage({ params }: { params: { template: string } })
 
                                 {/* Colors moved inside pattern section */}
                                 <div className="pt-4 border-t border-slate-100">
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         {/* Foreground Color */}
                                         <div>
                                             <label className="block text-sm font-semibold text-slate-700 mb-2">Dot color</label>
-                                            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200 min-h-[44px]">
                                                 <input
                                                     type="color"
                                                     value={design.dots?.color ?? '#000000'}
                                                     onChange={(e) => updateDesign({ dots: { ...design.dots, color: e.target.value } })}
-                                                    className="w-10 h-10 rounded border-0 cursor-pointer"
+                                                    className="w-10 h-10 rounded border-0 cursor-pointer flex-shrink-0"
                                                 />
                                                 <input
                                                     type="text"
                                                     value={design.dots?.color ?? '#000000'}
                                                     onChange={(e) => updateDesign({ dots: { ...design.dots, color: e.target.value } })}
-                                                    className="flex-1 bg-transparent text-sm font-mono text-slate-700 focus:outline-none"
+                                                    className="flex-1 bg-transparent text-xs sm:text-sm font-mono text-slate-700 focus:outline-none uppercase"
                                                     placeholder="#000000"
                                                 />
                                             </div>
@@ -330,19 +330,19 @@ export default function DesignPage({ params }: { params: { template: string } })
                                         {/* Background Color */}
                                         <div>
                                             <label className="block text-sm font-semibold text-slate-700 mb-2">Background color</label>
-                                            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200 min-h-[44px]">
                                                 <input
                                                     type="color"
                                                     value={design.background?.color ?? '#ffffff'}
                                                     onChange={(e) => updateDesign({ background: { color: e.target.value } })}
-                                                    className="w-10 h-10 rounded border-0 cursor-pointer"
+                                                    className="w-10 h-10 rounded border-0 cursor-pointer flex-shrink-0"
                                                     disabled={design.background?.color === 'transparent'}
                                                 />
                                                 <input
                                                     type="text"
                                                     value={design.background?.color ?? '#ffffff'}
                                                     onChange={(e) => updateDesign({ background: { color: e.target.value } })}
-                                                    className="flex-1 bg-transparent text-sm font-mono text-slate-700 focus:outline-none disabled:opacity-50"
+                                                    className="flex-1 bg-transparent text-xs sm:text-sm font-mono text-slate-700 focus:outline-none disabled:opacity-50 uppercase"
                                                     placeholder="#ffffff"
                                                     disabled={design.background?.color === 'transparent'}
                                                 />
@@ -351,14 +351,14 @@ export default function DesignPage({ params }: { params: { template: string } })
                                     </div>
 
                                     {/* Transparent Background Checkbox */}
-                                    <label className="flex items-center gap-2 cursor-pointer mt-3">
+                                    <label className="flex items-center gap-2 sm:gap-3 cursor-pointer mt-3 min-h-[44px]">
                                         <input
                                             type="checkbox"
                                             checked={design.background?.color === 'transparent'}
                                             onChange={(e) => updateDesign({
                                                 background: { color: e.target.checked ? 'transparent' : '#ffffff' }
                                             })}
-                                            className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                            className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500 flex-shrink-0"
                                         />
                                         <span className="text-sm text-slate-700">Transparent background</span>
                                     </label>
@@ -393,12 +393,12 @@ export default function DesignPage({ params }: { params: { template: string } })
                                     </button>
                                 </div>
 
-                                <div className="flex gap-6">
+                                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                                     {/* Corner Square Style */}
                                     <div className="flex-1">
                                         <label className="block text-sm font-semibold text-slate-700 mb-3">Corner square style</label>
-                                        {/* Grid set to 2 columns for a smaller layout */}
-                                        <div className="grid grid-cols-2 gap-3">
+                                        {/* Grid set to 3 columns on mobile, 2 on desktop for better mobile layout */}
+                                        <div className="grid grid-cols-3 sm:grid-cols-2 gap-2 sm:gap-3">
                                             {[
                                                 { style: 'square', label: 'Square' },
                                                 { style: 'dot', label: 'Dot' },
@@ -407,39 +407,29 @@ export default function DesignPage({ params }: { params: { template: string } })
                                                 <button
                                                     key={style}
                                                     onClick={() => updateDesign({ cornersSquare: { ...design.cornersSquare, style } })}
-                                                    // Reduced p-3 to p-2 and rounded-xl to rounded-lg for smaller size
-                                                    className={`p-2 border-2 rounded-lg transition-all flex flex-col items-center gap-1.5 ${design.cornersSquare?.style === style
+                                                    className={`p-2 sm:p-3 border-2 rounded-lg transition-all flex flex-col items-center gap-1.5 sm:gap-2 min-h-[70px] sm:min-h-[80px] ${design.cornersSquare?.style === style
                                                         ? 'border-orange-600 bg-orange-50'
                                                         : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'
                                                         }`}
                                                 >
                                                     {/* Reduced size of preview icon wrapper */}
-                                                    <div className="w-8 h-8 flex items-center justify-center">
+                                                    <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center flex-shrink-0">
                                                         {/* Reduced size of preview icon */}
-                                                        <div className={`w-5 h-5 border-2 border-slate-800 ${style === 'dot' ? 'rounded-full' :
+                                                        <div className={`w-4 h-4 sm:w-5 sm:h-5 border-2 border-slate-800 ${style === 'dot' ? 'rounded-full' :
                                                             style === 'extra-rounded' ? 'rounded-md' :
                                                                 'rounded-sm'
                                                             }`} />
                                                     </div>
-                                                    <span className="text-xs font-medium text-slate-700">{label}</span>
+                                                    <span className="text-[10px] sm:text-xs font-medium text-slate-700 text-center leading-tight">{label}</span>
                                                 </button>
                                             ))}
-                                            {/* This is a simple placeholder to ensure the grid items align correctly. 
-                                        It renders an empty cell only if the number of items is odd (3 % 2 = 1).
-                                      */}
-                                            {([
-                                                { style: 'square', label: 'Square' },
-                                                { style: 'dot', label: 'Dot' },
-                                                { style: 'extra-rounded', label: 'Rounded' }
-                                            ].length % 2 !== 0) && <div className="h-0" />}
                                         </div>
                                     </div>
 
                                     {/* Corner Dot Style */}
-                                    {/* Added pt-4 border-t border-slate-100 here to visually separate it from other sections */}
                                     <div className="flex-1">
                                         <label className="block text-sm font-semibold text-slate-700 mb-3">Corner dot style</label>
-                                        <div className="grid grid-cols-2 gap-3">
+                                        <div className="grid grid-cols-2 gap-2 sm:gap-3">
                                             {[
                                                 { style: 'square', label: 'Square' },
                                                 { style: 'dot', label: 'Dot' }
@@ -447,47 +437,46 @@ export default function DesignPage({ params }: { params: { template: string } })
                                                 <button
                                                     key={style}
                                                     onClick={() => updateDesign({ cornersDot: { ...design.cornersDot, style } })}
-                                                    // Reduced p-3 to p-2 and rounded-xl to rounded-lg for smaller size
-                                                    className={`p-2 border-2 rounded-lg transition-all flex flex-col items-center gap-1.5 ${design.cornersDot?.style === style
+                                                    className={`p-2 sm:p-3 border-2 rounded-lg transition-all flex flex-col items-center gap-1.5 sm:gap-2 min-h-[70px] sm:min-h-[80px] ${design.cornersDot?.style === style
                                                         ? 'border-orange-600 bg-orange-50'
                                                         : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'
                                                         }`}
                                                 >
                                                     {/* Reduced size of preview icon wrapper */}
-                                                    <div className="w-8 h-8 flex items-center justify-center">
+                                                    <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center flex-shrink-0">
                                                         {/* Reduced size of preview icon */}
-                                                        <div className={`w-4 h-4 bg-slate-800 ${style === 'dot' ? 'rounded-full' : 'rounded-sm'
+                                                        <div className={`w-3 h-3 sm:w-4 sm:h-4 bg-slate-800 ${style === 'dot' ? 'rounded-full' : 'rounded-sm'
                                                             }`} />
                                                     </div>
-                                                    <span className="text-xs font-medium text-slate-700">{label}</span>
+                                                    <span className="text-[10px] sm:text-xs font-medium text-slate-700 text-center leading-tight">{label}</span>
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="flex gap-6">
+                                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                                     {/* Corner Square Color */}
                                     <div className="flex-1 pt-4 border-t border-slate-100">
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Corner square color</label>
-                                        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200 min-h-[44px]">
                                             <input
                                                 type="color"
                                                 value={design.cornersSquare?.color ?? design.dots?.color ?? '#000000'}
                                                 onChange={(e) => updateDesign({ cornersSquare: { ...design.cornersSquare, color: e.target.value } })}
-                                                className="w-10 h-10 rounded border-0 cursor-pointer"
+                                                className="w-10 h-10 rounded border-0 cursor-pointer flex-shrink-0"
                                             />
                                             <input
                                                 type="text"
                                                 value={design.cornersSquare?.color ?? design.dots?.color ?? '#000000'}
                                                 onChange={(e) => updateDesign({ cornersSquare: { ...design.cornersSquare, color: e.target.value } })}
-                                                className="flex-1 bg-transparent text-sm font-mono text-slate-700 focus:outline-none uppercase"
+                                                className="flex-1 bg-transparent text-xs sm:text-sm font-mono text-slate-700 focus:outline-none uppercase"
                                                 placeholder="#000000"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => copyColor(design.cornersSquare?.color ?? design.dots?.color ?? '#000000', 'square')}
-                                                className="p-1.5 hover:bg-slate-200 rounded transition-colors"
+                                                className="p-1.5 hover:bg-slate-200 rounded transition-colors flex-shrink-0"
                                                 title="Copy color"
                                             >
                                                 {copiedColor === 'square' ? (
@@ -512,24 +501,24 @@ export default function DesignPage({ params }: { params: { template: string } })
                                     {/* Corner Dot Color */}
                                     <div className="flex-1 pt-4 border-t border-slate-100">
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Corner dot color</label>
-                                        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200 min-h-[44px]">
                                             <input
                                                 type="color"
                                                 value={design.cornersDot?.color ?? design.dots?.color ?? '#000000'}
                                                 onChange={(e) => updateDesign({ cornersDot: { ...design.cornersDot, color: e.target.value } })}
-                                                className="w-10 h-10 rounded border-0 cursor-pointer"
+                                                className="w-10 h-10 rounded border-0 cursor-pointer flex-shrink-0"
                                             />
                                             <input
                                                 type="text"
                                                 value={design.cornersDot?.color ?? design.dots?.color ?? '#000000'}
                                                 onChange={(e) => updateDesign({ cornersDot: { ...design.cornersDot, color: e.target.value } })}
-                                                className="flex-1 bg-transparent text-sm font-mono text-slate-700 focus:outline-none uppercase"
+                                                className="flex-1 bg-transparent text-xs sm:text-sm font-mono text-slate-700 focus:outline-none uppercase"
                                                 placeholder="#000000"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => copyColor(design.cornersDot?.color ?? design.dots?.color ?? '#000000', 'dot')}
-                                                className="p-1.5 hover:bg-slate-200 rounded transition-colors"
+                                                className="p-1.5 hover:bg-slate-200 rounded transition-colors flex-shrink-0"
                                                 title="Copy color"
                                             >
                                                 {copiedColor === 'dot' ? (
