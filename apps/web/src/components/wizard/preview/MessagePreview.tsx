@@ -11,6 +11,15 @@ export function MessagePreview() {
     const messageOnly = payload.message_only || false;
     const styles = payload.styles || {};
 
+    // Helper to lighten a color
+    const lightenColor = (hex: string, percent: number = 30) => {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = Math.min(255, (num >> 16) + Math.round(((255 - (num >> 16)) * percent) / 100));
+        const g = Math.min(255, ((num >> 8) & 0x00FF) + Math.round(((255 - ((num >> 8) & 0x00FF)) * percent) / 100));
+        const b = Math.min(255, (num & 0x0000FF) + Math.round(((255 - (num & 0x0000FF)) * percent) / 100));
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+    };
+
     // Generate background style
     const getBackgroundStyle = () => {
         const primary = styles.primary_color || '#10B981';
@@ -27,7 +36,10 @@ export function MessagePreview() {
                 background: `radial-gradient(circle, ${primary}, ${secondary})`
             };
         }
-        return { backgroundColor: primary };
+        // Default: subtle gradient from primary to lighter shade
+        return {
+            background: `linear-gradient(180deg, ${primary} 0%, ${lightenColor(primary, 30)} 100%)`
+        };
     };
 
     // Platform-specific data
@@ -41,7 +53,10 @@ export function MessagePreview() {
     const PlatformIcon = currentPlatform.Icon;
 
     return (
-        <div className="h-full w-full overflow-y-auto bg-slate-50" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div
+            className="absolute inset-0 w-full h-full flex flex-col bg-slate-100 overflow-y-auto"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
             <style jsx>{`
                 div::-webkit-scrollbar {
                     display: none;
@@ -50,7 +65,7 @@ export function MessagePreview() {
 
             {/* Gradient Header */}
             <div
-                className="relative px-7 pt-16 pb-20 text-white"
+                className="px-7 pt-28 pb-14 flex flex-col items-center text-center text-white"
                 style={getBackgroundStyle()}
             >
                 {/* Platform Icon */}
@@ -61,7 +76,10 @@ export function MessagePreview() {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-xl font-bold text-center mb-2">
+                <h1
+                    className="text-xl font-bold text-center mb-2"
+                    style={{ color: styles.secondary_color || '#FFFFFF' }}
+                >
                     Send Message
                 </h1>
 
@@ -71,25 +89,10 @@ export function MessagePreview() {
                 </p>
             </div>
 
-            {/* Wave Separator */}
-            <div className="relative -mt-12">
-                <svg
-                    viewBox="0 0 1440 120"
-                    className="w-full"
-                    preserveAspectRatio="none"
-                    style={{ height: '60px' }}
-                >
-                    <path
-                        d="M0,64 C360,20 720,20 1080,64 C1260,86 1350,96 1440,96 L1440,120 L0,120 Z"
-                        fill="#F8FAFC"
-                    />
-                </svg>
-            </div>
-
-            {/* Content Area */}
-            <div className="px-4 pb-6 space-y-3 -mt-4">
+            {/* Content Area with Rounded Top */}
+            <div className="flex-1 px-4 pt-6 pb-4 space-y-3 bg-slate-100 rounded-t-3xl -mt-8">
                 {/* Platform Card */}
-                <div className="bg-white rounded-2xl p-5 shadow-sm">
+                <div className="bg-white rounded-2xl p-5 shadow-md">
                     <h3
                         className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
                         style={{ color: styles.primary_color || '#10B981', fontSize: '0.75rem', letterSpacing: '0.05em' }}
@@ -106,7 +109,7 @@ export function MessagePreview() {
 
                 {/* Phone Number Card (if provided and not message-only) */}
                 {phoneNumber && !messageOnly && (
-                    <div className="bg-white rounded-2xl p-5 shadow-sm">
+                    <div className="bg-white rounded-2xl p-5 shadow-md">
                         <h3
                             className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
                             style={{ color: styles.primary_color || '#10B981', fontSize: '0.75rem', letterSpacing: '0.05em' }}
@@ -180,6 +183,13 @@ export function MessagePreview() {
                     <PlatformIcon className="w-5 h-5" />
                     {currentPlatform.action}
                 </button>
+            </div>
+
+            {/* Footer Branding */}
+            <div className="pb-6 text-center bg-slate-100">
+                <p className="text-xs text-slate-600">
+                    Powered by <span className="font-semibold">QR Studio</span>
+                </p>
             </div>
         </div>
     );
