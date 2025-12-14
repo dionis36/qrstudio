@@ -96,17 +96,20 @@ export function EventPreview() {
             };
         }
 
-        // Default gradient
-        const darkPrimary = darkenColor(primary_color, 15);
+        // Default: subtle gradient from primary to lighter shade
+        const lightPrimary = lightenColor(primary_color, 30);
         return {
-            background: `linear-gradient(135deg, ${primary_color} 0%, ${darkPrimary} 100%)`
+            background: `linear-gradient(180deg, ${primary_color} 0%, ${lightPrimary} 100%)`
         };
     };
 
     const lightPrimary = lightenColor(styles.primary_color, 95);
 
     return (
-        <div className="flex flex-col h-full font-sans bg-slate-50 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div
+            className="absolute inset-0 w-full h-full flex flex-col bg-slate-50 overflow-y-auto"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
 
             {/* Header Section - Calendar Icon, Title, Button */}
             <div
@@ -121,7 +124,10 @@ export function EventPreview() {
                 </div>
 
                 {/* Event Title */}
-                <h1 className="text-xl font-bold text-center mb-3 leading-tight px-4">
+                <h1
+                    className="text-xl font-bold text-center mb-3 leading-tight px-4"
+                    style={{ color: styles.secondary_color || '#FFFFFF' }}
+                >
                     {eventDetails.title || 'Event Title'}
                 </h1>
 
@@ -165,8 +171,8 @@ export function EventPreview() {
                 </button>
             </div>
 
-            {/* Content Section - All Details */}
-            <div className="px-4 py-4 space-y-3.5 pb-20">
+            {/* Content Section with Rounded Top */}
+            <div className="flex-1 px-4 pt-6 pb-4 space-y-3.5 bg-slate-50 rounded-t-3xl -mt-6">
 
                 {/* Date & Time Card */}
                 <div className="bg-white rounded-2xl p-5 shadow-sm">
@@ -291,6 +297,13 @@ export function EventPreview() {
                     display: none;
                 }
             `}</style>
+
+            {/* Footer Branding */}
+            <div className="pb-6 text-center bg-slate-50">
+                <p className="text-xs text-slate-600">
+                    Powered by <span className="font-semibold">QR Studio</span>
+                </p>
+            </div>
         </div>
     );
 }
