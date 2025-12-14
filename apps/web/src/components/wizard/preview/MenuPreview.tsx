@@ -39,6 +39,7 @@ export function MenuPreview({ data }: { data: MenuData }) {
     const info = data.restaurant_info || {};
     const categories = data.content?.categories || [];
     const primaryColor = data.styles?.primary_color || '#f97316';
+    const secondaryColor = data.styles?.secondary_color || '#FFF7ED';
 
     // Helper to lighten a color
     const lightenColor = (hex: string, percent: number = 30) => {
@@ -53,8 +54,9 @@ export function MenuPreview({ data }: { data: MenuData }) {
 
     return (
         <div
-            className="absolute inset-0 w-full h-full flex flex-col bg-white overflow-y-auto"
+            className="absolute inset-0 w-full h-full flex flex-col overflow-y-auto"
             style={{
+                backgroundColor: secondaryColor || '#F1F5F9',
                 scrollbarWidth: 'none', // Firefox
                 msOverflowStyle: 'none', // IE/Edge
             }}
@@ -66,8 +68,8 @@ export function MenuPreview({ data }: { data: MenuData }) {
                 }
             `}</style>
 
-            {/* Hero Banner */}
-            <div className="h-48 bg-gray-200 relative shrink-0">
+            {/* Hero Banner - Taller with Better Content Spacing */}
+            <div className="h-72 bg-gray-200 relative shrink-0">
                 {info.cover_image ? (
                     <img
                         src={info.cover_image}
@@ -79,16 +81,16 @@ export function MenuPreview({ data }: { data: MenuData }) {
                         className="w-full h-full"
                         style={{
                             background: data.styles?.gradient_type === 'linear'
-                                ? `linear-gradient(${data.styles.gradient_angle || 135}deg, ${primaryColor}, ${data.styles.secondary_color || primaryColor})`
+                                ? `linear-gradient(${data.styles.gradient_angle || 135}deg, ${primaryColor}, ${secondaryColor})`
                                 : data.styles?.gradient_type === 'radial'
-                                    ? `radial-gradient(circle, ${primaryColor}, ${data.styles.secondary_color || primaryColor})`
-                                    : primaryColor // Solid color (default)
+                                    ? `radial-gradient(circle, ${primaryColor}, ${secondaryColor})`
+                                    : `linear-gradient(180deg, ${primaryColor} 0%, ${lightenColor(primaryColor, 30)} 100%)` // Subtle gradient default
                         }}
                     />
                 )}
                 <div className="absolute inset-0 bg-black/20" />
 
-                <div className="absolute bottom-0 left-0 w-full p-4 text-white">
+                <div className="absolute bottom-0 left-0 w-full px-5 pt-5 pb-14 text-white">
                     <div className="flex items-center gap-3">
                         {info.logo && (
                             <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-lg bg-white shrink-0">
@@ -107,88 +109,98 @@ export function MenuPreview({ data }: { data: MenuData }) {
                 </div>
             </div>
 
-            {/* Info Bar */}
-            <div className="px-4 py-3 flex gap-4 border-b border-gray-100 bg-white sticky top-0 z-10 shadow-sm overflow-x-auto no-scrollbar">
-                {info.phone && (
-                    <a href={`tel:${info.phone}`} className="flex items-center gap-1.5 text-xs text-gray-600 whitespace-nowrap hover:opacity-80 transition-opacity">
-                        <Phone className="w-3.5 h-3.5" style={{ color: primaryColor }} />
-                        <span>Call</span>
-                    </a>
-                )}
-                {info.website && (
-                    <a href={info.website} target="_blank" className="flex items-center gap-1.5 text-xs text-gray-600 whitespace-nowrap hover:opacity-80 transition-opacity">
-                        <Globe className="w-3.5 h-3.5" style={{ color: primaryColor }} />
-                        <span>Website</span>
-                    </a>
-                )}
-            </div>
+            {/* Content Area with Rounded Top */}
+            <div
+                className="flex-1 rounded-t-3xl -mt-8 relative z-10"
+                style={{ backgroundColor: secondaryColor || '#F1F5F9' }}
+            >
+                {/* Info Bar - Blends with content area */}
+                <div
+                    className="px-4 py-3 flex gap-4 border-b border-gray-200 sticky top-0 z-10 shadow-sm overflow-x-auto no-scrollbar rounded-t-3xl"
+                    style={{ backgroundColor: secondaryColor || '#F1F5F9' }}
+                >
+                    {info.phone && (
+                        <a href={`tel:${info.phone}`} className="flex items-center gap-1.5 text-xs text-gray-600 whitespace-nowrap hover:opacity-80 transition-opacity">
+                            <Phone className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                            <span>Call</span>
+                        </a>
+                    )}
+                    {info.website && (
+                        <a href={info.website} target="_blank" className="flex items-center gap-1.5 text-xs text-gray-600 whitespace-nowrap hover:opacity-80 transition-opacity">
+                            <Globe className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                            <span>Website</span>
+                        </a>
+                    )}
+                </div>
 
-            {/* Categories & Items */}
-            <div className="flex-1 p-4 space-y-8">
-                {categories.length === 0 && (
-                    <div className="text-center py-10 text-gray-400 text-sm">
-                        Add categories and items to see them here.
-                    </div>
-                )}
-
-                {categories.map((category) => (
-                    <div key={category.id} className="scroll-mt-20">
-                        <h3 className="text-lg font-bold mb-3 flex items-center gap-2" style={{ color: primaryColor }}>
-                            {category.name || 'Category'}
-                            <span className="h-px bg-gray-100 flex-1"></span>
-                        </h3>
-
-                        <div className="space-y-4">
-                            {category.items?.map((item) => {
-                                const isAvailable = item.available !== false; // Default to true if not specified
-                                const currencySymbol = item.currency === 'TSH' ? 'TSh' : '$';
-
-                                return (
-                                    <div key={item.id} className={`flex gap-3 items-start ${!isAvailable ? 'opacity-50' : ''}`}>
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-start gap-2">
-                                                <div className="flex items-center gap-2">
-                                                    <h4 className="font-bold text-sm text-gray-900">{item.name || 'Item Name'}</h4>
-                                                    {!isAvailable && (
-                                                        <span
-                                                            className="text-[10px] font-semibold px-2 py-0.5 rounded-full border"
-                                                            style={{
-                                                                backgroundColor: lightenColor('#EF4444', 95),
-                                                                color: '#DC2626',
-                                                                borderColor: lightenColor('#EF4444', 85)
-                                                            }}
-                                                        >
-                                                            Unavailable
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                {item.price ? (
-                                                    <span className="font-semibold text-sm whitespace-nowrap" style={{ color: isAvailable ? primaryColor : '#9ca3af' }}>
-                                                        {currencySymbol} {Number(item.price).toFixed(2)}
-                                                    </span>
-                                                ) : null}
-                                            </div>
-                                            {item.description && (
-                                                <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
-                                                    {item.description}
-                                                </p>
-                                            )}
-                                        </div>
-                                        {/* Placeholder for item image if we add that feature later */}
-                                        {/* <div className="w-16 h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden"></div> */}
-                                    </div>
-                                );
-                            })}
-                            {(!category.items || category.items.length === 0) && (
-                                <p className="text-xs text-gray-300 italic">No items yet</p>
-                            )}
+                {/* Categories & Items */}
+                <div className="p-4 space-y-8">
+                    {categories.length === 0 && (
+                        <div className="text-center py-10 text-gray-400 text-sm">
+                            Add categories and items to see them here.
                         </div>
-                    </div>
-                ))}
+                    )}
+
+                    {categories.map((category) => (
+                        <div key={category.id} className="scroll-mt-20">
+                            <h3 className="text-lg font-bold mb-3 flex items-center gap-2" style={{ color: primaryColor }}>
+                                {category.name || 'Category'}
+                                <span className="h-px bg-gray-100 flex-1"></span>
+                            </h3>
+
+                            <div className="space-y-4">
+                                {category.items?.map((item) => {
+                                    const isAvailable = item.available !== false; // Default to true if not specified
+                                    const currencySymbol = item.currency === 'TSH' ? 'TSh' : '$';
+
+                                    return (
+                                        <div key={item.id} className={`flex gap-3 items-start ${!isAvailable ? 'opacity-50' : ''}`}>
+                                            <div className="flex-1">
+                                                <div className="flex justify-between items-start gap-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <h4 className="font-bold text-sm text-gray-900">{item.name || 'Item Name'}</h4>
+                                                        {!isAvailable && (
+                                                            <span
+                                                                className="text-[10px] font-semibold px-2 py-0.5 rounded-full border"
+                                                                style={{
+                                                                    backgroundColor: lightenColor('#EF4444', 95),
+                                                                    color: '#DC2626',
+                                                                    borderColor: lightenColor('#EF4444', 85)
+                                                                }}
+                                                            >
+                                                                Unavailable
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    {item.price ? (
+                                                        <span className="font-semibold text-sm whitespace-nowrap" style={{ color: isAvailable ? primaryColor : '#9ca3af' }}>
+                                                            {currencySymbol} {Number(item.price).toFixed(2)}
+                                                        </span>
+                                                    ) : null}
+                                                </div>
+                                                {item.description && (
+                                                    <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
+                                                        {item.description}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                                {(!category.items || category.items.length === 0) && (
+                                    <p className="text-xs text-gray-300 italic">No items yet</p>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
 
-            {/* Footer Branding */}
-            <div className="pb-4 pt-2 text-center bg-white border-t border-gray-100 mt-8">
+            {/* Footer Branding - Always at Bottom */}
+            <div
+                className="pb-6 text-center"
+                style={{ backgroundColor: secondaryColor || '#F1F5F9' }}
+            >
                 <p className="text-xs text-slate-600">
                     Powered by <span className="font-semibold">QR Studio</span>
                 </p>
