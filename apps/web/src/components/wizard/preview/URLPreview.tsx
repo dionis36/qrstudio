@@ -13,7 +13,7 @@ export function URLPreview({ data }: URLPreviewProps) {
     const title = urlDetails.title || 'Redirecting...';
     const description = urlDetails.description || '';
     const logo = urlDetails.logo;
-    const customMessage = redirectSettings.custom_message || 'Taking you to your destination';
+    const customMessage = redirectSettings.custom_message || '';
 
     // Get user's colors
     const primaryColor = styles.primary_color || '#2563EB';
@@ -133,9 +133,11 @@ export function URLPreview({ data }: URLPreviewProps) {
                 </div>
 
                 {/* Message */}
-                <p className="text-slate-700 font-medium text-base mb-6">
-                    {customMessage}
-                </p>
+                {customMessage && (
+                    <p className="text-slate-700 font-medium text-base mb-6">
+                        {customMessage}
+                    </p>
+                )}
 
                 {/* URL Display */}
                 <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mb-4 px-4">

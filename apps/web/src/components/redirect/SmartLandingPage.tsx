@@ -38,7 +38,7 @@ export function SmartLandingPage({ qrCode }: SmartLandingPageProps) {
 
     const destinationUrl = urlDetails?.destination_url || '';
     const delay = redirectSettings?.delay || 2;
-    const customMessage = redirectSettings?.custom_message || 'Taking you to your destination';
+    const customMessage = redirectSettings?.custom_message || '';
 
     const [countdown, setCountdown] = useState(delay);
     const [redirecting, setRedirecting] = useState(false);
@@ -132,9 +132,11 @@ export function SmartLandingPage({ qrCode }: SmartLandingPageProps) {
                                 style={{ borderColor: styles?.primary_color || '#2563EB', borderTopColor: 'transparent' }}
                             />
                         )}
-                        <p className="text-slate-700 font-semibold text-lg">
-                            {customMessage}
-                        </p>
+                        {customMessage && (
+                            <p className="text-slate-700 font-semibold text-lg">
+                                {customMessage}
+                            </p>
+                        )}
                     </div>
 
                     {/* Countdown */}

@@ -49,19 +49,19 @@ function AccordionSection({
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-slate-50 transition-colors min-h-[60px]"
             >
-                <div className="flex items-center gap-4">
-                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className="w-7 h-7" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`p-3 sm:p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
                     </div>
                     <div className="text-left">
-                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
-                        <p className="text-sm text-slate-500">{subtitle}</p>
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-xs sm:text-sm text-slate-500">{subtitle}</p>
                     </div>
                 </div>
                 <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -70,7 +70,7 @@ function AccordionSection({
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
             >
-                <div className="px-6 pb-6 pt-2 border-t border-slate-100 overflow-x-hidden">
+                <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-slate-100 overflow-x-hidden">
                     {children}
                 </div>
             </div>
@@ -207,39 +207,39 @@ export function URLForm() {
                         </div>
 
                         {/* Custom Colors */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Primary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         type="color"
                                         value={watch('styles.primary_color') || '#2563EB'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         type="text"
                                         value={watch('styles.primary_color') || '#2563EB'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#2563EB"
                                     />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         type="color"
                                         value={watch('styles.secondary_color') || '#EFF6FF'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         type="text"
                                         value={watch('styles.secondary_color') || '#EFF6FF'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#EFF6FF"
                                     />
                                 </div>
@@ -303,7 +303,7 @@ export function URLForm() {
                             </label>
                             <input
                                 {...register('url_details.destination_url', { required: true })}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 placeholder="https://example.com"
                                 type="url"
                             />
@@ -314,7 +314,7 @@ export function URLForm() {
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Title (Optional)</label>
                             <input
                                 {...register('url_details.title')}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 placeholder="e.g. Visit Our Website"
                             />
                             <p className="text-xs text-slate-500 mt-1">Displayed on the landing page before redirect</p>
@@ -325,7 +325,7 @@ export function URLForm() {
                             <textarea
                                 {...register('url_details.description')}
                                 rows={3}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none text-base"
                                 placeholder="Short description about where this link leads..."
                             />
                         </div>
@@ -354,7 +354,7 @@ export function URLForm() {
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Redirect Delay</label>
                             <select
                                 {...register('redirect_settings.delay', { valueAsNumber: true })}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                             >
                                 <option value={0}>Instant (0 seconds)</option>
                                 <option value={1}>1 second</option>
@@ -366,11 +366,11 @@ export function URLForm() {
                         </div>
 
                         <div>
-                            <label className="flex items-center gap-3 cursor-pointer">
+                            <label className="flex items-center gap-3 cursor-pointer min-h-[44px]">
                                 <input
                                     type="checkbox"
                                     {...register('redirect_settings.show_preview')}
-                                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500 flex-shrink-0"
                                 />
                                 <div>
                                     <span className="text-sm font-semibold text-slate-700">Show preview page</span>
@@ -383,7 +383,7 @@ export function URLForm() {
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Custom Message (Optional)</label>
                             <input
                                 {...register('redirect_settings.custom_message')}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 placeholder="e.g. Taking you to our store..."
                             />
                             <p className="text-xs text-slate-500 mt-1">Custom message shown during redirect</p>
