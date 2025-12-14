@@ -11,6 +11,19 @@ export function TextPreview({ data }: TextPreviewProps) {
     const gradientType = styles.gradient_type || 'none';
     const gradientAngle = styles.gradient_angle || 135;
 
+    // Optional title
+    const title = textContent.title || '';
+    const message = textContent.message || '';
+
+    // Helper to lighten a color
+    const lightenColor = (hex: string, percent: number = 30) => {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = Math.min(255, (num >> 16) + Math.round(((255 - (num >> 16)) * percent) / 100));
+        const g = Math.min(255, ((num >> 8) & 0x00FF) + Math.round(((255 - ((num >> 8) & 0x00FF)) * percent) / 100));
+        const b = Math.min(255, (num & 0x0000FF) + Math.round(((255 - (num & 0x0000FF)) * percent) / 100));
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+    };
+
     // Lorem ipsum placeholder
     const placeholderText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
@@ -35,6 +48,8 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
         }
     };
 
+    const lightPrimary = lightenColor(primaryColor, 95);
+
     return (
         <div
             className="absolute inset-0 w-full h-full overflow-y-auto font-sans"
@@ -51,18 +66,31 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
                 }
             `}</style>
 
-            <div className="min-h-full p-6 flex flex-col">
-                {/* Top spacing */}
-                <div className="flex-shrink-0 h-8"></div>
+            <div className="min-h-full px-6 py-8 flex flex-col">
+                {/* Top margin */}
+                <div className="flex-shrink-0 h-16"></div>
+
+                {/* Optional Title */}
+                {title && (
+                    <h1
+                        className="text-2xl font-bold text-center mb-6 px-4"
+                        style={{ color: primaryColor }}
+                    >
+                        {title}
+                    </h1>
+                )}
 
                 {/* Text card - expands with content */}
-                <div className="w-full bg-white rounded-2xl shadow-xl p-6">
-                    {textContent.message ? (
-                        <p className="text-sm text-slate-800 leading-relaxed whitespace-pre-wrap break-words">
-                            {textContent.message}
+                <div
+                    className="w-full bg-white rounded-2xl shadow-lg p-6 border-2"
+                    style={{ borderColor: lightPrimary }}
+                >
+                    {message ? (
+                        <p className="text-base text-slate-800 leading-relaxed whitespace-pre-wrap break-words">
+                            {message}
                         </p>
                     ) : (
-                        <p className="text-sm text-slate-400 leading-relaxed whitespace-pre-wrap italic">
+                        <p className="text-base text-slate-400 leading-relaxed whitespace-pre-wrap italic">
                             {placeholderText}
                         </p>
                     )}
@@ -70,6 +98,13 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
 
                 {/* Bottom spacing for scroll allowance */}
                 <div className="flex-shrink-0 h-8"></div>
+
+                {/* Footer Branding */}
+                <div className="mt-auto pt-6 text-center">
+                    <p className="text-xs text-slate-600">
+                        Powered by <span className="font-semibold">QR Studio</span>
+                    </p>
+                </div>
             </div>
         </div>
     );
