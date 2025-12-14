@@ -5,9 +5,12 @@ import { PhoneMockup } from '@/components/common/PhoneMockup';
 import { URLPreview } from '@/components/wizard/preview/URLPreview';
 import { useWizardStore } from '@/components/wizard/store';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Eye } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { qrApi } from '@/lib/api-client';
+import { SEO } from '@/components/common/SEO';
+import { BackButton } from '@/components/common/BackButton';
+import { EnhancedPreviewModal } from '@/components/common/EnhancedPreviewModal';
 
 export default function UrlQrPage() {
     const { payload, setEditMode, loadQrData } = useWizardStore();
@@ -15,6 +18,7 @@ export default function UrlQrPage() {
     const searchParams = useSearchParams();
     const editId = searchParams.get('edit');
     const [loading, setLoading] = useState(!!editId);
+    const [showPreview, setShowPreview] = useState(false);
 
     useEffect(() => {
         if (editId) {
@@ -60,7 +64,14 @@ export default function UrlQrPage() {
     }
 
     return (
-        <div className="w-full px-4 pb-20">
+        <div className="w-full px-4 sm:px-6 pb-20">
+            <SEO
+                title="Create URL QR Code"
+                description="Create a QR code that links to any website or URL"
+            />
+
+            <BackButton />
+
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* LEFT PANEL: 75% - Content Form */}
                 <div className="w-full lg:w-3/4 flex flex-col">
@@ -89,6 +100,20 @@ export default function UrlQrPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Mobile Preview Button */}
+            <button
+                onClick={() => setShowPreview(true)}
+                className="lg:hidden fixed bottom-6 right-6 z-40 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center gap-2 font-medium"
+            >
+                <Eye className="w-5 h-5" />
+                View Preview
+            </button>
+
+            {/* Mobile Preview Modal */}
+            <EnhancedPreviewModal isOpen={showPreview} onClose={() => setShowPreview(false)}>
+                <URLPreview data={payload} />
+            </EnhancedPreviewModal>
         </div>
     );
 }

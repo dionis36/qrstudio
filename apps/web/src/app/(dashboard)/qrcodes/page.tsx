@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { qrApi } from '@/lib/api-client';
-import { Search, Filter, QrCode, Eye, Edit, Trash2, Download, MoreVertical, BarChart2 } from 'lucide-react';
+import { QrCode, Search, Filter, MoreVertical, BarChart2, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { SEO } from '@/components/common/SEO';
 
 interface QrCodeItem {
     id: string;
@@ -96,9 +97,14 @@ export default function QrCodesPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                <SEO
+                    title="My QR Codes"
+                    description="View and manage all your QR codes in one place"
+                />
+
                 {/* Header */}
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center justify-between mb-6 sm:mb-8">
                     <div>
                         <h1 className="text-3xl font-bold text-slate-900">QR Codes</h1>
                         <p className="text-slate-600 mt-2">Manage all your QR codes in one place</p>

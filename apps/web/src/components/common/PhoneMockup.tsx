@@ -1,13 +1,16 @@
 import { ReactNode, useState, useEffect } from 'react';
 import { usePreviewContext } from '../wizard/preview/PreviewContext';
+import { Eye } from 'lucide-react';
 
 interface PhoneMockupProps {
     children: ReactNode;
     header?: ReactNode;
-    className?: string; // Allow overriding/adding classes
+    className?: string;
+    showViewButton?: boolean;
+    onViewClick?: () => void;
 }
 
-export function PhoneMockup({ children, header, className = '' }: PhoneMockupProps) {
+export function PhoneMockup({ children, header, className = '', showViewButton = false, onViewClick }: PhoneMockupProps) {
     const { heroBackgroundColor } = usePreviewContext();
 
     // Live time state
@@ -123,6 +126,17 @@ export function PhoneMockup({ children, header, className = '' }: PhoneMockupPro
 
             {/* Glossy Reflection Overlay */}
             <div className="absolute inset-0 rounded-[3rem] pointer-events-none shadow-inner ring-1 ring-white/10" />
+
+            {/* Floating View Button (Mobile/Tablet Only) */}
+            {showViewButton && onViewClick && (
+                <button
+                    onClick={onViewClick}
+                    className="lg:hidden absolute -bottom-16 left-1/2 -translate-x-1/2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center gap-2 font-medium"
+                >
+                    <Eye className="w-5 h-5" />
+                    View Preview
+                </button>
+            )}
         </div>
     );
 }

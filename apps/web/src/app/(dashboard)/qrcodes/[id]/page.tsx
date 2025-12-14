@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { qrApi } from '@/lib/api-client';
 import { ArrowLeft, Download, Edit, Trash2, QrCode as QrCodeIcon, BarChart3, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { SEO } from '@/components/common/SEO';
 import QRCodeStyling from 'qr-code-styling';
 
 interface QrCodeDetail {
@@ -177,9 +178,14 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                <SEO
+                    title={qrCode.name}
+                    description={`View details and analytics for ${qrCode.name}`}
+                />
+
                 {/* Header */}
-                <div className="mb-8">
+                <div className="mb-6 sm:mb-8">
                     <button
                         onClick={() => isJustCreated ? router.push('/dashboard') : router.back()}
                         className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4 transition-colors"
