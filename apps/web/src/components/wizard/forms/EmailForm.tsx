@@ -51,19 +51,19 @@ function AccordionSection({
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-slate-50 transition-colors min-h-[60px]"
             >
-                <div className="flex items-center gap-4">
-                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className="w-7 h-7" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`p-3 sm:p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
                     </div>
                     <div className="text-left">
-                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
-                        <p className="text-sm text-slate-500">{subtitle}</p>
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-xs sm:text-sm text-slate-500">{subtitle}</p>
                     </div>
                 </div>
                 <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -72,7 +72,7 @@ function AccordionSection({
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
             >
-                <div className="px-6 pb-6 pt-2 border-t border-slate-100">
+                <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-slate-100">
                     {children}
                 </div>
             </div>
@@ -195,37 +195,37 @@ export function EmailForm() {
                         </div>
 
                         {/* Custom Colors */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Primary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('styles.primary_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         value={watch('styles.primary_color') || '#F59E0B'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#F59E0B"
                                     />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('styles.secondary_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         value={watch('styles.secondary_color') || '#FEF3C7'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#FEF3C7"
                                     />
                                 </div>
@@ -282,7 +282,7 @@ export function EmailForm() {
                     isOpen={openSections.details}
                     onToggle={() => toggleSection('details')}
                 >
-                    <div className="space-y-4 mt-4">
+                    <div className="space-y-5 mt-4">
                         {/* Recipient Email */}
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -297,7 +297,7 @@ export function EmailForm() {
                                     }
                                 })}
                                 type="email"
-                                className={`w-full px-4 py-2.5 rounded-lg border ${errors.email_details?.recipient ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.email_details?.recipient ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                 placeholder="recipient@example.com"
                             />
                             {errors.email_details?.recipient && <span className="text-xs text-red-500 mt-1">{errors.email_details.recipient.message}</span>}
@@ -305,10 +305,12 @@ export function EmailForm() {
 
                         {/* Subject Line */}
                         <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                Subject Line
-                                <span className="text-xs text-slate-500 ml-2">({subjectLength}/200)</span>
-                            </label>
+                            <div className="flex items-center justify-between mb-2">
+                                <label className="block text-sm font-semibold text-slate-700">
+                                    Subject Line
+                                </label>
+                                <span className="text-xs text-slate-500">({subjectLength}/200)</span>
+                            </div>
                             <input
                                 {...register('email_details.subject', {
                                     maxLength: {
@@ -317,7 +319,7 @@ export function EmailForm() {
                                     }
                                 })}
                                 type="text"
-                                className={`w-full px-4 py-2.5 rounded-lg border ${errors.email_details?.subject ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.email_details?.subject ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                 placeholder="Enter email subject"
                             />
                             {errors.email_details?.subject && <span className="text-xs text-red-500 mt-1">{errors.email_details.subject.message}</span>}
@@ -325,10 +327,12 @@ export function EmailForm() {
 
                         {/* Message Body */}
                         <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                Message Body
-                                <span className="text-xs text-slate-500 ml-2">({bodyLength}/1000)</span>
-                            </label>
+                            <div className="flex items-center justify-between mb-2">
+                                <label className="block text-sm font-semibold text-slate-700">
+                                    Message Body
+                                </label>
+                                <span className="text-xs text-slate-500">({bodyLength}/1000)</span>
+                            </div>
                             <textarea
                                 {...register('email_details.body', {
                                     maxLength: {
@@ -337,7 +341,7 @@ export function EmailForm() {
                                     }
                                 })}
                                 rows={6}
-                                className={`w-full px-4 py-2.5 rounded-lg border ${errors.email_details?.body ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none resize-none`}
+                                className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.email_details?.body ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none resize-none text-base`}
                                 placeholder="Enter your message..."
                             />
                             {errors.email_details?.body && <span className="text-xs text-red-500 mt-1">{errors.email_details.body.message}</span>}
@@ -354,7 +358,7 @@ export function EmailForm() {
                     isOpen={openSections.recipients}
                     onToggle={() => toggleSection('recipients')}
                 >
-                    <div className="space-y-4 mt-4">
+                    <div className="space-y-5 mt-4">
                         {/* CC Recipients */}
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">CC Recipients</label>
@@ -369,7 +373,7 @@ export function EmailForm() {
                                     }
                                 })}
                                 type="text"
-                                className={`w-full px-4 py-2.5 rounded-lg border ${errors.additional_recipients?.cc ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.additional_recipients?.cc ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                 placeholder="cc1@example.com, cc2@example.com"
                             />
                             <p className="text-xs text-slate-500 mt-1">Separate multiple emails with commas</p>
@@ -390,7 +394,7 @@ export function EmailForm() {
                                     }
                                 })}
                                 type="text"
-                                className={`w-full px-4 py-2.5 rounded-lg border ${errors.additional_recipients?.bcc ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.additional_recipients?.bcc ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                 placeholder="bcc1@example.com, bcc2@example.com"
                             />
                             <p className="text-xs text-slate-500 mt-1">Separate multiple emails with commas</p>
@@ -398,7 +402,7 @@ export function EmailForm() {
 
                             {/* Privacy Warning */}
                             <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
-                                <span className="text-amber-600 text-sm">⚠️</span>
+                                <span className="text-amber-600 text-sm flex-shrink-0">⚠️</span>
                                 <p className="text-xs text-amber-700">
                                     <strong>Privacy Note:</strong> BCC addresses will be visible in the QR code data. Use with caution.
                                 </p>
