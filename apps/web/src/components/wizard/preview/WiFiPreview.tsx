@@ -17,6 +17,15 @@ export function WiFiPreview({ data }: WiFiPreviewProps) {
     const gradientType = styles.gradient_type || 'none';
     const gradientAngle = styles.gradient_angle || 135;
 
+    // Helper to lighten a color
+    const lightenColor = (hex: string, percent: number = 30) => {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = Math.min(255, (num >> 16) + Math.round(((255 - (num >> 16)) * percent) / 100));
+        const g = Math.min(255, ((num >> 8) & 0x00FF) + Math.round(((255 - ((num >> 8) & 0x00FF)) * percent) / 100));
+        const b = Math.min(255, (num & 0x0000FF) + Math.round(((255 - (num & 0x0000FF)) * percent) / 100));
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+    };
+
     // Generate background style
     const getBackgroundStyle = () => {
         if (gradientType === 'linear') {
@@ -34,27 +43,51 @@ export function WiFiPreview({ data }: WiFiPreviewProps) {
         }
     };
 
-    // Security badge color
+    // Security badge with themed colors
     const getSecurityBadge = () => {
+        const lightPrimary = lightenColor(primaryColor, 95);
+        const mediumPrimary = lightenColor(primaryColor, 85);
+
         switch (wifi.security) {
             case 'WPA2':
             case 'WPA3':
-                return { color: 'bg-green-100 text-green-700 border-green-200', label: wifi.security };
+                return {
+                    bgColor: lightPrimary,
+                    textColor: primaryColor,
+                    borderColor: mediumPrimary,
+                    label: wifi.security
+                };
             case 'WEP':
-                return { color: 'bg-yellow-100 text-yellow-700 border-yellow-200', label: 'WEP' };
+                return {
+                    bgColor: '#FEF3C7',
+                    textColor: '#92400E',
+                    borderColor: '#FDE68A',
+                    label: 'WEP'
+                };
             case 'nopass':
-                return { color: 'bg-blue-100 text-blue-700 border-blue-200', label: 'Open' };
+                return {
+                    bgColor: lightPrimary,
+                    textColor: primaryColor,
+                    borderColor: mediumPrimary,
+                    label: 'Open'
+                };
             default:
-                return { color: 'bg-gray-100 text-gray-700 border-gray-200', label: 'Unknown' };
+                return {
+                    bgColor: '#F3F4F6',
+                    textColor: '#374151',
+                    borderColor: '#E5E7EB',
+                    label: 'Unknown'
+                };
         }
     };
 
     const securityBadge = getSecurityBadge();
     const hasPassword = wifi.security !== 'nopass';
+    const lightPrimary = lightenColor(primaryColor, 95);
 
     return (
-        <div className="absolute inset-0 w-full h-full flex flex-col" style={getBackgroundStyle()}>
-            <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-8">
+        <div className="absolute inset-0 w-full h-full flex flex-col overflow-hidden" style={getBackgroundStyle()}>
+            <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 space-y-6">
                 {/* Network Logo */}
                 {network.logo && (
                     <div className="w-24 h-24 rounded-full bg-white shadow-lg flex items-center justify-center overflow-hidden">
@@ -87,17 +120,27 @@ export function WiFiPreview({ data }: WiFiPreviewProps) {
 
                 {/* Description */}
                 {network.description && (
-                    <p className="text-sm text-slate-600 text-center max-w-xs">
+                    <p className="text-sm text-slate-600 text-center max-w-xs leading-relaxed">
                         {network.description}
                     </p>
                 )}
 
                 {/* Connection Card */}
-                <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl p-6 space-y-4">
+                <div
+                    className="w-full max-w-sm bg-white rounded-2xl shadow-lg p-6 space-y-4 border-2"
+                    style={{ borderColor: lightPrimary }}
+                >
                     {/* Security Badge */}
                     <div className="flex items-center justify-between">
                         <span className="text-sm font-semibold text-slate-700">Security</span>
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${securityBadge.color}`}>
+                        <span
+                            className="px-3 py-1 rounded-full text-xs font-bold border"
+                            style={{
+                                backgroundColor: securityBadge.bgColor,
+                                color: securityBadge.textColor,
+                                borderColor: securityBadge.borderColor
+                            }}
+                        >
                             <Shield className="w-3 h-3 inline mr-1" />
                             {securityBadge.label}
                         </span>
@@ -127,13 +170,20 @@ export function WiFiPreview({ data }: WiFiPreviewProps) {
 
                     {/* Connect Button */}
                     <button
-                        className="w-full py-3 rounded-xl text-white font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                        className="w-full py-3.5 rounded-xl text-white font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
                         style={{ backgroundColor: primaryColor }}
                     >
                         <Wifi className="w-5 h-5" />
                         Connect to Network
                     </button>
                 </div>
+            </div>
+
+            {/* Footer Branding */}
+            <div className="pb-6 text-center">
+                <p className="text-xs text-slate-600">
+                    Powered by <span className="font-semibold">QR Studio</span>
+                </p>
             </div>
         </div>
     );
