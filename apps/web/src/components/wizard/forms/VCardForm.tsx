@@ -119,19 +119,19 @@ function AccordionSection({
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-slate-50 transition-colors min-h-[60px]"
             >
-                <div className="flex items-center gap-4">
-                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className="w-7 h-7" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`p-3 sm:p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
                     </div>
                     <div className="text-left">
-                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
-                        <p className="text-sm text-slate-500">{subtitle}</p>
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-xs sm:text-sm text-slate-500">{subtitle}</p>
                     </div>
                 </div>
                 <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -140,7 +140,7 @@ function AccordionSection({
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
             >
-                <div className="px-6 pb-6 pt-2 border-t border-slate-100">
+                <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-slate-100">
                     {children}
                 </div>
             </div>
@@ -325,35 +325,35 @@ export function VCardForm() {
                         </div>
 
                         {/* Custom Colors */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Primary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('styles.primary_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         {...register('styles.primary_color')}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#2563EB"
                                     />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('styles.secondary_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         {...register('styles.secondary_color')}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#EFF6FF"
                                     />
                                 </div>
@@ -419,7 +419,7 @@ export function VCardForm() {
                             isOpen={openSubSections.personal}
                             onToggle={() => toggleSubSection('personal')}
                         >
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <ImageUpload
                                         label="Profile Image"
@@ -433,7 +433,7 @@ export function VCardForm() {
                                         <label className="block text-sm font-semibold text-slate-700 mb-1">First Name</label>
                                         <input
                                             {...register('personal_info.first_name')}
-                                            className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                            className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                             placeholder="John"
                                         />
                                     </div>
@@ -441,7 +441,7 @@ export function VCardForm() {
                                         <label className="block text-sm font-semibold text-slate-700 mb-1">Last Name</label>
                                         <input
                                             {...register('personal_info.last_name')}
-                                            className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                            className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                             placeholder="Doe"
                                         />
                                     </div>
@@ -449,19 +449,18 @@ export function VCardForm() {
                             </div>
                         </SubAccordion>
 
-                        {/* 2.2 Contact Details */}
                         <SubAccordion
                             title="Contact Details"
                             icon={Phone}
                             isOpen={openSubSections.contact}
                             onToggle={() => toggleSubSection('contact')}
                         >
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Mobile Number *</label>
                                     <input
                                         {...register('contact_details.phone', { required: 'Mobile number is required' })}
-                                        className={`w-full px-4 py-2.5 rounded-lg border ${errors.contact_details?.phone ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                        className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.contact_details?.phone ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                                         placeholder="+1 (555) 000-0000"
                                     />
                                     {errors.contact_details?.phone && <span className="text-xs text-red-500 mt-1">{errors.contact_details.phone.message}</span>}
@@ -470,7 +469,7 @@ export function VCardForm() {
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Alternative Phone</label>
                                     <input
                                         {...register('contact_details.alternative_phone')}
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                         placeholder="Optional"
                                     />
                                 </div>
@@ -479,7 +478,7 @@ export function VCardForm() {
                                     <input
                                         {...register('contact_details.email')}
                                         type="email"
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                         placeholder="john@example.com"
                                     />
                                 </div>
@@ -487,26 +486,25 @@ export function VCardForm() {
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Website</label>
                                     <input
                                         {...register('contact_details.website')}
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                         placeholder="www.example.com"
                                     />
                                 </div>
                             </div>
                         </SubAccordion>
 
-                        {/* 2.3 Company Details */}
                         <SubAccordion
                             title="Company Information"
                             icon={Briefcase}
                             isOpen={openSubSections.company}
                             onToggle={() => toggleSubSection('company')}
                         >
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Company Name</label>
                                     <input
                                         {...register('company_details.company_name')}
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                         placeholder="Acme Corp"
                                     />
                                 </div>
@@ -514,7 +512,7 @@ export function VCardForm() {
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Job Title</label>
                                     <input
                                         {...register('company_details.job_title')}
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                         placeholder="Product Manager"
                                     />
                                 </div>
@@ -539,19 +537,18 @@ export function VCardForm() {
                             </div>
                         </SubAccordion>
 
-                        {/* 2.5 Address */}
                         <SubAccordion
                             title="Address"
                             icon={MapPin}
                             isOpen={openSubSections.address}
                             onToggle={() => toggleSubSection('address')}
                         >
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="col-span-2">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="sm:col-span-2">
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Street Address</label>
                                     <input
                                         {...register('address.street')}
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                         placeholder="123 Main St"
                                     />
                                 </div>
@@ -559,7 +556,7 @@ export function VCardForm() {
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">City</label>
                                     <input
                                         {...register('address.city')}
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                         placeholder="New York"
                                     />
                                 </div>
@@ -567,7 +564,7 @@ export function VCardForm() {
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">State / Province</label>
                                     <input
                                         {...register('address.state')}
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                         placeholder="NY"
                                     />
                                 </div>
@@ -575,7 +572,7 @@ export function VCardForm() {
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Postal Code</label>
                                     <input
                                         {...register('address.postal_code')}
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                         placeholder="10001"
                                     />
                                 </div>
@@ -583,7 +580,7 @@ export function VCardForm() {
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Country</label>
                                     <input
                                         {...register('address.country')}
-                                        className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                         placeholder="USA"
                                     />
                                 </div>
@@ -605,17 +602,17 @@ export function VCardForm() {
                     <div className="mt-4 space-y-6">
                         {/* Selector Icons */}
                         <div>
-                            <p className="text-sm font-semibold text-slate-700 mb-3">Click to add specific network:</p>
-                            <div className="flex flex-wrap gap-3">
+                            <p className="text-sm font-semibold text-slate-700 mb-3">Click to add network:</p>
+                            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
                                 {SOCIAL_NETWORKS_LIST.map(net => (
                                     <button
                                         key={net.id}
                                         type="button"
                                         onClick={() => addSocial({ network: net.id, url: '' })}
-                                        className="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-slate-50 transition-all w-20 h-20 shadow-sm group"
+                                        className="flex items-center justify-center p-3 rounded-lg border border-slate-200 bg-white hover:border-blue-400 hover:bg-slate-50 transition-all aspect-square shadow-sm group min-h-[48px]"
+                                        title={net.name}
                                     >
-                                        <net.icon className="w-6 h-6 transition-transform group-hover:scale-110" style={{ color: net.color }} />
-                                        <span className="capitalize text-[10px] font-medium text-slate-600 mt-2 text-center leading-tight">{net.name}</span>
+                                        <net.icon className="w-5 h-5 transition-transform group-hover:scale-110" style={{ color: net.color }} />
                                     </button>
                                 ))}
                             </div>
@@ -680,7 +677,7 @@ export function VCardForm() {
                     isOpen={openSections.welcome}
                     onToggle={() => toggleSection('welcome')}
                 >
-                    <div className="grid grid-cols-2 gap-6 mt-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4">
                         <ImageUpload
                             label="Welcome Screen Logo"
                             value={watch('welcome_screen.logo')}
@@ -693,7 +690,7 @@ export function VCardForm() {
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Loading Animation</label>
                                 <select
                                     {...register('welcome_screen.animation')}
-                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 >
                                     <option value="spinner">Spinner</option>
                                     <option value="fade">Fade</option>
@@ -703,16 +700,16 @@ export function VCardForm() {
 
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Background Color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('welcome_screen.background_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         {...register('welcome_screen.background_color')}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm min-h-[44px]"
                                         placeholder="#ffffff"
                                     />
                                 </div>
