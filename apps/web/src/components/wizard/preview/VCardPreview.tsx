@@ -66,8 +66,12 @@ export function VCardPreview({ data }: { data: any }) {
 
     return (
         <div
-            className="absolute inset-0 w-full h-full flex flex-col bg-slate-100 overflow-y-auto"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            className="absolute inset-0 w-full h-full flex flex-col overflow-y-auto"
+            style={{
+                backgroundColor: styles.secondary_color || '#F1F5F9',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none'
+            }}
         >
 
             {/* Header Section - ONLY Avatar, Name, Button */}
@@ -121,7 +125,10 @@ export function VCardPreview({ data }: { data: any }) {
             </div>
 
             {/* Content Section with Rounded Top */}
-            <div className="flex-1 px-4 pt-6 pb-4 space-y-3.5 bg-slate-100 rounded-t-3xl -mt-8">
+            <div
+                className="flex-1 px-4 pt-6 pb-4 space-y-3.5 rounded-t-3xl -mt-8"
+                style={{ backgroundColor: styles.secondary_color || '#F1F5F9' }}
+            >
 
                 {/* Contact Details - Phone */}
                 {contact.phone && (
@@ -277,7 +284,10 @@ export function VCardPreview({ data }: { data: any }) {
             `}</style>
 
             {/* Footer Branding */}
-            <div className="pb-6 text-center bg-slate-100">
+            <div
+                className="pb-6 text-center"
+                style={{ backgroundColor: styles.secondary_color || '#F1F5F9' }}
+            >
                 <p className="text-xs text-slate-600">
                     Powered by <span className="font-semibold">QR Studio</span>
                 </p>

@@ -76,7 +76,14 @@ export function SocialMediaPagePreview() {
     };
 
     return (
-        <div className="h-full w-full overflow-y-auto bg-slate-50" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div
+            className="absolute inset-0 w-full h-full flex flex-col overflow-y-auto"
+            style={{
+                backgroundColor: secondaryColor || '#F1F5F9',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none'
+            }}
+        >
             <style jsx>{`
                 div::-webkit-scrollbar {
                     display: none;
@@ -138,8 +145,11 @@ export function SocialMediaPagePreview() {
                 )}
             </div>
 
-            {/* White Content Area with Rounded Top */}
-            <div className="bg-white -mt-24 rounded-t-3xl relative z-10">
+            {/* Content Area with Rounded Top */}
+            <div
+                className="flex-1 -mt-24 rounded-t-3xl relative z-10"
+                style={{ backgroundColor: secondaryColor || '#F1F5F9' }}
+            >
                 {/* Title & Tagline Section */}
                 {(title || tagline) && (
                     <div className="px-6 pt-8 pb-6 text-center">
@@ -210,6 +220,16 @@ export function SocialMediaPagePreview() {
                             </p>
                         </div>
                     )}
+                </div>
+
+                {/* Footer Branding */}
+                <div
+                    className="pb-6 text-center"
+                    style={{ backgroundColor: secondaryColor || '#F1F5F9' }}
+                >
+                    <p className="text-xs text-slate-600">
+                        Powered by <span className="font-semibold">QR Studio</span>
+                    </p>
                 </div>
             </div>
         </div>

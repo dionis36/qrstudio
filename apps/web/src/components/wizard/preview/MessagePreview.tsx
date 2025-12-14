@@ -54,8 +54,12 @@ export function MessagePreview() {
 
     return (
         <div
-            className="absolute inset-0 w-full h-full flex flex-col bg-slate-100 overflow-y-auto"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            className="absolute inset-0 w-full h-full flex flex-col overflow-y-auto"
+            style={{
+                backgroundColor: styles.secondary_color || '#F1F5F9',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none'
+            }}
         >
             <style jsx>{`
                 div::-webkit-scrollbar {
@@ -90,7 +94,10 @@ export function MessagePreview() {
             </div>
 
             {/* Content Area with Rounded Top */}
-            <div className="flex-1 px-4 pt-6 pb-4 space-y-3 bg-slate-100 rounded-t-3xl -mt-8">
+            <div
+                className="flex-1 px-4 pt-6 pb-4 space-y-3 rounded-t-3xl -mt-8"
+                style={{ backgroundColor: styles.secondary_color || '#F1F5F9' }}
+            >
                 {/* Platform Card */}
                 <div className="bg-white rounded-2xl p-5 shadow-md">
                     <h3
@@ -186,7 +193,10 @@ export function MessagePreview() {
             </div>
 
             {/* Footer Branding */}
-            <div className="pb-6 text-center bg-slate-100">
+            <div
+                className="pb-6 text-center"
+                style={{ backgroundColor: styles.secondary_color || '#F1F5F9' }}
+            >
                 <p className="text-xs text-slate-600">
                     Powered by <span className="font-semibold">QR Studio</span>
                 </p>
