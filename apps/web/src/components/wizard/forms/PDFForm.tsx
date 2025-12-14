@@ -86,19 +86,19 @@ function AccordionSection({
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-slate-50 transition-colors min-h-[60px]"
             >
-                <div className="flex items-center gap-4">
-                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className="w-7 h-7" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`p-3 sm:p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
                     </div>
                     <div className="text-left">
-                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
-                        <p className="text-sm text-slate-500">{subtitle}</p>
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-xs sm:text-sm text-slate-500">{subtitle}</p>
                     </div>
                 </div>
                 <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -106,7 +106,7 @@ function AccordionSection({
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
             >
-                <div className="px-6 pb-6 pt-2 border-t border-slate-100 overflow-x-hidden">
+                <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-slate-100 overflow-x-hidden">
                     {children}
                 </div>
             </div>
@@ -310,39 +310,39 @@ export function PDFForm() {
                         </div>
 
                         {/* Custom Colors */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Primary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         type="color"
                                         value={watch('styles.primary_color') || '#2563EB'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         type="text"
                                         value={watch('styles.primary_color') || '#2563EB'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#2563EB"
                                     />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         type="color"
                                         value={watch('styles.secondary_color') || '#EFF6FF'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         type="text"
                                         value={watch('styles.secondary_color') || '#EFF6FF'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#EFF6FF"
                                     />
                                 </div>
@@ -406,20 +406,20 @@ export function PDFForm() {
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
                                 onDrop={handleDrop}
-                                className={`border-2 border-dashed rounded-xl p-8 text-center transition-all ${isDragging
+                                className={`border-2 border-dashed rounded-xl p-6 sm:p-8 text-center transition-all min-h-[200px] sm:min-h-[240px] flex flex-col items-center justify-center ${isDragging
                                     ? 'border-blue-500 bg-blue-50'
                                     : 'border-slate-300 hover:border-blue-400 hover:bg-slate-50'
                                     }`}
                             >
-                                <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                                <p className="text-sm font-semibold text-slate-700 mb-1">
+                                <Upload className="w-12 h-12 sm:w-16 sm:h-16 text-slate-400 mx-auto mb-3 sm:mb-4" />
+                                <p className="text-sm sm:text-base font-semibold text-slate-700 mb-1">
                                     Drag and drop your file here
                                 </p>
-                                <p className="text-xs text-slate-500 mb-4">or</p>
+                                <p className="text-xs sm:text-sm text-slate-500 mb-4">or</p>
                                 <button
                                     type="button"
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                                    className="px-5 sm:px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm sm:text-base min-h-[44px] shadow-sm"
                                 >
                                     Browse Files
                                 </button>
@@ -430,22 +430,23 @@ export function PDFForm() {
                                     onChange={handleFileInputChange}
                                     className="hidden"
                                 />
-                                <p className="text-xs text-slate-500 mt-4">Supported: Documents, Images, Archives, Text files, Media (max 20MB)</p>
+                                <p className="text-xs text-slate-500 mt-3 sm:mt-4 px-4">Supported: Documents, Images, Archives, Text files, Media (max 20MB)</p>
                             </div>
                         ) : (
                             <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <FileText className="w-8 h-8 text-red-600" />
-                                        <div>
-                                            <p className="text-sm font-semibold text-slate-900">{watch('pdf_file.file_name')}</p>
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                                        <FileText className="w-8 h-8 text-red-600 flex-shrink-0" />
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-sm font-semibold text-slate-900 truncate">{watch('pdf_file.file_name')}</p>
                                             <p className="text-xs text-slate-500">{formatFileSize(watch('pdf_file.file_size'))}</p>
                                         </div>
                                     </div>
                                     <button
                                         type="button"
                                         onClick={handleRemoveFile}
-                                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                                        title="Remove file"
                                     >
                                         <X className="w-5 h-5" />
                                     </button>
@@ -475,7 +476,7 @@ export function PDFForm() {
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Title (Optional)</label>
                             <input
                                 {...register('document_info.title')}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 placeholder="e.g. Annual Report 2024"
                             />
                             <p className="text-xs text-slate-500 mt-1">Display name for your file</p>
@@ -485,7 +486,7 @@ export function PDFForm() {
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Topic/Category (Optional)</label>
                             <input
                                 {...register('document_info.topic')}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 placeholder="e.g. Marketing, Technical Documentation"
                             />
                         </div>
@@ -495,7 +496,7 @@ export function PDFForm() {
                             <textarea
                                 {...register('document_info.description')}
                                 rows={3}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none text-base"
                                 placeholder="Brief description of the document..."
                             />
                         </div>
@@ -504,7 +505,7 @@ export function PDFForm() {
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Author (Optional)</label>
                             <input
                                 {...register('document_info.author')}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 placeholder="Document author name"
                             />
                         </div>
