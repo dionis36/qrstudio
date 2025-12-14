@@ -1,9 +1,12 @@
 import { useWizardStore } from '../store';
 import { Calendar, MapPin, Clock, User, Mail, Globe, Bell, FileText } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
+import { useEffect } from 'react';
+import { usePreviewContext } from './PreviewContext';
 
 export function EventPreview() {
     const { payload } = useWizardStore();
+    const { setHeroBackgroundColor } = usePreviewContext();
 
     // Extract event data
     const styles = payload.styles || { primary_color: '#7C3AED', secondary_color: '#FAF5FF' };
@@ -12,6 +15,11 @@ export function EventPreview() {
     const organizer = payload.organizer || {};
     const eventUrl = payload.event_url || '';
     const reminders = payload.reminders || { enabled: false };
+
+    // Set hero background color for status bar adaptation
+    useEffect(() => {
+        setHeroBackgroundColor(styles.primary_color);
+    }, [styles.primary_color, setHeroBackgroundColor]);
 
     // Get GMT offset for timezone
     const getTimezoneDisplay = (timezone: string) => {
@@ -48,17 +56,17 @@ export function EventPreview() {
                 if (eventDetails.start_date === eventDetails.end_date) {
                     return format(startDate, 'EEEE, MMMM d, yyyy');
                 }
-                return `${format(startDate, 'MMM d')} - ${format(endDate, 'MMM d, yyyy')}`;
+                return `${format(startDate, 'MMM d')} - ${format(endDate, 'MMM d, yyyy')} `;
             }
 
             const startTime = eventDetails.start_time || '09:00';
             const endTime = eventDetails.end_time || '10:00';
 
             if (eventDetails.start_date === eventDetails.end_date) {
-                return `${format(startDate, 'EEE, MMM d, yyyy')} • ${startTime} - ${endTime}`;
+                return `${format(startDate, 'EEE, MMM d, yyyy')} • ${startTime} - ${endTime} `;
             }
 
-            return `${format(startDate, 'MMM d')} ${startTime} - ${format(endDate, 'MMM d')} ${endTime}`;
+            return `${format(startDate, 'MMM d')} ${startTime} - ${format(endDate, 'MMM d')} ${endTime} `;
         } catch (error) {
             return 'Invalid date';
         }
@@ -70,7 +78,7 @@ export function EventPreview() {
         const r = (num >> 16) + Math.round((255 - (num >> 16)) * (percent / 100));
         const g = ((num >> 8) & 0x00FF) + Math.round((255 - ((num >> 8) & 0x00FF)) * (percent / 100));
         const b = (num & 0x0000FF) + Math.round((255 - (num & 0x0000FF)) * (percent / 100));
-        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')} `;
     };
 
     // Helper to darken a color
@@ -79,7 +87,7 @@ export function EventPreview() {
         const r = Math.max(0, (num >> 16) - Math.round((num >> 16) * (percent / 100)));
         const g = Math.max(0, ((num >> 8) & 0x00FF) - Math.round(((num >> 8) & 0x00FF) * (percent / 100)));
         const b = Math.max(0, (num & 0x0000FF) - Math.round((num & 0x0000FF) * (percent / 100)));
-        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')} `;
     };
 
     // Generate background style
@@ -88,18 +96,18 @@ export function EventPreview() {
 
         if (gradient_type === 'linear') {
             return {
-                background: `linear-gradient(${gradient_angle || 135}deg, ${primary_color}, ${secondary_color || primary_color})`
+                background: `linear - gradient(${gradient_angle || 135}deg, ${primary_color}, ${secondary_color || primary_color})`
             };
         } else if (gradient_type === 'radial') {
             return {
-                background: `radial-gradient(circle, ${primary_color}, ${secondary_color || primary_color})`
+                background: `radial - gradient(circle, ${primary_color}, ${secondary_color || primary_color})`
             };
         }
 
         // Default: subtle gradient from primary to lighter shade
         const lightPrimary = lightenColor(primary_color, 30);
         return {
-            background: `linear-gradient(180deg, ${primary_color} 0%, ${lightPrimary} 100%)`
+            background: `linear - gradient(180deg, ${primary_color} 0 %, ${lightPrimary} 100 %)`
         };
     };
 
@@ -293,10 +301,10 @@ export function EventPreview() {
 
             {/* Hide scrollbar */}
             <style jsx>{`
-                div::-webkit-scrollbar {
-                    display: none;
-                }
-            `}</style>
+div:: -webkit - scrollbar {
+    display: none;
+}
+`}</style>
 
             {/* Footer Branding */}
             <div className="pb-6 text-center bg-slate-50">

@@ -1,4 +1,6 @@
 import { Utensils, MapPin, Clock, Phone, Globe } from 'lucide-react';
+import { useEffect } from 'react';
+import { usePreviewContext } from './PreviewContext';
 
 interface MenuItem {
     id: string;
@@ -40,6 +42,7 @@ export function MenuPreview({ data }: { data: MenuData }) {
     const categories = data.content?.categories || [];
     const primaryColor = data.styles?.primary_color || '#f97316';
     const secondaryColor = data.styles?.secondary_color || '#FFF7ED';
+    const { setHeroBackgroundColor } = usePreviewContext();
 
     // Helper to lighten a color
     const lightenColor = (hex: string, percent: number = 30) => {
@@ -51,6 +54,13 @@ export function MenuPreview({ data }: { data: MenuData }) {
     };
 
     const lightPrimary = lightenColor(primaryColor, 95);
+
+    // Set hero background color for status bar adaptation
+    useEffect(() => {
+        // Menu has dark hero if cover image (with dark overlay), otherwise use primary color
+        const heroColor = info.cover_image ? '#000000' : primaryColor;
+        setHeroBackgroundColor(heroColor);
+    }, [info.cover_image, primaryColor, setHeroBackgroundColor]);
 
     return (
         <div

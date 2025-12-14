@@ -148,7 +148,11 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
 
                         {/* Phone Mockup */}
                         <div className="transform transition-all duration-500 origin-top scale-[0.85] xl:scale-[0.9]">
-                            <PhoneMockup className="shadow-2xl shadow-slate-300/50">
+                            <PhoneMockup
+                                className="shadow-2xl shadow-slate-300/50"
+                                backgroundColor={payload?.styles?.primary_color || '#FFFFFF'}
+                                statusBarStyle={type === 'menu' ? 'dark' : 'auto'}
+                            >
                                 {renderPreviewContent()}
                             </PhoneMockup>
                         </div>

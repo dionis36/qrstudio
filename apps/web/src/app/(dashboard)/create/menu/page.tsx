@@ -3,6 +3,7 @@
 import { MenuForm } from '@/components/wizard/forms/MenuForm';
 import { PhoneMockup } from '@/components/common/PhoneMockup';
 import { MenuPreview } from '@/components/wizard/preview/MenuPreview';
+import { PreviewProvider } from '@/components/wizard/preview/PreviewContext';
 import { useWizardStore } from '@/components/wizard/store';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
@@ -82,9 +83,11 @@ export default function MenuQrPage() {
                 <div className="hidden lg:flex w-full lg:w-1/4 relative">
                     <div className="sticky top-6 w-full flex flex-col items-center h-fit">
                         <div className="transform transition-all duration-500 origin-top scale-[0.85] xl:scale-[0.9]">
-                            <PhoneMockup className="shadow-2xl shadow-slate-300/50">
-                                <MenuPreview data={payload} />
-                            </PhoneMockup>
+                            <PreviewProvider>
+                                <PhoneMockup className="shadow-2xl shadow-slate-300/50">
+                                    <MenuPreview data={payload} />
+                                </PhoneMockup>
+                            </PreviewProvider>
                         </div>
                     </div>
                 </div>
