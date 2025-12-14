@@ -116,7 +116,7 @@ export function AppStorePreview() {
 
             {/* Gradient Header */}
             <div
-                className="relative px-7 pt-16 pb-20 text-white"
+                className="relative px-7 pt-24 pb-20 text-white"
                 style={getBackgroundStyle()}
             >
                 {/* App Logo */}
