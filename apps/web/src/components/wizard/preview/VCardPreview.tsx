@@ -65,13 +65,16 @@ export function VCardPreview({ data }: { data: any }) {
     const darkPrimary = darkenColor(styles.primary_color, 15);
 
     return (
-        <div className="flex flex-col h-full font-sans bg-slate-50 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div
+            className="absolute inset-0 w-full h-full flex flex-col bg-slate-100 overflow-y-auto"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
 
             {/* Header Section - ONLY Avatar, Name, Button */}
             <div
                 className="px-7 pt-24 pb-10 flex flex-col items-center text-center"
                 style={{
-                    background: `linear-gradient(135deg, ${styles.primary_color} 0%, ${darkPrimary} 100%)`
+                    background: `linear-gradient(180deg, ${styles.primary_color} 0%, ${lightenColor(styles.primary_color, 30)} 100%)`
                 }}
             >
                 {/* Avatar */}
@@ -117,131 +120,72 @@ export function VCardPreview({ data }: { data: any }) {
                 </button>
             </div>
 
-            {/* Content Section - All Details */}
-            <div className="px-4 py-4 space-y-3.5 pb-20">
+            {/* Content Section with Rounded Top */}
+            <div className="flex-1 px-4 pt-6 pb-4 space-y-3.5 bg-slate-100 rounded-t-3xl -mt-8">
 
-                {/* Contact Details Card */}
-                {(contact.phone || contact.alternative_phone || contact.email || contact.website) && (
-                    <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
-                        {contact.phone && (
-                            <a
-                                href={`tel:${contact.phone}`}
-                                className="flex items-center gap-3.5 p-4 border-b border-gray-100 hover:bg-slate-50 transition-colors"
-                            >
-                                <div
-                                    className="rounded-xl flex items-center justify-center shrink-0"
-                                    style={{
-                                        backgroundColor: lightPrimary,
-                                        color: styles.primary_color,
-                                        width: '2.75rem',
-                                        height: '2.75rem'
-                                    }}
-                                >
-                                    <Phone style={{ width: '1.125rem', height: '1.125rem' }} />
-                                </div>
-                                <div className="text-left flex-1 min-w-0">
-                                    <p
-                                        className="font-bold uppercase tracking-wide mb-0.5"
-                                        style={{ color: styles.primary_color, fontSize: '0.6875rem', letterSpacing: '0.05em' }}
-                                    >
-                                        MOBILE
-                                    </p>
-                                    <p className="text-gray-900 font-semibold" style={{ fontSize: '0.9375rem', wordBreak: 'break-word' }}>{contact.phone}</p>
-                                </div>
-                            </a>
-                        )}
+                {/* Contact Details - Phone */}
+                {contact.phone && (
+                    <div className="bg-white rounded-2xl p-5 shadow-md">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <Phone style={{ width: '1rem', height: '1rem' }} /> MOBILE
+                        </h3>
+                        <a href={`tel:${contact.phone}`} className="text-gray-900 font-medium hover:opacity-80" style={{ fontSize: '0.9375rem', wordBreak: 'break-word' }}>
+                            {contact.phone}
+                        </a>
+                    </div>
+                )}
 
-                        {contact.alternative_phone && (
-                            <a
-                                href={`tel:${contact.alternative_phone}`}
-                                className="flex items-center gap-3.5 p-4 border-b border-gray-100 hover:bg-slate-50 transition-colors"
-                            >
-                                <div
-                                    className="rounded-xl flex items-center justify-center shrink-0"
-                                    style={{
-                                        backgroundColor: lightPrimary,
-                                        color: styles.primary_color,
-                                        width: '2.75rem',
-                                        height: '2.75rem'
-                                    }}
-                                >
-                                    <Phone style={{ width: '1.125rem', height: '1.125rem' }} />
-                                </div>
-                                <div className="text-left flex-1 min-w-0">
-                                    <p
-                                        className="font-bold uppercase tracking-wide mb-0.5"
-                                        style={{ color: styles.primary_color, fontSize: '0.6875rem', letterSpacing: '0.05em' }}
-                                    >
-                                        ALTERNATIVE
-                                    </p>
-                                    <p className="text-gray-900 font-semibold" style={{ fontSize: '0.9375rem', wordBreak: 'break-word' }}>{contact.alternative_phone}</p>
-                                </div>
-                            </a>
-                        )}
+                {/* Alternative Phone */}
+                {contact.alternative_phone && (
+                    <div className="bg-white rounded-2xl p-5 shadow-md">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <Phone style={{ width: '1rem', height: '1rem' }} /> ALTERNATIVE
+                        </h3>
+                        <a href={`tel:${contact.alternative_phone}`} className="text-gray-900 font-medium hover:opacity-80" style={{ fontSize: '0.9375rem', wordBreak: 'break-word' }}>
+                            {contact.alternative_phone}
+                        </a>
+                    </div>
+                )}
 
-                        {contact.email && (
-                            <a
-                                href={`mailto:${contact.email}`}
-                                className="flex items-center gap-3.5 p-4 border-b border-gray-100 last:border-0 hover:bg-slate-50 transition-colors"
-                            >
-                                <div
-                                    className="rounded-xl flex items-center justify-center shrink-0"
-                                    style={{
-                                        backgroundColor: lightPrimary,
-                                        color: styles.primary_color,
-                                        width: '2.75rem',
-                                        height: '2.75rem'
-                                    }}
-                                >
-                                    <Mail style={{ width: '1.125rem', height: '1.125rem' }} />
-                                </div>
-                                <div className="text-left flex-1 min-w-0">
-                                    <p
-                                        className="font-bold uppercase tracking-wide mb-0.5"
-                                        style={{ color: styles.primary_color, fontSize: '0.6875rem', letterSpacing: '0.05em' }}
-                                    >
-                                        EMAIL
-                                    </p>
-                                    <p className="text-gray-900 font-semibold" style={{ fontSize: '0.9375rem', wordBreak: 'break-all' }}>{contact.email}</p>
-                                </div>
-                            </a>
-                        )}
+                {/* Email */}
+                {contact.email && (
+                    <div className="bg-white rounded-2xl p-5 shadow-md">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <Mail style={{ width: '1rem', height: '1rem' }} /> EMAIL
+                        </h3>
+                        <a href={`mailto:${contact.email}`} className="text-gray-900 font-medium hover:opacity-80" style={{ fontSize: '0.9375rem', wordBreak: 'break-all' }}>
+                            {contact.email}
+                        </a>
+                    </div>
+                )}
 
-                        {contact.website && (
-                            <a
-                                href={contact.website.startsWith('http') ? contact.website : `https://${contact.website}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-3.5 p-4 hover:bg-slate-50 transition-colors"
-                            >
-                                <div
-                                    className="rounded-xl flex items-center justify-center shrink-0"
-                                    style={{
-                                        backgroundColor: lightPrimary,
-                                        color: styles.primary_color,
-                                        width: '2.75rem',
-                                        height: '2.75rem'
-                                    }}
-                                >
-                                    <Globe style={{ width: '1.125rem', height: '1.125rem' }} />
-                                </div>
-                                <div className="text-left flex-1 min-w-0">
-                                    <p
-                                        className="font-bold uppercase tracking-wide mb-0.5"
-                                        style={{ color: styles.primary_color, fontSize: '0.6875rem', letterSpacing: '0.05em' }}
-                                    >
-                                        WEBSITE
-                                    </p>
-                                    <p className="text-gray-900 font-semibold" style={{ fontSize: '0.9375rem', wordBreak: 'break-all' }}>{contact.website}</p>
-                                </div>
-                            </a>
-                        )}
+                {/* Website */}
+                {contact.website && (
+                    <div className="bg-white rounded-2xl p-5 shadow-md">
+                        <h3
+                            className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                            style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
+                        >
+                            <Globe style={{ width: '1rem', height: '1rem' }} /> WEBSITE
+                        </h3>
+                        <a href={contact.website} target="_blank" rel="noopener noreferrer" className="text-gray-900 font-medium hover:opacity-80" style={{ fontSize: '0.9375rem', wordBreak: 'break-all' }}>
+                            {contact.website}
+                        </a>
                     </div>
                 )}
 
                 {/* Company Information Card */}
                 {(company.company_name || company.job_title) && (
-                    <div className="bg-white rounded-2xl p-5 shadow-sm">
+                    <div className="bg-white rounded-2xl p-5 shadow-md">
                         <h3
                             className="font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
                             style={{ color: styles.primary_color, fontSize: '0.75rem', letterSpacing: '0.05em' }}
@@ -249,10 +193,10 @@ export function VCardPreview({ data }: { data: any }) {
                             <Building2 style={{ width: '1rem', height: '1rem' }} /> COMPANY
                         </h3>
                         {company.company_name && (
-                            <p className="text-gray-900 font-semibold mb-1.5" style={{ fontSize: '0.9375rem' }}>{company.company_name}</p>
+                            <p className="text-gray-900 font-medium mb-1.5" style={{ fontSize: '0.9375rem' }}>{company.company_name}</p>
                         )}
                         {company.job_title && (
-                            <p className="text-gray-600 font-medium" style={{ fontSize: '0.875rem' }}>{company.job_title}</p>
+                            <p className="text-gray-600 font-normal" style={{ fontSize: '0.875rem' }}>{company.job_title}</p>
                         )}
                     </div>
                 )}
@@ -331,6 +275,13 @@ export function VCardPreview({ data }: { data: any }) {
                     display: none;
                 }
             `}</style>
+
+            {/* Footer Branding */}
+            <div className="pb-6 text-center bg-slate-100">
+                <p className="text-xs text-slate-600">
+                    Powered by <span className="font-semibold">QR Studio</span>
+                </p>
+            </div>
         </div>
     );
 }
