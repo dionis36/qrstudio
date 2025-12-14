@@ -66,19 +66,19 @@ function AccordionSection({
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-slate-50 transition-colors min-h-[60px]"
             >
-                <div className="flex items-center gap-4">
-                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className="w-7 h-7" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`p-3 sm:p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
                     </div>
                     <div className="text-left">
-                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
-                        <p className="text-sm text-slate-500">{subtitle}</p>
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-xs sm:text-sm text-slate-500">{subtitle}</p>
                     </div>
                 </div>
                 <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -87,7 +87,7 @@ function AccordionSection({
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
             >
-                <div className="px-6 pb-6 pt-2 border-t border-slate-100 overflow-x-hidden">
+                <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-slate-100 overflow-x-hidden">
                     {children}
                 </div>
             </div>
@@ -232,39 +232,39 @@ export function MenuForm() {
                         </div>
 
                         {/* Custom Colors */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Primary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         type="color"
                                         value={watch('styles.primary_color') || '#f97316'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         type="text"
                                         value={watch('styles.primary_color') || '#f97316'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#f97316"
                                     />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         type="color"
                                         value={watch('styles.secondary_color') || '#fff7ed'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         type="text"
                                         value={watch('styles.secondary_color') || '#fff7ed'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#fff7ed"
                                     />
                                 </div>
@@ -326,7 +326,7 @@ export function MenuForm() {
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Restaurant Name</label>
                             <input
                                 {...register('restaurant_info.name')}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 placeholder="e.g. The Burger Joint"
                             />
                         </div>
@@ -335,13 +335,13 @@ export function MenuForm() {
                             <textarea
                                 {...register('restaurant_info.description')}
                                 rows={3}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none text-base"
                                 placeholder="Short tagline or description..."
                             />
                         </div>
 
                         {/* Image Uploads */}
-                        <div className="grid grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                             <ImageUpload
                                 label="Restaurant Logo"
                                 value={watch('restaurant_info.logo')}
@@ -356,12 +356,12 @@ export function MenuForm() {
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Website</label>
                                 <input
                                     {...register('restaurant_info.website')}
-                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                     placeholder="https://..."
                                 />
                             </div>
@@ -369,7 +369,7 @@ export function MenuForm() {
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Phone</label>
                                 <input
                                     {...register('restaurant_info.phone')}
-                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                     placeholder="+1 (555) 000-0000"
                                 />
                             </div>
@@ -392,9 +392,9 @@ export function MenuForm() {
                             <button
                                 type="button"
                                 onClick={() => addCategory({ id: crypto.randomUUID(), name: 'New Category', items: [] })}
-                                className="text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors shadow-sm"
+                                className="text-xs sm:text-sm font-bold flex items-center gap-1.5 bg-slate-900 text-white px-4 py-2.5 rounded-lg hover:bg-slate-700 transition-colors shadow-sm min-h-[44px]"
                             >
-                                <Plus className="w-3.5 h-3.5" /> Add Category
+                                <Plus className="w-4 h-4" /> Add Category
                             </button>
                         </div>
 
@@ -421,7 +421,7 @@ export function MenuForm() {
                     isOpen={openSections.welcome}
                     onToggle={() => toggleSection('welcome')}
                 >
-                    <div className="grid grid-cols-2 gap-6 mt-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4">
                         <ImageUpload
                             label="Welcome Screen Logo"
                             value={watch('welcome_screen.logo')}
@@ -434,7 +434,7 @@ export function MenuForm() {
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Loading Animation</label>
                                 <select
                                     {...register('welcome_screen.animation')}
-                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 >
                                     <option value="spinner">Spinner</option>
                                     <option value="fade">Fade</option>
@@ -444,16 +444,16 @@ export function MenuForm() {
 
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Background Color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         {...register('welcome_screen.background_color')}
                                         type="color"
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         {...register('welcome_screen.background_color')}
                                         type="text"
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm min-h-[44px]"
                                         placeholder="#ffffff"
                                     />
                                 </div>
@@ -505,13 +505,13 @@ function CategoryItem({ control, index, register, remove }: { control: Control<F
                         <div key={item.id} className="flex gap-3 items-start p-3 rounded-lg bg-white border border-slate-200 hover:border-blue-300 group transition-colors">
                             <div className="flex-1 space-y-3">
                                 {/* Item Name and Price Row */}
-                                <div className="flex gap-2 items-start">
+                                <div className="flex gap-2 items-start flex-wrap sm:flex-nowrap">
                                     <input
                                         {...register(`content.categories.${index}.items.${itemIndex}.name`)}
-                                        className="flex-1 text-sm font-semibold border-b border-transparent focus:border-blue-400 focus:outline-none px-1 py-1"
+                                        className="flex-1 min-w-[120px] text-sm font-semibold border-b border-transparent focus:border-blue-400 focus:outline-none px-1 py-1"
                                         placeholder="Item Name"
                                     />
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center gap-1 flex-shrink-0">
                                         <select
                                             {...register(`content.categories.${index}.items.${itemIndex}.currency`)}
                                             className="text-xs font-semibold text-slate-600 bg-transparent border-b border-transparent focus:border-blue-400 focus:outline-none py-1 pr-1"
@@ -523,7 +523,7 @@ function CategoryItem({ control, index, register, remove }: { control: Control<F
                                             type="number"
                                             step={stepValue}
                                             {...register(`content.categories.${index}.items.${itemIndex}.price`, { valueAsNumber: true })}
-                                            className="w-20 text-right font-mono text-sm border-b border-transparent focus:border-blue-400 focus:outline-none py-1"
+                                            className="w-24 sm:w-28 text-right font-mono text-sm border-b border-transparent focus:border-blue-400 focus:outline-none py-1 px-1"
                                             placeholder="0.00"
                                         />
                                     </div>
@@ -533,7 +533,7 @@ function CategoryItem({ control, index, register, remove }: { control: Control<F
                                 <textarea
                                     {...register(`content.categories.${index}.items.${itemIndex}.description`)}
                                     rows={1}
-                                    className="w-full text-xs text-slate-500 bg-transparent resize-none border-b border-transparent focus:border-blue-400 focus:outline-none px-1 py-1"
+                                    className="w-full text-xs text-slate-500 bg-transparent resize-none border-b border-transparent focus:border-blue-400 focus:outline-none px-1 py-1 break-words"
                                     placeholder="Description, ingredients..."
                                 />
 
@@ -561,9 +561,9 @@ function CategoryItem({ control, index, register, remove }: { control: Control<F
                 <button
                     type="button"
                     onClick={() => addItem({ id: crypto.randomUUID(), name: '', description: '', price: 0, currency: 'TSH', available: true })}
-                    className="w-full py-2.5 border-2 border-dashed border-slate-300 rounded-lg text-xs font-semibold text-slate-500 hover:bg-white hover:text-blue-600 hover:border-blue-400 transition-colors flex items-center justify-center gap-1.5"
+                    className="w-full py-3 border-2 border-dashed border-slate-300 rounded-lg text-xs sm:text-sm font-semibold text-slate-500 hover:bg-white hover:text-blue-600 hover:border-blue-400 transition-colors flex items-center justify-center gap-1.5 min-h-[44px]"
                 >
-                    <Plus className="w-3.5 h-3.5" /> Add Item
+                    <Plus className="w-4 h-4" /> Add Item
                 </button>
             </div>
         </div>
