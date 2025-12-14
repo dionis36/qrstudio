@@ -54,19 +54,19 @@ function AccordionSection({
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-slate-50 transition-colors min-h-[60px]"
             >
-                <div className="flex items-center gap-4">
-                    <div className={`p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className="w-7 h-7" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`p-3 sm:p-4 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
                     </div>
                     <div className="text-left">
-                        <h3 className="text-base font-bold text-slate-900">{title}</h3>
-                        <p className="text-sm text-slate-500">{subtitle}</p>
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900">{title}</h3>
+                        <p className="text-xs sm:text-sm text-slate-500">{subtitle}</p>
                     </div>
                 </div>
                 <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -75,7 +75,7 @@ function AccordionSection({
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
             >
-                <div className="px-6 pb-6 pt-2 border-t border-slate-100 overflow-x-hidden">
+                <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-slate-100 overflow-x-hidden">
                     {children}
                 </div>
             </div>
@@ -217,39 +217,39 @@ export function WiFiForm() {
                         </div>
 
                         {/* Custom Colors */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Primary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         type="color"
                                         value={watch('styles.primary_color') || '#2563EB'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         type="text"
                                         value={watch('styles.primary_color') || '#2563EB'}
                                         onChange={(e) => setValue('styles.primary_color', e.target.value)}
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#2563EB"
                                     />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Secondary color</label>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                         type="color"
                                         value={watch('styles.secondary_color') || '#EFF6FF'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
-                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                        className="w-12 h-12 rounded-lg border-2 border-slate-200 cursor-pointer flex-shrink-0"
                                     />
                                     <input
                                         type="text"
                                         value={watch('styles.secondary_color') || '#EFF6FF'}
                                         onChange={(e) => setValue('styles.secondary_color', e.target.value)}
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase"
+                                        className="flex-1 px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm uppercase min-h-[44px]"
                                         placeholder="#EFF6FF"
                                     />
                                 </div>
@@ -311,7 +311,7 @@ export function WiFiForm() {
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Network Title (Optional)</label>
                             <input
                                 {...register('network_info.title')}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
                                 placeholder="e.g. Guest WiFi"
                             />
                             <p className="text-xs text-slate-500 mt-1">A friendly name for your network</p>
@@ -322,7 +322,7 @@ export function WiFiForm() {
                             <textarea
                                 {...register('network_info.description')}
                                 rows={3}
-                                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none text-base"
                                 placeholder="Welcome to our network! Enjoy fast and secure internet access."
                             />
                         </div>
@@ -353,7 +353,7 @@ export function WiFiForm() {
                             <select
                                 {...register('wifi_details.security', { required: 'Please select a security type' })}
                                 defaultValue=""
-                                className={`w-full px-4 py-2.5 rounded-lg border ${errors.wifi_details?.security ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none`}
+                                className={`w-full px-3 sm:px-4 py-3 rounded-lg border ${errors.wifi_details?.security ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]`}
                             >
                                 <option value="" disabled>Select security type...</option>
                                 <option value="WPA2">WPA/WPA2 (Recommended)</option>
@@ -376,14 +376,15 @@ export function WiFiForm() {
                                     })}
                                     type={showPassword ? 'text' : 'password'}
                                     disabled={!isPasswordRequired}
-                                    className={`w-full px-4 py-2.5 pr-12 rounded-lg border ${errors.wifi_details?.password ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none ${!isPasswordRequired ? 'bg-slate-100 cursor-not-allowed' : ''}`}
+                                    className={`w-full px-3 sm:px-4 py-3 pr-12 rounded-lg border ${errors.wifi_details?.password ? 'border-red-300' : 'border-slate-300'} focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px] ${!isPasswordRequired ? 'bg-slate-100 cursor-not-allowed' : ''}`}
                                     placeholder={isPasswordRequired ? "Enter network password" : "No password required"}
                                 />
                                 {isPasswordRequired && (
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                        className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                                        title={showPassword ? "Hide password" : "Show password"}
                                     >
                                         {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                     </button>
@@ -394,11 +395,11 @@ export function WiFiForm() {
                         </div>
 
                         <div>
-                            <label className="flex items-center gap-3 cursor-pointer">
+                            <label className="flex items-center gap-3 cursor-pointer min-h-[44px]">
                                 <input
                                     type="checkbox"
                                     {...register('wifi_details.hidden')}
-                                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500 flex-shrink-0"
                                 />
                                 <div>
                                     <span className="text-sm font-semibold text-slate-700">Hidden Network</span>
