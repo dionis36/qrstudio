@@ -10,7 +10,7 @@ export default function DashboardLayout({
         <div className="min-h-screen flex flex-col bg-slate-50 selection:bg-blue-100">
             <ScrollToTop />
             <Navbar />
-            <main className="flex-1 flex flex-col pt-16 lg:pt-14 py-6">
+            <main className="flex-1 flex flex-col pt-16 lg:pt-14 my-6">
                 {children}
             </main>
         </div>
