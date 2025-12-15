@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { qrApi } from '@/lib/api-client';
-import { QrCode, Search, Filter, MoreVertical, BarChart2, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+import { QrCode, Search, Filter, MoreVertical, BarChart2, Edit, Trash2, Eye, EyeOff, Smartphone } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SEO } from '@/components/common/SEO';
+import { QrContentPreviewModal } from '@/components/common/QrContentPreviewModal';
 
 interface QrCodeItem {
     id: string;
@@ -32,6 +33,8 @@ export default function QrCodesPage() {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [qrToDelete, setQrToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [previewModalOpen, setPreviewModalOpen] = useState(false);
+    const [qrToPreview, setQrToPreview] = useState<any>(null);
 
     useEffect(() => {
         loadQrCodes();
@@ -92,6 +95,18 @@ export default function QrCodesPage() {
             await loadQrCodes();
         } catch (error) {
             console.error('Failed to update status:', error);
+        }
+    }
+
+    async function handlePreview(id: string) {
+        try {
+            const response = await qrApi.getById(id);
+            if (response.success && response.data) {
+                setQrToPreview(response.data);
+                setPreviewModalOpen(true);
+            }
+        } catch (error) {
+            console.error('Failed to load QR code for preview:', error);
         }
     }
 
@@ -238,6 +253,13 @@ export default function QrCodesPage() {
                                     </div>
 
                                     <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
+                                        <button
+                                            onClick={() => handlePreview(qr.id)}
+                                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-purple-50 text-purple-600 rounded-lg font-medium hover:bg-purple-100 transition-colors text-sm"
+                                        >
+                                            <Smartphone className="w-4 h-4" />
+                                            Preview
+                                        </button>
                                         <Link
                                             href={`/qrcodes/${qr.id}`}
                                             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg font-medium hover:bg-blue-100 transition-colors text-sm"
@@ -312,6 +334,13 @@ export default function QrCodesPage() {
                                             </td>
                                             <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
                                                 <div className="flex items-center justify-end gap-2">
+                                                    <button
+                                                        onClick={() => handlePreview(qr.id)}
+                                                        className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                                        title="Preview Content"
+                                                    >
+                                                        <Smartphone className="w-4 h-4" />
+                                                    </button>
                                                     <Link
                                                         href={`/qrcodes/${qr.id}/analytics`}
                                                         className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
@@ -376,6 +405,16 @@ export default function QrCodesPage() {
                 message="Are you sure you want to delete this QR code? This action cannot be undone."
                 confirmText="Delete"
                 isLoading={isDeleting}
+            />
+
+            {/* Preview Modal */}
+            <QrContentPreviewModal
+                isOpen={previewModalOpen}
+                onClose={() => {
+                    setPreviewModalOpen(false);
+                    setQrToPreview(null);
+                }}
+                qrCode={qrToPreview}
             />
         </div>
     );

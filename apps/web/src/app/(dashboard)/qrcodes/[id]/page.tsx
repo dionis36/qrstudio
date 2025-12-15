@@ -2,11 +2,12 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { qrApi } from '@/lib/api-client';
-import { ArrowLeft, Download, Edit, Trash2, QrCode as QrCodeIcon, BarChart3, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Download, Edit, Trash2, QrCode as QrCodeIcon, BarChart3, Eye, EyeOff, Smartphone } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SEO } from '@/components/common/SEO';
 import QRCodeStyling from 'qr-code-styling';
+import { QrContentPreviewModal } from '@/components/common/QrContentPreviewModal';
 
 interface QrCodeDetail {
     id: string;
@@ -35,6 +36,7 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
     const [qrCodeInstance, setQrCodeInstance] = useState<QRCodeStyling | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [previewModalOpen, setPreviewModalOpen] = useState(false);
 
     useEffect(() => {
         loadQrCode();
@@ -200,8 +202,8 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
                         <button
                             onClick={handleToggleStatus}
                             className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium transition-all ${qrCode.isActive
-                                    ? 'bg-green-100 text-green-700 hover:bg-green-200 border border-green-200'
-                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                                ? 'bg-green-100 text-green-700 hover:bg-green-200 border border-green-200'
+                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
                                 }`}
                         >
                             {qrCode.isActive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -215,6 +217,14 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
 
                         {/* Icon-Only Action Buttons */}
                         <div className="flex gap-2">
+                            <button
+                                onClick={() => setPreviewModalOpen(true)}
+                                className="p-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+                                title="Preview Content"
+                            >
+                                <Smartphone className="w-4 h-4" />
+                            </button>
+
                             <Link
                                 href={`/create/${qrCode.type}?edit=${qrCode.id}`}
                                 className="p-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg hover:shadow-blue-500/25 transition-all"
@@ -336,6 +346,13 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
                     confirmText="Delete"
                     isDestructive={true}
                     isLoading={isDeleting}
+                />
+
+                {/* Preview Modal */}
+                <QrContentPreviewModal
+                    isOpen={previewModalOpen}
+                    onClose={() => setPreviewModalOpen(false)}
+                    qrCode={qrCode}
                 />
             </div>
         </div>
