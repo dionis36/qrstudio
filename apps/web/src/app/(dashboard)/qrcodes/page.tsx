@@ -406,6 +406,7 @@ export default function QrCodesPage() {
                 title="Delete QR Code"
                 message="Are you sure you want to delete this QR code? This action cannot be undone."
                 confirmText="Delete"
+                isDestructive={true}
                 isLoading={isDeleting}
             />
 

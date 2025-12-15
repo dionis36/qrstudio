@@ -65,7 +65,8 @@ export function ConfirmationModal({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 10 }}
                         transition={{ duration: 0.2, type: 'spring', damping: 25, stiffness: 300 }}
-                        className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
+                        className={`relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden ${isDestructive ? 'border-2 border-red-200' : ''
+                            }`}
                     >
                         <button
                             onClick={onClose}
@@ -81,7 +82,8 @@ export function ConfirmationModal({
                                     <AlertTriangle className="w-8 h-8" />
                                 </div>
 
-                                <h3 className="text-xl font-bold text-slate-900 mb-2">
+                                <h3 className={`text-xl font-bold mb-2 ${isDestructive ? 'text-red-900' : 'text-slate-900'
+                                    }`}>
                                     {title}
                                 </h3>
 
