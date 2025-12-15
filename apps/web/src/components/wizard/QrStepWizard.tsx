@@ -10,6 +10,8 @@ import { LiveQrPreview } from './preview/LiveQrPreview';
 import { PhoneMockup } from '../common/PhoneMockup';
 import { MenuPreview } from './preview/MenuPreview';
 import { VCardPreview } from './preview/VCardPreview';
+import { URLPreview } from './preview/URLPreview';
+import { WiFiPreview } from './preview/WiFiPreview';
 import { PreviewModal } from './preview/PreviewModal';
 import { Smartphone, Eye } from 'lucide-react';
 import { HOVER_PREVIEW_DATA } from './steps/hoverPreviewData';
@@ -46,6 +48,22 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
                 return (
                     <div className="animate-in fade-in duration-300">
                         <VCardPreview data={HOVER_PREVIEW_DATA.vcard} />
+                    </div>
+                );
+            }
+
+            if (hoveredTemplate === 'url') {
+                return (
+                    <div className="animate-in fade-in duration-300">
+                        <URLPreview data={HOVER_PREVIEW_DATA.url} />
+                    </div>
+                );
+            }
+
+            if (hoveredTemplate === 'wifi') {
+                return (
+                    <div className="animate-in fade-in duration-300">
+                        <WiFiPreview data={HOVER_PREVIEW_DATA.wifi} />
                     </div>
                 );
             }

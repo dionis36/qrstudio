@@ -108,6 +108,43 @@ export const HOVER_PREVIEW_DATA = {
             secondary_color: '#F0FDF4',
         },
     },
+
+    url: {
+        url_details: {
+            destination_url: 'https://safaribookings.co.tz',
+            title: 'Safari Bookings Tanzania',
+            description: 'Book your dream safari adventure',
+        },
+        redirect_settings: {
+            delay: 3,
+            show_preview: true,
+            custom_message: '',
+        },
+        styles: {
+            primary_color: '#EA580C',
+            secondary_color: '#FFF7ED',
+            gradient_type: 'linear' as const,
+            gradient_angle: 135,
+        },
+    },
+
+    wifi: {
+        wifi_details: {
+            ssid: 'Cafe Mocha WiFi',
+            password: 'mocha2024',
+            security: 'WPA2' as const,
+            hidden: false,
+        },
+        network_info: {
+            title: 'Cafe Mocha',
+            description: 'Premium coffee shop with high-speed internet in Masaki, Dar es Salaam',
+            logo: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=200&h=200&fit=crop',
+        },
+        styles: {
+            primary_color: '#0891B2',
+            secondary_color: '#ECFEFF',
+        },
+    },
 };
 
 export type TemplateType = keyof typeof HOVER_PREVIEW_DATA;
