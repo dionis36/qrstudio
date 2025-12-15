@@ -14,6 +14,11 @@ import { URLPreview } from './preview/URLPreview';
 import { WiFiPreview } from './preview/WiFiPreview';
 import { PDFPreview } from './preview/PDFPreview';
 import { TextPreview } from './preview/TextPreview';
+import { EventPreview } from './preview/EventPreview';
+import { EmailPreview } from './preview/EmailPreview';
+import { MessagePreview } from './preview/MessagePreview';
+import { AppStorePreview } from './preview/AppStorePreview';
+import { SocialMediaPagePreview } from './preview/SocialMediaPagePreview';
 import { PreviewModal } from './preview/PreviewModal';
 import { Smartphone, Eye } from 'lucide-react';
 import { HOVER_PREVIEW_DATA } from './steps/hoverPreviewData';
@@ -82,6 +87,46 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
                 return (
                     <div className="animate-in fade-in duration-300">
                         <TextPreview data={HOVER_PREVIEW_DATA.text} />
+                    </div>
+                );
+            }
+
+            if (hoveredTemplate === 'event') {
+                return (
+                    <div className="animate-in fade-in duration-300">
+                        <EventPreview data={HOVER_PREVIEW_DATA.event} />
+                    </div>
+                );
+            }
+
+            if (hoveredTemplate === 'email') {
+                return (
+                    <div className="animate-in fade-in duration-300">
+                        <EmailPreview data={HOVER_PREVIEW_DATA.email} />
+                    </div>
+                );
+            }
+
+            if (hoveredTemplate === 'message') {
+                return (
+                    <div className="animate-in fade-in duration-300">
+                        <MessagePreview data={HOVER_PREVIEW_DATA.message} />
+                    </div>
+                );
+            }
+
+            if (hoveredTemplate === 'appstore') {
+                return (
+                    <div className="animate-in fade-in duration-300">
+                        <AppStorePreview data={HOVER_PREVIEW_DATA.appstore} />
+                    </div>
+                );
+            }
+
+            if (hoveredTemplate === 'socialmedia') {
+                return (
+                    <div className="animate-in fade-in duration-300">
+                        <SocialMediaPagePreview data={HOVER_PREVIEW_DATA.socialmedia} />
                     </div>
                 );
             }

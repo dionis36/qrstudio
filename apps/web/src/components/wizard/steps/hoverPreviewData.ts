@@ -176,6 +176,94 @@ export const HOVER_PREVIEW_DATA = {
             secondary_color: '#F0FDF4',
         },
     },
+
+    event: {
+        event_details: {
+            title: 'Tech Meetup Dar es Salaam',
+            start_date: '2024-12-20',
+            end_date: '2024-12-20',
+            start_time: '18:00',
+            end_time: '21:00',
+            timezone: 'Africa/Nairobi',
+            location: 'TechHub Tanzania, Masaki Peninsula',
+            all_day: false,
+        },
+        description: 'Join us for an evening of networking with local tech entrepreneurs and developers. Learn about the latest innovations in East African tech.',
+        organizer: {
+            name: 'TechHub Tanzania',
+            email: 'events@techhubtanzania.co.tz',
+        },
+        event_url: 'https://techhubtanzania.co.tz/events',
+        reminders: {
+            enabled: true,
+        },
+        styles: {
+            primary_color: '#7C3AED',
+            secondary_color: '#FAF5FF',
+        },
+    },
+
+    email: {
+        email_details: {
+            recipient: 'info@safaribookings.co.tz',
+            subject: 'Safari Inquiry - Serengeti Tour',
+            body: 'Hello,\n\nI am interested in booking a 5-day safari tour to Serengeti National Park. Could you please send me more information about available packages and pricing?\n\nAsante sana!',
+        },
+        additional_recipients: {
+            cc: '',
+            bcc: '',
+        },
+        styles: {
+            primary_color: '#F59E0B',
+            secondary_color: '#FEF3C7',
+        },
+    },
+
+    message: {
+        platform: 'whatsapp',
+        phone_number: '+255 754 123 456',
+        username: '',
+        message: 'Habari! I would like to confirm my safari booking for tomorrow at 6 AM. Asante sana!',
+        message_only: false,
+        styles: {
+            primary_color: '#10B981',
+            secondary_color: '#D1FAE5',
+        },
+    },
+
+    appstore: {
+        app_name: 'TechHub TZ',
+        developer: 'TechHub Tanzania',
+        description: 'Connect with East Africa\'s tech community. Discover events, network with developers, and stay updated on the latest tech innovations in Tanzania.',
+        app_logo: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=200&h=200&fit=crop',
+        platforms: [
+            { platform: 'google_play', url: 'https://play.google.com/store' },
+            { platform: 'ios', url: 'https://apps.apple.com' },
+        ],
+        styles: {
+            primary_color: '#2563EB',
+            secondary_color: '#EFF6FF',
+        },
+    },
+
+    socialmedia: {
+        display_name: 'Amani Mwangi',
+        bio: 'Software Developer | Tech Enthusiast | Building the future of East African tech 🇹🇿',
+        profile_photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop',
+        title: 'Connect With Me',
+        tagline: 'Follow my journey in tech and innovation across Tanzania',
+        gallery_images: [],
+        social_links: [
+            { platform: 'linkedin', url: 'https://linkedin.com/in/amanimwangi' },
+            { platform: 'twitter', url: 'https://twitter.com/amanimwangi' },
+            { platform: 'github', url: 'https://github.com/amanimwangi' },
+            { platform: 'instagram', url: 'https://instagram.com/amanimwangi' },
+        ],
+        styles: {
+            primary_color: '#A855F7',
+            secondary_color: '#FDF4FF',
+        },
+    },
 };
 
 export type TemplateType = keyof typeof HOVER_PREVIEW_DATA;
