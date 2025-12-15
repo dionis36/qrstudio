@@ -208,8 +208,15 @@ export default function DesignPage({ params }: { params: { template: string } })
                 });
 
                 if (response.success && response.data) {
-                    // Redirect to QR detail page
-                    router.push(`/qrcodes/${response.data.id}?created=true`);
+                    const qrId = response.data.id;
+
+                    // Store QR ID in sessionStorage
+                    sessionStorage.setItem('newlyCreatedQrId', qrId);
+
+                    // Navigate to /create page
+                    // This puts /create in the browser history
+                    // The /create page will then redirect to QR detail
+                    router.push('/create');
                 } else {
                     throw new Error(response.error || 'Failed to create QR code');
                 }

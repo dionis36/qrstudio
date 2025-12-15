@@ -53,7 +53,7 @@ export function Navbar() {
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${pathname === link.href || pathname.startsWith(link.href + '/')
+                                    className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all ${pathname === link.href || pathname.startsWith(link.href + '/')
                                         ? 'bg-slate-900 text-white shadow-md'
                                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                                         }`}
@@ -123,12 +123,12 @@ export function Navbar() {
 
                             {/* Navigation Links */}
                             <div className="flex-1 overflow-y-auto px-4 py-6">
-                                <nav className="space-y-2">
+                                <nav className="space-y-2 pt-6">
                                     {navLinks.map((link) => (
                                         <Link
                                             key={link.href}
                                             href={link.href}
-                                            className={`flex items-center px-4 py-3 rounded-xl text-base font-medium transition-all ${pathname === link.href || pathname.startsWith(link.href + '/')
+                                            className={`flex items-center px-4 py-3.5 rounded-xl text-base font-medium transition-all ${pathname === link.href || pathname.startsWith(link.href + '/')
                                                 ? 'bg-blue-50 text-blue-600'
                                                 : 'text-slate-700 hover:bg-slate-50'
                                                 }`}
