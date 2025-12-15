@@ -30,6 +30,7 @@ export default function QrCodesPage() {
     const [typeFilter, setTypeFilter] = useState<string>('');
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [qrToDelete, setQrToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -52,16 +53,19 @@ export default function QrCodesPage() {
 
             if (response.success && response.data && Array.isArray(response.data)) {
                 setQrCodes(response.data);
-                // Use pagination.totalPages from the API response
+                // Use pagination from the API response
                 setTotalPages(response.pagination?.totalPages || 1);
+                setTotalCount(response.pagination?.total || 0);
             } else if (response.success) {
                 setQrCodes([]);
                 setTotalPages(1);
+                setTotalCount(0);
             }
         } catch (error) {
             console.error('Failed to load QR codes:', error);
             setQrCodes([]);
             setTotalPages(1);
+            setTotalCount(0);
         } finally {
             setLoading(false);
         }
@@ -138,7 +142,14 @@ export default function QrCodesPage() {
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">QR Codes</h1>
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">QR Codes</h1>
+                            {!loading && totalCount > 0 && (
+                                <span className="text-2xl sm:text-3xl font-bold text-blue-600">
+                                    {totalCount}
+                                </span>
+                            )}
+                        </div>
                         <p className="text-sm sm:text-base text-slate-600 mt-1 sm:mt-2">Manage all your QR codes in one place</p>
                     </div>
                     <Link
