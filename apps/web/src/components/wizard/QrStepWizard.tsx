@@ -12,6 +12,7 @@ import { MenuPreview } from './preview/MenuPreview';
 import { VCardPreview } from './preview/VCardPreview';
 import { PreviewModal } from './preview/PreviewModal';
 import { Smartphone, Eye } from 'lucide-react';
+import { HOVER_PREVIEW_DATA } from './steps/hoverPreviewData';
 
 interface QrStepWizardProps {
     initialType?: string;
@@ -20,6 +21,7 @@ interface QrStepWizardProps {
 export function QrStepWizard({ initialType }: QrStepWizardProps) {
     const { step, type, payload, setStep, setType, reset } = useWizardStore();
     const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+    const [hoveredTemplate, setHoveredTemplate] = useState<string | null>(null);
 
     useEffect(() => {
         if (initialType) {
@@ -31,12 +33,30 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
 
     const renderPreviewContent = () => {
         if (step === 1) {
+            // Show hover preview if user is hovering over a template
+            if (hoveredTemplate === 'menu') {
+                return (
+                    <div className="animate-in fade-in duration-300">
+                        <MenuPreview data={HOVER_PREVIEW_DATA.menu} />
+                    </div>
+                );
+            }
+
+            if (hoveredTemplate === 'vcard') {
+                return (
+                    <div className="animate-in fade-in duration-300">
+                        <VCardPreview data={HOVER_PREVIEW_DATA.vcard} />
+                    </div>
+                );
+            }
+
+            // Default state - no hover
             return (
                 <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-gray-50/50">
                     <div className="w-20 h-20 bg-white rounded-2xl shadow-sm mb-6 flex items-center justify-center">
                         <Smartphone className="w-8 h-8 text-slate-300" />
                     </div>
-                    <h4 className="text-slate-400 font-medium text-sm leading-relaxed">Select a template to generate preview</h4>
+                    <h4 className="text-slate-400 font-medium text-sm leading-relaxed">Hover over a template to preview</h4>
                 </div>
             );
         }
@@ -76,7 +96,7 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* LEFT PANEL: 75% - Content Area */}
                 <div className="w-full lg:w-3/4 flex flex-col">
-                    {step === 1 && <Step1Templates />}
+                    {step === 1 && <Step1Templates onTemplateHover={setHoveredTemplate} />}
 
                     {step === 2 && (
                         <div className="animate-in fade-in slide-in-from-right-4 duration-500">
