@@ -31,6 +31,8 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
     const { step, type, payload, setStep, setType, reset } = useWizardStore();
     const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
     const [hoveredTemplate, setHoveredTemplate] = useState<string | null>(null);
+    const [lastHoveredTemplate, setLastHoveredTemplate] = useState<string | null>(null);
+    const [isPreviewFadingOut, setIsPreviewFadingOut] = useState(false);
 
     useEffect(() => {
         if (initialType) {
@@ -40,92 +42,126 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
         }
     }, [initialType, reset, setType, setStep]);
 
+    // Update lastHoveredTemplate when user hovers
+    useEffect(() => {
+        if (hoveredTemplate !== null) {
+            setLastHoveredTemplate(hoveredTemplate);
+            setIsPreviewFadingOut(false);
+        }
+    }, [hoveredTemplate]);
+
+    // Timer for delayed fade-out
+    useEffect(() => {
+        let fadeOutTimer: NodeJS.Timeout;
+
+        if (hoveredTemplate === null && lastHoveredTemplate !== null && step === 1) {
+            // User stopped hovering, start 2-second countdown before fading
+            fadeOutTimer = setTimeout(() => {
+                setIsPreviewFadingOut(true);
+                // Clear the last hovered template after fade-out completes
+                setTimeout(() => {
+                    setLastHoveredTemplate(null);
+                }, 700); // Match the fade-out duration
+            }, 500);
+        } else if (hoveredTemplate !== null) {
+            // User is hovering, cancel fade-out and reset
+            setIsPreviewFadingOut(false);
+        }
+
+        return () => {
+            if (fadeOutTimer) clearTimeout(fadeOutTimer);
+        };
+    }, [hoveredTemplate, lastHoveredTemplate, step]);
+
     const renderPreviewContent = () => {
         if (step === 1) {
-            // Show hover preview if user is hovering over a template
-            if (hoveredTemplate === 'menu') {
+            // Use current hover or last hovered template
+            const templateToShow = hoveredTemplate || lastHoveredTemplate;
+
+            // Show hover preview if user is hovering over a template or during fade-out delay
+            if (templateToShow === 'menu') {
                 return (
-                    <div className="animate-in fade-in duration-300">
+                    <div className={`animate-in slide-in-from-bottom-4 fade-in duration-500 ${isPreviewFadingOut ? 'animate-out fade-out duration-700' : ''}`}>
                         <MenuPreview data={HOVER_PREVIEW_DATA.menu} />
                     </div>
                 );
             }
 
-            if (hoveredTemplate === 'vcard') {
+            if (templateToShow === 'vcard') {
                 return (
-                    <div className="animate-in fade-in duration-300">
+                    <div className={`animate-in slide-in-from-bottom-4 fade-in duration-500 ${isPreviewFadingOut ? 'animate-out fade-out duration-700' : ''}`}>
                         <VCardPreview data={HOVER_PREVIEW_DATA.vcard} />
                     </div>
                 );
             }
 
-            if (hoveredTemplate === 'url') {
+            if (templateToShow === 'url') {
                 return (
-                    <div className="animate-in fade-in duration-300">
+                    <div className={`animate-in slide-in-from-bottom-4 fade-in duration-500 ${isPreviewFadingOut ? 'animate-out fade-out duration-700' : ''}`}>
                         <URLPreview data={HOVER_PREVIEW_DATA.url} />
                     </div>
                 );
             }
 
-            if (hoveredTemplate === 'wifi') {
+            if (templateToShow === 'wifi') {
                 return (
-                    <div className="animate-in fade-in duration-300">
+                    <div className={`animate-in slide-in-from-bottom-4 fade-in duration-500 ${isPreviewFadingOut ? 'animate-out fade-out duration-700' : ''}`}>
                         <WiFiPreview data={HOVER_PREVIEW_DATA.wifi} />
                     </div>
                 );
             }
 
-            if (hoveredTemplate === 'file') {
+            if (templateToShow === 'file') {
                 return (
-                    <div className="animate-in fade-in duration-300">
+                    <div className={`animate-in slide-in-from-bottom-4 fade-in duration-500 ${isPreviewFadingOut ? 'animate-out fade-out duration-700' : ''}`}>
                         <PDFPreview data={HOVER_PREVIEW_DATA.file} />
                     </div>
                 );
             }
 
-            if (hoveredTemplate === 'text') {
+            if (templateToShow === 'text') {
                 return (
-                    <div className="animate-in fade-in duration-300">
+                    <div className={`animate-in slide-in-from-bottom-4 fade-in duration-500 ${isPreviewFadingOut ? 'animate-out fade-out duration-700' : ''}`}>
                         <TextPreview data={HOVER_PREVIEW_DATA.text} />
                     </div>
                 );
             }
 
-            if (hoveredTemplate === 'event') {
+            if (templateToShow === 'event') {
                 return (
-                    <div className="animate-in fade-in duration-300">
+                    <div className={`animate-in slide-in-from-bottom-4 fade-in duration-500 ${isPreviewFadingOut ? 'animate-out fade-out duration-700' : ''}`}>
                         <EventPreview data={HOVER_PREVIEW_DATA.event} />
                     </div>
                 );
             }
 
-            if (hoveredTemplate === 'email') {
+            if (templateToShow === 'email') {
                 return (
-                    <div className="animate-in fade-in duration-300">
+                    <div className={`animate-in slide-in-from-bottom-4 fade-in duration-500 ${isPreviewFadingOut ? 'animate-out fade-out duration-700' : ''}`}>
                         <EmailPreview data={HOVER_PREVIEW_DATA.email} />
                     </div>
                 );
             }
 
-            if (hoveredTemplate === 'message') {
+            if (templateToShow === 'message') {
                 return (
-                    <div className="animate-in fade-in duration-300">
+                    <div className={`animate-in slide-in-from-bottom-4 fade-in duration-500 ${isPreviewFadingOut ? 'animate-out fade-out duration-700' : ''}`}>
                         <MessagePreview data={HOVER_PREVIEW_DATA.message} />
                     </div>
                 );
             }
 
-            if (hoveredTemplate === 'appstore') {
+            if (templateToShow === 'appstore') {
                 return (
-                    <div className="animate-in fade-in duration-300">
+                    <div className={`animate-in slide-in-from-bottom-4 fade-in duration-500 ${isPreviewFadingOut ? 'animate-out fade-out duration-700' : ''}`}>
                         <AppStorePreview data={HOVER_PREVIEW_DATA.appstore} />
                     </div>
                 );
             }
 
-            if (hoveredTemplate === 'socialmedia') {
+            if (templateToShow === 'socialmedia') {
                 return (
-                    <div className="animate-in fade-in duration-300">
+                    <div className={`animate-in slide-in-from-bottom-4 fade-in duration-500 ${isPreviewFadingOut ? 'animate-out fade-out duration-700' : ''}`}>
                         <SocialMediaPagePreview data={HOVER_PREVIEW_DATA.socialmedia} />
                     </div>
                 );
