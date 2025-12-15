@@ -1,4 +1,3 @@
-import { useWizardStore } from '../store';
 import { User, Share2, ChevronRight } from 'lucide-react';
 import {
     FaInstagram, FaFacebook, FaYoutube, FaTiktok, FaLinkedin,
@@ -7,17 +6,16 @@ import {
     FaReddit, FaSpotify, FaDiscord, FaThreads, FaGlobe
 } from 'react-icons/fa6';
 
-export function SocialMediaPagePreview() {
-    const { payload } = useWizardStore();
+export function SocialMediaPagePreview({ data }: { data: any }) {
 
-    const displayName = payload.display_name || 'Your Name';
-    const bio = payload.bio || '';
-    const profilePhoto = payload.profile_photo || '';
-    const title = payload.title || '';
-    const tagline = payload.tagline || '';
-    const galleryImages = (payload.gallery_images || []).filter((img: string) => img);
-    const socialLinks = payload.social_links || [];
-    const styles = payload.styles || {};
+    const displayName = data.display_name || 'Your Name';
+    const bio = data.bio || '';
+    const profilePhoto = data.profile_photo || '';
+    const title = data.title || '';
+    const tagline = data.tagline || '';
+    const galleryImages = (data.gallery_images || []).filter((img: string) => img);
+    const socialLinks = data.social_links || [];
+    const styles = data.styles || {};
 
     // Get user's colors
     const primaryColor = styles.primary_color || '#A855F7';

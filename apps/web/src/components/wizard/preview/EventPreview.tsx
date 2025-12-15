@@ -1,20 +1,18 @@
-import { useWizardStore } from '../store';
 import { Calendar, MapPin, Clock, User, Mail, Globe, Bell, FileText } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { useEffect } from 'react';
 import { usePreviewContext } from './PreviewContext';
 
-export function EventPreview() {
-    const { payload } = useWizardStore();
+export function EventPreview({ data }: { data: any }) {
     const { setHeroBackgroundColor } = usePreviewContext();
 
     // Extract event data
-    const styles = payload.styles || { primary_color: '#7C3AED', secondary_color: '#FAF5FF' };
-    const eventDetails = payload.event_details || {};
-    const description = payload.description || '';
-    const organizer = payload.organizer || {};
-    const eventUrl = payload.event_url || '';
-    const reminders = payload.reminders || { enabled: false };
+    const styles = data.styles || { primary_color: '#7C3AED', secondary_color: '#FAF5FF' };
+    const eventDetails = data.event_details || {};
+    const description = data.description || '';
+    const organizer = data.organizer || {};
+    const eventUrl = data.event_url || '';
+    const reminders = data.reminders || { enabled: false };
 
     // Set hero background color for status bar adaptation
     useEffect(() => {
@@ -96,18 +94,18 @@ export function EventPreview() {
 
         if (gradient_type === 'linear') {
             return {
-                background: `linear - gradient(${gradient_angle || 135}deg, ${primary_color}, ${secondary_color || primary_color})`
+                background: `linear-gradient(${gradient_angle || 135}deg, ${primary_color}, ${secondary_color || primary_color})`
             };
         } else if (gradient_type === 'radial') {
             return {
-                background: `radial - gradient(circle, ${primary_color}, ${secondary_color || primary_color})`
+                background: `radial-gradient(circle, ${primary_color}, ${secondary_color || primary_color})`
             };
         }
 
         // Default: subtle gradient from primary to lighter shade
         const lightPrimary = lightenColor(primary_color, 30);
         return {
-            background: `linear - gradient(180deg, ${primary_color} 0 %, ${lightPrimary} 100 %)`
+            background: `linear-gradient(180deg, ${primary_color} 0%, ${lightPrimary} 100%)`
         };
     };
 

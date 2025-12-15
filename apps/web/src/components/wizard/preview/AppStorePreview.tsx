@@ -1,15 +1,13 @@
-import { useWizardStore } from '../store';
 import { Store, Smartphone } from 'lucide-react';
 
-export function AppStorePreview() {
-    const { payload } = useWizardStore();
+export function AppStorePreview({ data }: { data: any }) {
 
-    const appName = payload.app_name || 'App Name';
-    const developer = payload.developer || '';
-    const description = payload.description || '';
-    const appLogo = payload.app_logo || '';
-    const platforms = payload.platforms || [];
-    const styles = payload.styles || {};
+    const appName = data.app_name || 'App Name';
+    const developer = data.developer || '';
+    const description = data.description || '';
+    const appLogo = data.app_logo || '';
+    const platforms = data.platforms || [];
+    const styles = data.styles || {};
 
     // Get user's colors
     const primaryColor = styles.primary_color || '#2563EB';

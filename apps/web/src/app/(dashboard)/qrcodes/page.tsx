@@ -224,7 +224,8 @@ export default function QrCodesPage() {
                             {qrCodes.map((qr) => (
                                 <div
                                     key={qr.id}
-                                    className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 hover:shadow-md transition-shadow"
+                                    onClick={() => router.push(`/qrcodes/${qr.id}`)}
+                                    className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
                                 >
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -252,31 +253,32 @@ export default function QrCodesPage() {
                                         <span className="text-slate-500">{new Date(qr.createdAt).toLocaleDateString()}</span>
                                     </div>
 
-                                    <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
+                                    <div className="flex items-center gap-2 pt-3 border-t border-slate-100" onClick={(e) => e.stopPropagation()}>
                                         <button
                                             onClick={() => handlePreview(qr.id)}
-                                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-purple-50 text-purple-600 rounded-lg font-medium hover:bg-purple-100 transition-colors text-sm"
+                                            className="flex items-center justify-center p-2.5 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
+                                            title="Preview Content"
                                         >
                                             <Smartphone className="w-4 h-4" />
-                                            Preview
                                         </button>
                                         <Link
-                                            href={`/qrcodes/${qr.id}`}
-                                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg font-medium hover:bg-blue-100 transition-colors text-sm"
+                                            href={`/qrcodes/${qr.id}/analytics`}
+                                            className="flex items-center justify-center p-2.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                                            title="Analytics"
                                         >
-                                            <Eye className="w-4 h-4" />
-                                            View
+                                            <BarChart2 className="w-4 h-4" />
                                         </Link>
                                         <Link
                                             href={`/create/${qr.type}?edit=${qr.id}`}
-                                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-slate-50 text-slate-700 rounded-lg font-medium hover:bg-slate-100 transition-colors text-sm"
+                                            className="flex items-center justify-center p-2.5 bg-slate-50 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+                                            title="Edit"
                                         >
                                             <Edit className="w-4 h-4" />
-                                            Edit
                                         </Link>
                                         <button
                                             onClick={() => handleDelete(qr.id)}
-                                            className="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                                            className="flex items-center justify-center p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                                            title="Delete"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>

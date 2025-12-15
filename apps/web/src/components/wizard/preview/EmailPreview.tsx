@@ -1,12 +1,10 @@
-import { useWizardStore } from '../store';
 import { Mail, User, FileText, Users, Eye } from 'lucide-react';
 
-export function EmailPreview() {
-    const { payload } = useWizardStore();
+export function EmailPreview({ data }: { data: any }) {
 
-    const emailDetails = payload.email_details || {};
-    const additionalRecipients = payload.additional_recipients || {};
-    const styles = payload.styles || {};
+    const emailDetails = data.email_details || {};
+    const additionalRecipients = data.additional_recipients || {};
+    const styles = data.styles || {};
 
     // Helper to lighten a color
     const lightenColor = (hex: string, percent: number = 30) => {

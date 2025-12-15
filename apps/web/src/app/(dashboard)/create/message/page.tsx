@@ -98,7 +98,7 @@ export default function MessagePage() {
                     <div className="sticky top-6 w-full flex flex-col items-center h-fit">
                         <div className="transform transition-all duration-500 origin-top scale-[0.85] xl:scale-[0.9]">
                             <PhoneMockup className="shadow-2xl shadow-slate-300/50">
-                                <MessagePreview />
+                                <MessagePreview data={payload} />
                             </PhoneMockup>
                         </div>
                     </div>
@@ -116,7 +116,7 @@ export default function MessagePage() {
 
             {/* Mobile Preview Modal */}
             <EnhancedPreviewModal isOpen={showPreview} onClose={() => setShowPreview(false)}>
-                <MessagePreview />
+                <MessagePreview data={payload} />
             </EnhancedPreviewModal>
         </div>
     );

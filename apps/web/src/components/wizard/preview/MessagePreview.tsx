@@ -1,15 +1,13 @@
-import { useWizardStore } from '../store';
 import { MessageSquare, Phone, User, Mail, Smartphone, Send } from 'lucide-react';
 
-export function MessagePreview() {
-    const { payload } = useWizardStore();
+export function MessagePreview({ data }: { data: any }) {
 
-    const platform = payload.platform || 'sms';
-    const phoneNumber = payload.phone_number || '';
-    const username = payload.username || '';
-    const message = payload.message || '';
-    const messageOnly = payload.message_only || false;
-    const styles = payload.styles || {};
+    const platform = data.platform || 'sms';
+    const phoneNumber = data.phone_number || '';
+    const username = data.username || '';
+    const message = data.message || '';
+    const messageOnly = data.message_only || false;
+    const styles = data.styles || {};
 
     // Helper to lighten a color
     const lightenColor = (hex: string, percent: number = 30) => {
