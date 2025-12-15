@@ -12,6 +12,8 @@ import { MenuPreview } from './preview/MenuPreview';
 import { VCardPreview } from './preview/VCardPreview';
 import { URLPreview } from './preview/URLPreview';
 import { WiFiPreview } from './preview/WiFiPreview';
+import { PDFPreview } from './preview/PDFPreview';
+import { TextPreview } from './preview/TextPreview';
 import { PreviewModal } from './preview/PreviewModal';
 import { Smartphone, Eye } from 'lucide-react';
 import { HOVER_PREVIEW_DATA } from './steps/hoverPreviewData';
@@ -64,6 +66,22 @@ export function QrStepWizard({ initialType }: QrStepWizardProps) {
                 return (
                     <div className="animate-in fade-in duration-300">
                         <WiFiPreview data={HOVER_PREVIEW_DATA.wifi} />
+                    </div>
+                );
+            }
+
+            if (hoveredTemplate === 'file') {
+                return (
+                    <div className="animate-in fade-in duration-300">
+                        <PDFPreview data={HOVER_PREVIEW_DATA.file} />
+                    </div>
+                );
+            }
+
+            if (hoveredTemplate === 'text') {
+                return (
+                    <div className="animate-in fade-in duration-300">
+                        <TextPreview data={HOVER_PREVIEW_DATA.text} />
                     </div>
                 );
             }

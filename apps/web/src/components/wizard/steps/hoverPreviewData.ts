@@ -145,6 +145,37 @@ export const HOVER_PREVIEW_DATA = {
             secondary_color: '#ECFEFF',
         },
     },
+
+    file: {
+        pdf_file: {
+            file_name: 'Mama_Kitchen_Menu.pdf',
+            file_extension: 'PDF',
+            file_category: 'document',
+            file_type: 'application/pdf',
+            file_size: 245000,
+        },
+        document_info: {
+            title: "Mama's Kitchen Menu",
+            topic: 'Restaurant Menu',
+            description: 'Full menu with Tanzanian dishes and daily specials',
+            author: "Mama's Kitchen",
+        },
+        styles: {
+            primary_color: '#DC2626',
+            secondary_color: '#FEF2F2',
+        },
+    },
+
+    text: {
+        text_content: {
+            title: 'Karibu Tanzania!',
+            message: 'Karibu sana! Welcome to Tanzania, the land of Kilimanjaro, Serengeti, and Zanzibar.\n\nExperience our rich culture, stunning wildlife, and warm hospitality.\n\nTuonane hivi karibuni! (See you soon!)',
+        },
+        styles: {
+            primary_color: '#16A34A',
+            secondary_color: '#F0FDF4',
+        },
+    },
 };
 
 export type TemplateType = keyof typeof HOVER_PREVIEW_DATA;
