@@ -156,6 +156,23 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
         }
     }
 
+    function getTypeColor(type: string) {
+        const colors: Record<string, string> = {
+            menu: 'bg-purple-100 text-purple-700 border border-purple-200',
+            vcard: 'bg-blue-100 text-blue-700 border border-blue-200',
+            url: 'bg-green-100 text-green-700 border border-green-200',
+            text: 'bg-orange-100 text-orange-700 border border-orange-200',
+            wifi: 'bg-cyan-100 text-cyan-700 border border-cyan-200',
+            file: 'bg-pink-100 text-pink-700 border border-pink-200',
+            event: 'bg-indigo-100 text-indigo-700 border border-indigo-200',
+            email: 'bg-red-100 text-red-700 border border-red-200',
+            message: 'bg-teal-100 text-teal-700 border border-teal-200',
+            appstore: 'bg-violet-100 text-violet-700 border border-violet-200',
+            socialmedia: 'bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200',
+        };
+        return colors[type.toLowerCase()] || 'bg-slate-100 text-slate-700 border border-slate-200';
+    }
+
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -219,15 +236,23 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
                         <div className="flex gap-2">
                             <button
                                 onClick={() => setPreviewModalOpen(true)}
-                                className="p-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+                                className="flex items-center justify-center p-2.5 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
                                 title="Preview Content"
                             >
                                 <Smartphone className="w-4 h-4" />
                             </button>
 
                             <Link
+                                href={`/qrcodes/${qrCode.id}/analytics`}
+                                className="flex items-center justify-center p-2.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                                title="Analytics"
+                            >
+                                <BarChart3 className="w-4 h-4" />
+                            </Link>
+
+                            <Link
                                 href={`/create/${qrCode.type}?edit=${qrCode.id}`}
-                                className="p-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg hover:shadow-blue-500/25 transition-all"
+                                className="flex items-center justify-center p-2.5 bg-slate-50 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
                                 title="Edit"
                             >
                                 <Edit className="w-4 h-4" />
@@ -235,7 +260,7 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
 
                             <button
                                 onClick={handleDeleteClick}
-                                className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 border border-red-200 transition-all"
+                                className="flex items-center justify-center p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
                                 title="Delete"
                             >
                                 <Trash2 className="w-4 h-4" />
@@ -313,7 +338,11 @@ export default function QrCodeDetailPage({ params }: { params: { id: string } })
                             <dl className="space-y-3">
                                 <div>
                                     <dt className="text-sm font-medium text-slate-600">Type</dt>
-                                    <dd className="mt-1 text-sm text-slate-900 uppercase font-semibold">{qrCode.type}</dd>
+                                    <dd className="mt-1">
+                                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getTypeColor(qrCode.type)}`}>
+                                            {qrCode.type.toUpperCase()}
+                                        </span>
+                                    </dd>
                                 </div>
                                 <div>
                                     <dt className="text-sm font-medium text-slate-600">Shortcode</dt>
