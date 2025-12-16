@@ -6,6 +6,7 @@ import { ChevronDown, Palette, FileText } from 'lucide-react';
 // Form Value Types
 type FormValues = {
     text_content: {
+        title?: string;
         message: string;
     };
     styles: {
@@ -255,22 +256,36 @@ export function TextForm() {
                 isOpen={openSections.content}
                 onToggle={() => toggleSection('content')}
             >
-                <div className="mt-4">
-                    <div className="flex items-center justify-between mb-2">
-                        <label className="block text-sm font-semibold text-slate-700">Your message</label>
-                        <span className="text-xs text-slate-500">
-                            {watch('text_content.message')?.length || 0} characters
-                        </span>
+                <div className="space-y-4 mt-4">
+                    {/* Title Input */}
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Title (Optional)</label>
+                        <input
+                            {...register('text_content.title')}
+                            className="w-full px-3 sm:px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-base min-h-[44px]"
+                            placeholder="e.g. Important Message"
+                        />
+                        <p className="text-xs text-slate-500 mt-1">A title for your text message</p>
                     </div>
-                    <textarea
-                        {...register('text_content.message')}
-                        rows={8}
-                        className="w-full px-3 sm:px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none text-base"
-                        placeholder="Enter your text message here..."
-                    />
-                    <p className="text-xs text-slate-500 mt-2">
-                        This text will be displayed when someone scans your QR code
-                    </p>
+
+                    {/* Message Textarea */}
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="block text-sm font-semibold text-slate-700">Your message</label>
+                            <span className="text-xs text-slate-500">
+                                {watch('text_content.message')?.length || 0} characters
+                            </span>
+                        </div>
+                        <textarea
+                            {...register('text_content.message')}
+                            rows={8}
+                            className="w-full px-3 sm:px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none text-base"
+                            placeholder="Enter your text message here..."
+                        />
+                        <p className="text-xs text-slate-500 mt-2">
+                            This text will be displayed when someone scans your QR code
+                        </p>
+                    </div>
                 </div>
             </AccordionSection>
         </div>
